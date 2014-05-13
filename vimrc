@@ -6,31 +6,31 @@ filetype off                  " required
 " vundle
 filetype on                   " avoid zero exit status
 filetype off
-set rtp+=~/.vim/bundle/vundle/  " set the runtime path to include Vundle and initialize
-call vundle#rc()
+" set rtp+=~/.vim/bundle/vundle/  " set the runtime path to include Vundle and initialize
+" call vundle#rc()
 
 " let Vundle manage Vundle, required
-Bundle 'gmarik/vundle'
+" Bundle 'gmarik/vundle'
 
 " bundle for nerdtree filesystem exploration plugin
-Bundle 'scrooloose/nerdtree'
+" Bundle 'scrooloose/nerdtree'
 
     " settings for nerdtree
     " open a NERDTree automatically when vim starts up
     " autocmd vimenter * NERDTree
 
     " open a NERDTree automatically when vim starts up if no files were specified
-     autocmd vimenter * if !argc() | NERDTree | endif
+    " autocmd vimenter * if !argc() | NERDTree | endif
 
     " close vim if the only window left open is a NERDTree
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 
 " bundle for vim-airline a lean and mean status/tabline
-Bundle 'bling/vim-airline'
+" Bundle 'bling/vim-airline'
 
 " look into YouCompleteMe
-Bundle 'Valloric/YouCompleteMe'
+" Bundle 'Valloric/YouCompleteMe'
 
 filetype plugin indent on     " required
 
