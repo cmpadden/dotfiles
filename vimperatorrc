@@ -1,0 +1,5 @@
+colorscheme Mediterranean
+
+set hintchars=asdfghjklqwertyuiop
+highlight Hint font-size:125%;color:white;background-color:red;padding:1.5px;
+
