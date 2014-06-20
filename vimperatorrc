@@ -2,3 +2,15 @@ colorscheme Mediterranean
 
 set hintchars=asdfghjklqwertyuiop
 highlight Hint font-size:125%;color:white;background-color:red;padding:1.5px;
+
+map <silent> <F2> :js toggle_navbar()<CR>
+:js << EOF
+function toggle_navbar() {
+    var nb = document.getElementById('nav-bar');
+    if (!nb)
+       return;
+    nb.style.visibility = (nb.style.visibility == '') ? 'collapse' : '';
+    nb.style.overflow = (nb.style.height == '') ? '' : 'hidden';
+}
+toggle_navbar();
+EOF
