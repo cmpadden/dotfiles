@@ -24,11 +24,10 @@ URxvt.internalBorder: 5
 URxvt.lineSpace: 0
  
 ! Fonts
-URxvt.allow_bold: false
-! URxvt.font:	 xft:DejavuSansMono:pixelsize=14
-URxvt*font: xft:Monospace:pixelsize=14
-URxvt*boldFont: xft:Monospace:pixelsize=14
- 
+! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
+URxvt.font: xft:DejaVu Sans Mono-10.5
+URxvt.boldFont: xft:DejaVu Sans Mono-10.5
+
 ! Fix font space
 URxvt*letterSpace: -1
  
