@@ -16,7 +16,9 @@ set $mod Mod1
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
 # font pango:DejaVu Sans Mono 10
-font xft:Monospace 10
+# font xft:Monospace 10
+font xft:DejaVu Sans Mono 10
+
 
 # change styling of borders
 new_window 1pixel
