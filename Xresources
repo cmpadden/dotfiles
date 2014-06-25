@@ -25,8 +25,8 @@ URxvt.lineSpace: 0
  
 ! Fonts
 ! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
-URxvt.font: xft:DejaVu Sans Mono-11:antialias=true
-URxvt.boldFont: xft:DejaVu Sans Mono-11:antialias=true
+URxvt.font: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
+URxvt.boldFont: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
 
 ! Fix font space
 URxvt*letterSpace: -1
