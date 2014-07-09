@@ -14,7 +14,7 @@ xrdb -merge /home/thrax/.Xresources &
 xinput disable "Wacom ISDv4 E6 Finger" &
 
 # launch calendar after things have started
-(sleep 2 && urxvt -e calcurse) &
+# (sleep 2 && urxvt -e calcurse) &
 
 # launch i3
 exec i3
