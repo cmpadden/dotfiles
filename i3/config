@@ -1,5 +1,10 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
+# launch program at startup
+# exec --no-startup-id i3-msg 'workspace 1; exec firefox'
+exec --no-startup-id i3-msg 'workspace 1; exec mupdf /home/thrax/Gdrive/summer_ii_2014/HD_1004/documents/Calendar.pdf'
+
+
 # Colors
 # class                 border  backgr. text    indicator
 client.focused		#CC3300 #CC3300 #FFFFFF #CC3300
