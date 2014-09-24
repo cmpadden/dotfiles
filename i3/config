@@ -8,8 +8,8 @@ exec xinput disable "Wacom ISDv4 E6 Finger"
 exec xrdb -merge /home/thrax/.Xresources
 
 # set background
-# exec sh ~/.fehbg
-exec xsetroot -solid #000000
+exec sh ~/.fehbg
+# exec xsetroot -solid #000000
 
 # disable beep
 exec sh xset -b
