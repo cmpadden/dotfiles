@@ -8,32 +8,23 @@ exec xinput disable "Wacom ISDv4 E6 Finger"
 exec xrdb -merge /home/thrax/.Xresources
 
 # set background
-exec sh ~/.fehbg
+# exec sh ~/.fehbg
+exec xsetroot -solid #000000
 
 # disable beep
 exec sh xset -b
 
-#colors
-set $background #313131
-set $back-inact #313131
-set $back-urgen #FFEEEE
-set $border #313131
-set $bor-in #313131
-set $bor-ur #313131
-set $text #EEEEEE
-set $t-in #454545
-set $t-ur #B000113
-
-# class border background text indicator
-client.focused $border $background $text #31392F
-client.focused_inactive $bor-in $back-inact $t-in #676767
-client.unfocused $bor-in $back-inact $t-in #515151
-client.urgent $bor-ur $back-urgen $t-ur #900000
-
 set $mod Mod1
 
+# theme colors
+client.focused #b63f53 #b63f53 #FFFFFF #DDDDDD
+client.focused_inactive #333333 #333333 #888888 #292D2E
+client.unfocused #333333 #333333 #888888 #292D2E
+client.urgent #2F343A #900000 #FFFFFF #900000
+
 # Font for window titles. Will also be used by the bar unless a different font
-font xft:DejaVu Sans Mono 10
+# font xft:DejaVu Sans Mono 10
+font pango:Lucida Grande 9
 
 
 # change styling of borders
@@ -173,30 +164,15 @@ bindsym $mod+r mode "resize"
 
 # uses conky to generate the bar
 bar {
-    #status_command $HOME/bin/conky-i3bar
-
-
-    #disable system tray
-    #tray_output none
-
-    #make the bar hidden with mod toggle
-    #mode hide
-    #hidden_state hide
-    #modifier Mod1
 
     position top
     font pango:FontAwesome, Icons 9
     status_command i3blocks
 
-
-
     colors {
-        background $back-inact
-        statusline $text
-        
-        focused_workspace $border $background $text
-        active_workspace $border $background $text
-        inactive_workspace $bor-in $back-inact $t-in
-        urgent_workspace $bor-ur $back-urgen $t-ur
+            statusline #AAAAAA
+            focused_workspace #b63f53 #b63f53 #000000
+            inactive_workspace #00000 #000000 #AAAAAA
+            urgent_workspace #d33682 #d33682 #fdf6e3
     }
 }
