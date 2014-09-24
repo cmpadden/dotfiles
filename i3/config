@@ -2,26 +2,37 @@
 
 # launch program at startup
 # exec --no-startup-id i3-msg 'workspace 1; exec firefox'
-exec --no-startup-id i3-msg 'workspace 1; exec mupdf /home/thrax/Gdrive/summer_ii_2014/HD_1004/documents/Calendar.pdf'
+# exec --no-startup-id i3-msg 'workspace 1; exec mupdf /home/thrax/Gdrive/summer_ii_2014/HD_1004/documents/Calendar.pdf'
+# exec --no-startup-id i3-msg 'workspace 2; exec mupdf /home/thrax/Gdrive/summer_ii_2014/HD_1004/documents/Syllabus.pdf'
+exec xinput disable "Wacom ISDv4 E6 Finger"
+exec xrdb -merge /home/thrax/.Xresources
 
+# set background
+exec sh ~/.fehbg
 
-# Colors
-# class                 border  backgr. text    indicator
-client.focused		#CC3300 #CC3300 #FFFFFF #CC3300
-client.focused_inactive #268bd2 #268bd2 #FFFFFF #484e50
-client.unfocused	#333333 #93a1a1 #FFFFFF #292d2e
+# disable beep
+exec sh xset -b
+
+#colors
+set $background #313131
+set $back-inact #313131
+set $back-urgen #FFEEEE
+set $border #313131
+set $bor-in #313131
+set $bor-ur #313131
+set $text #EEEEEE
+set $t-in #454545
+set $t-ur #B000113
+
+# class border background text indicator
+client.focused $border $background $text #31392F
+client.focused_inactive $bor-in $back-inact $t-in #676767
+client.unfocused $bor-in $back-inact $t-in #515151
+client.urgent $bor-ur $back-urgen $t-ur #900000
 
 set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below. ISO 10646 = Unicode
-# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
-# The font above is very space-efficient, that is, it looks good, sharp and
-# clear in small sizes. However, if you need a lot of unicode glyphs or
-# right-to-left text rendering, you should instead use pango for rendering and
-# chose a FreeType font, such as:
-# font pango:DejaVu Sans Mono 10
-# font xft:Monospace 10
 font xft:DejaVu Sans Mono 10
 
 
@@ -162,21 +173,30 @@ bindsym $mod+r mode "resize"
 
 # uses conky to generate the bar
 bar {
-	status_command $HOME/bin/conky-i3bar
+    #status_command $HOME/bin/conky-i3bar
 
-	#disable system tray
-	#tray_output none
 
-        #make the bar hidden with mod toggle
-	#mode hide
-        #hidden_state hide
-        #modifier Mod1
+    #disable system tray
+    #tray_output none
 
-	colors{
-		background #000000
-		statusline #eee8d5
-		focused_workspace #cb4b16 #cb4b16 #eee8d5
-		active_workspace #cb4b16 #cb4b16 #eee8d5
-		inactive_workspace #b58900 #b58900 #eee8d5
-	}
+    #make the bar hidden with mod toggle
+    #mode hide
+    #hidden_state hide
+    #modifier Mod1
+
+    position top
+    font pango:FontAwesome, Icons 9
+    status_command i3blocks
+
+
+
+    colors {
+        background $back-inact
+        statusline $text
+        
+        focused_workspace $border $background $text
+        active_workspace $border $background $text
+        inactive_workspace $bor-in $back-inact $t-in
+        urgent_workspace $bor-ur $back-urgen $t-ur
+    }
 }

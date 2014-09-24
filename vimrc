@@ -3,14 +3,21 @@ syntax on
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" vundle
-filetype on                   " avoid zero exit status
-filetype off
-" set rtp+=~/.vim/bundle/vundle/  " set the runtime path to include Vundle and initialize
-" call vundle#rc()
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-" Bundle 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
+
+
+" bundle for jedi-vim python completion
+Bundle 'davidhalter/jedi-vim'
+
+" bundle for supertab tab for insert completion
+Bundle 'ervandew/supertab'
 
 " bundle for nerdtree filesystem exploration plugin
 " Bundle 'scrooloose/nerdtree'
@@ -29,17 +36,27 @@ filetype off
 " bundle for vim-airline a lean and mean status/tabline
 " Bundle 'bling/vim-airline'
 
-" look into YouCompleteMe
-" Bundle 'Valloric/YouCompleteMe'
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList          - list configured plugins
+" :PluginInstall(!)    - install (update) plugins
+" :PluginSearch(!) foo - search (or refresh cache first) for foo
+" :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
 
-filetype plugin indent on     " required
 
 " code formatting
 set autoindent		" automatically indent on new lines
-set noexpandtab		" doesn't expand tabs to spaces
+set expandtab		" expand tabs to spaces
 set tabstop=8		" actual tab width
-set softtabstop=8	" insert mode tab/backspace width
-set shiftwidth=8	" normal mode (auto)indent width
+set softtabstop=4	" insert mode tab/backspace width
+set shiftwidth=4	" normal mode (auto)indent width
 set backspace=2		" improve the working of <BS>, <Del>, CTRL-W and CTRL-U in insert mode.
 
 " editor setup
@@ -59,6 +76,9 @@ set cursorline                                                          " higlig
 set scrolloff=4                                                         " scroll offset
 set showmatch                                                           " When a bracket is inserted, briefly jump to the matching one
 set background=dark                                                     " try to use colors that look good on a dark background
+set colorcolumn=80                                                      " add a marker to lines longer than 80 columns
+hi ColorColumn ctermbg=lightgrey guibg=lightgrey 
+
 
 " search
 set ignorecase " case-insensitive search

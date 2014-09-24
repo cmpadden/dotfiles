@@ -13,11 +13,6 @@ Xft.hintstyle: hintslight
 !-------------------------------------------------------------------------------
  
 URxvt.depth: 32
-! URxvt.geometry: 90x30
-! URxvt.transparent: true
-! URxvt.shading: 30
-! URxvt.urgentOnBell: true
-! URxvt.visualBell: true
 URxvt.loginShell: true
 URxvt.saveLines: 50
 URxvt.internalBorder: 5
@@ -51,7 +46,7 @@ URxvt.pointerBlank: true
 ! Colors
 !------------------------------------------------------------------------------- 
 
-URxvt*background: #272727
+URxvt*background: #505050
 URxvt*foreground: #bebebe
 *cursorColor: #aa2255
 
