@@ -1,7 +1,4 @@
-colorscheme Mediterranean
+" colorscheme solarized-light
 
 set hintchars=asdfghjklqwertyuiop
 highlight Hint font-size:125%;color:white;background-color:red;padding:1.5px;
-
-# hide the close buttons on tabs
-set! browser.tabs.closeButtons=2

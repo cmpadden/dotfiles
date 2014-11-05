@@ -7,7 +7,7 @@ exec xrdb -merge /home/thrax/.Xresources
 exec sh ~/.fehbg
 
 # set lockscreen
-exec --no-startup-id xss-lock -- i3lock -n -i /home/thrax/google_drive/non_school_related/wallpapers/2560x1600/glitch-rainbow.png
+exec --no-startup-id xss-lock -- i3lock -n -i /home/thrax/documents/wallpapers/japenese_rain.png
 
 # disable beep
 exec sh xset -b
@@ -162,8 +162,8 @@ bindsym $mod+r mode "resize"
 
 
 # media keys
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10 
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10 
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5
 #bindsym XF86LaunchA
 #bindsym XF86LaunchB
 bindsym XF86KbdBrightnessDown exec kbdlight down

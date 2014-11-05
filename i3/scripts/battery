@@ -27,22 +27,23 @@ $acpi = <ACPI>;
 close(ACPI);
 # fail on unexpected output
 if ($acpi !~ /: (\w+), (\d+)%/) {
-die "$acpi\n";
+	die "$acpi\n";
 }
 $status = $1;
 $percent = $2;
 $full_text = "$percent%";
 if ($status eq 'Discharging') {
-$full_text = ' DIS ' . $full_text ;
+	$full_text = ' DIS ' . $full_text ;
 } elsif ($status eq 'Charging') {
-$full_text = ' CHR ' . $full_text ;
+	$full_text = ' CHR ' . $full_text ;
 } elsif ($status eq 'Full') {
-$full_text = ' FULL ' . $full_text ;
+	$full_text = ' FULL ' . $full_text ;
 }
 $short_text = $full_text;
-if ($acpi =~ /(\d\d:\d\d):/) {
-$full_text .= " ($1)";
-}
+# uncomment to show time remaining
+#if ($acpi =~ /(\d\d:\d\d):/) {
+#	$full_text .= " ($1)";
+#}
 # print text
 print "$full_text\n";
 print "$short_text\n";

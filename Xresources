@@ -14,14 +14,14 @@ Xft.hintstyle: hintslight
  
 URxvt.depth: 32
 URxvt.loginShell: true
-URxvt.saveLines: 50
+URxvt.saveLines: 500
 URxvt.internalBorder: 5
 URxvt.lineSpace: 0
  
 ! Fonts
 ! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
-URxvt.font: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
-URxvt.boldFont: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
+URxvt.font: xft:DejaVu Sans Mono-17:antialias=true:hinting=true
+URxvt.boldFont: xft:DejaVu Sans Mono-17:antialias=true:hinting=true
 
 ! Fix font space
 URxvt*letterSpace: -1
@@ -45,41 +45,50 @@ URxvt.pointerBlank: true
 !-------------------------------------------------------------------------------
 ! Colors
 !------------------------------------------------------------------------------- 
+urxvt*termName:         rxvt
+urxvt*background:       #212629
+urxvt*foreground:       #737c80
+urxvt*scrollBar:        false
+urxvt*matcher.button:   1
+urxvt*cursorBlink:      true
+urxvt*cursorColor:      #c1c8c9
+urxvt*colorBD:          #9a7b88  
+     
+urxvt.transparent:      false
+urxvt*allow_bold:       true
 
-!Foreground & Background
-URxvt.background:         #121419
-URxvt.foreground:         #999CA1
+Xft*dpi:                96
+Xft*antialias:          false
+Xft*hinting:            full
 
-!Misc
-URxvt*highlightColor:     #757F8E
-URxvt*highlightTextColor: #15171A
-URxvt*cursorColor:        #758A8E
-URxvt*pointerColor:       #999CA1
-URxvt*colorBD:            #B8BCC2
-URxvt*colorUL:            #B59279
-URxvt*underlineColor:     #B6937A
+URxvt*inheritPixmap:    false
+!URxvt*tintColor:       black
+!URxvt*shading:         80
+!URxvt*geometry:        80x17
 
-!Black
-URxvt*color0:             #505152
-URxvt*color8:             #7C7D7E
-!Red
-URxvt*color1:             #B63F53
-URxvt*color9:             #E8909B
-!Green
-URxvt*color2:             #51997A
-URxvt*color10:            #9EDCBB
-!Yellow
-URxvt*color3:             #B27B42
-URxvt*color11:            #DCC58F
-!Blue
-URxvt*color4:             #5C95B3
-URxvt*color12:            #A7C8D4
-!Magenta
-URxvt*color5:             #B85A86
-URxvt*color13:            #D9A4C8
-!Cyan
-URxvt*color6:             #83A6A7
-URxvt*color14:            #BBD7D2
-!White
-URxvt*color7:             #A4A6A7
-URxvt*color15:            #E8E6E4
+!black
+URxvt*color0:           #111313
+URxvt*color8:           #424446
+!red
+URxvt*color1:           #9e6b71
+URxvt*color9:           #b69094
+!green
+URxvt*color2:           #719e6b
+URxvt*color10:          #94b690
+!yellow
+URxvt*color3:           #9e986c
+URxvt*color11:          #b5b18f
+!blue
+URxvt*color4:           #6c8b9e
+URxvt*color12:          #90a7b6
+!magenta
+URxvt*color5:           #986b9e
+URxvt*color13:          #b290b6
+!cyan
+URxvt*color6:           #6b9e98
+URxvt*color14:          #90b6b3
+!white
+URxvt*color7:           #b8baba
+URxvt*color15:          #cdcfce
+
+
