@@ -6,37 +6,29 @@ exec xrdb -merge /home/thrax/.Xresources
 # set background
 exec sh ~/.fehbg
 
-# set lockscreen
-exec --no-startup-id xss-lock -- i3lock -n -i /home/thrax/google_drive/non_school_related/wallpapers/2560x1600/glitch-rainbow.png
+set $mod Mod1
 
-# disable beep
-exec sh xset -b
-
-set $mod Mod4
+# window gaps
+gaps inner 10
+gaps outer 50
+#smart_borders on
 
 # theme colors
-client.focused #b63f53 #b63f53 #FFFFFF #DDDDDD
-client.focused_inactive #333333 #333333 #888888 #292D2E
-client.unfocused #333333 #333333 #888888 #292D2E
-client.urgent #2F343A #900000 #FFFFFF #900000
+#client.focused #b63f53 #b63f53 #FFFFFF #DDDDDD
+#client.focused_inactive #333333 #333333 #888888 #292D2E
+#client.unfocused #333333 #333333 #888888 #292D2E
+#client.urgent #2F343A #900000 #FFFFFF #900000
 
 # Font for window titles. Will also be used by the bar unless a different font
-# font xft:DejaVu Sans Mono 10
-font pango:Lucida Grande 15
-
+font xft:DejaVu Sans Mono 10
+# font pango:Lucida Grande 11
 
 # change styling of borders
 new_window 1pixel
 new_window pixel 2
 
-bindsym $mod+t border normal
-bindsym $mod+y border 1pixel
-
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
-
-# **** Bind ctrl+alt+up to screen rotation script
-bindsym Control+$mod+Up exec /home/thrax/bin/screen_rotation
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
@@ -127,8 +119,10 @@ bindsym $mod+Shift+0 move container to workspace 10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
+
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
@@ -160,33 +154,32 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-
-# media keys
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10 
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10 
-#bindsym XF86LaunchA
-#bindsym XF86LaunchB
-bindsym XF86KbdBrightnessDown exec kbdlight down
-bindsym XF86KbdBrightnessUp exec kbdlight up
-#bindsym XF86AudioPrev
-#bindsym XF86AudioPlay
-#bindsym XF86AudioNext
-bindsym XF86AudioMute exec amixer -qc 0 set Master 0%
-bindsym XF86AudioLowerVolume exec amixer -q set Master 5-
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 5+
-
-
 # uses conky to generate the bar
 bar {
 
-    position top
-    font pango:FontAwesome, Icons 15
+    position bottom
+    tray_output primary
+    font pango:FontAwesome, Icons 10
     status_command i3blocks
 
-    colors {
-            statusline #AAAAAA
-            focused_workspace #b63f53 #b63f53 #000000
-            inactive_workspace #00000 #000000 #AAAAAA
-            urgent_workspace #d33682 #d33682 #fdf6e3
-    }
+    # attributes from i3 fork
+    height 20
+
+colors  {
+	background #002b36
+	statusline #aaaaaa
+	separator  #20293A
+	focused_workspace  #20293A #20293A #ffffff
+	active_workspace   #ff8c00 #20293A #ffffff 
+	inactive_workspace #20293A #20293A #aaaaaa
+	urgent_workspace   #20293A #20293A #FCF5C7
+	}
+
 }
+
+# color scheme
+client.focused          #cb4b16 #fdf6e3 #657b83 #ffffff
+client.focused_inactive #586e75 #fdf6e3 #657b83 #ffffff
+client.unfocused        #586e75 #fdf6e3 #657b83 #ffffff
+client.urgent           #586e75 #fdf6e3 #657b83 #ffffff
+
