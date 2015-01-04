@@ -6,6 +6,13 @@ exec xrdb -merge /home/thrax/.Xresources
 # set background
 exec sh ~/.fehbg
 
+# launch redshift
+exec redshift
+
+# launch keepass
+exec keepassx
+
+# set modkey
 set $mod Mod1
 
 # window gaps
