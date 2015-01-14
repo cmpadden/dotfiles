@@ -7,7 +7,7 @@ exec xrdb -merge /home/thrax/.Xresources
 exec sh ~/.fehbg
 
 # launch redshift
-exec redshift
+exec redshift-gtk
 
 # launch keepass
 exec keepassx
@@ -38,7 +38,8 @@ new_window pixel 2
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec urxvt -e bash -c "tmux -q has-session && exec tmux attach-session -d || exec tmux new-session -n$USER -s$USER@$HOSTNAME"
 
 # kill focused window
 bindsym $mod+Shift+q kill
