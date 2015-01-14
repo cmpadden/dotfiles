@@ -67,7 +67,7 @@ hotkey.bind(mash, "s", function()
 end)
  
 -- move window to left and resize to full-screen
-hotkey.bind(mash, "f", function()
+hotkey.bind(mash, "m", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
