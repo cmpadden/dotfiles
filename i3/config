@@ -12,8 +12,8 @@ exec udiskie
 # launch redshift
 exec redshift-gtk
 
-# launch keepass
-exec keepassx
+# enable xautolock to handle i3lock
+# exec xautolock -time 1 -locker "i3lock -i /home/thrax/GoogleDrive/non_school_related/wallpapers/misc/YhkeIQZ.png -e"
 
 # set modkey
 set $mod Mod1
@@ -22,12 +22,6 @@ set $mod Mod1
 gaps inner 10
 gaps outer 50
 #smart_borders on
-
-# theme colors
-#client.focused #b63f53 #b63f53 #FFFFFF #DDDDDD
-#client.focused_inactive #333333 #333333 #888888 #292D2E
-#client.unfocused #333333 #333333 #888888 #292D2E
-#client.urgent #2F343A #900000 #FFFFFF #900000
 
 # Font for window titles. Will also be used by the bar unless a different font
 font xft:DejaVu Sans Mono 10
@@ -162,8 +156,21 @@ mode "resize" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-
 bindsym $mod+r mode "resize"
+
+# Power control mode
+set $power_control "[l]ock log[o]ut [s]uspend [h]ybernate [r]eboot [p]oweroff"
+mode $power_control {
+    bindsym l exec ~/Documents/dotfiles/i3/scripts/lock.sh; mode "default"
+    bindsym o exec i3-msg exit; mode "default"
+    bindsym s exec systemctl suspend; mode "default"
+    bindsym h exec systemctl hybernate; mode "default"
+    bindsym r exec systemctl reboot; mode "default"
+    bindsym p exec systemctl poweroff; mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+n mode $power_control
 
 # uses conky to generate the bar
 bar {
@@ -177,19 +184,18 @@ bar {
     height 20
 
 colors  {
-            separator #FFFFFF
-            background #303030
-            statusline #ffffff
-            focused_workspace #ededed #303030 #ffffff
-            active_workspace #303030 #fff #303030
-            inactive_workspace #303030 #303030 #ffffff
-            urgent_workspace #2f343a #900000 #ffffff
+            background #2d2d2d
+            statusline #dedede
+            separator #2d2d2d
+            focused_workspace #d64937 #d64937 #dedede
+            active_workspace #2d2d2d #5f676a #dedede
+            inactive_workspace #2d2d2d #2d2d2d #888888
+            urgent_workspace #333333 #900000 #ffffff
 	}
 
 }
 
-# color scheme
-client.focused #FFFFFF #FFFFFF #ffffff #FFFFFF
-client.focused_inactive #333333 #333333 #888888 #292d2e
-client.unfocused #303030 #303030 #FFFFFF #292d2e
-client.urgent #2f343a #900000 #ffffff #900000
+client.focused #d64937 #d64937 #dedede #d64937
+client.unfocused #2d2d2d #2d2d2d #dedede #2d2d2d
+client.focused_inactive #2d2d2d #333333 #dedede #2d2d2d
+client.urgent #383a3b #383a3b #ee0000 #383a3b
