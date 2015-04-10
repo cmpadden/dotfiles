@@ -4,10 +4,12 @@
  
 Xft.dpi: 96
 Xft.antialias: true
-Xft.rgba: rgb
 Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: false
 Xft.hintstyle: hintslight
- 
+Xft.lcdfilter: lcddefault
+
 !-------------------------------------------------------------------------------
 ! URxvt settings
 !-------------------------------------------------------------------------------
@@ -17,7 +19,12 @@ URxvt.loginShell: true
 URxvt.saveLines: 500
 URxvt.internalBorder: 5
 URxvt.lineSpace: 0
- 
+urxvt*cursorBlink:      true
+urxvt.transparent:      false
+urxvt*allow_bold:       true
+URxvt*inheritPixmap:    false
+URxvt*.transparent: false
+
 ! Fonts
 ! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
 URxvt.font: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
@@ -27,15 +34,8 @@ URxvt.boldFont: xft:DejaVu Sans Mono-11:antialias=true:hinting=true
 URxvt*letterSpace: -1
  
 ! Scrollbar
-! URxvt.scrollStyle: rxvt
 URxvt.scrollBar: false
- 
-! Perl extensions
-urxvt*perl-lib:         /usr/lib/urxvt/perl/
-URxvt.perl-ext-common:  default,matcher
-URxvt.url-launcher:     /usr/bin/firefox
-URxvt.matcher.button:   1
- 
+
 ! Cursor
 URxvt.cursorBlink: true
 
@@ -45,37 +45,22 @@ URxvt.pointerBlank: true
 !-------------------------------------------------------------------------------
 ! Colors
 !------------------------------------------------------------------------------- 
-urxvt*termName:         rxvt
-urxvt*scrollBar:        false
-urxvt*matcher.button:   1
-urxvt*cursorBlink:      true
-     
-urxvt.transparent:      false
-urxvt*allow_bold:       true
-
-URxvt*inheritPixmap:    false
-
-urxvt.background: #303030
-urxvt.foreground: #FFFFFF
-URxvt*.transparent: false
-!URxvt*.shading: 0 to 99 darkens, 101 to 200 lightens | default is 110
-!URxvt*blurRadius: 30
-!URxvt*.shading: 180
-URxvt*font: xft:monaco:pixelsize=12
-URxvt*boldFont: xft:monaco:bold:pixelsize=12
-URxvt*color0: #505050
-URxvt*color1: #777777
-URxvt*color2: #d3050a
-URxvt*color3: #fe0006
-URxvt*color4: #af2d2f
-URxvt*color5: #505050
-URxvt*color6: #9C8B8C
-URxvt*color7: #ca8788
-URxvt*color8: #f2575a
-URxvt*color9: #e7989a
-URxvt*color10: #f51f24
-URxvt*color11: #7b4647
-Rxvt*color12: #bfbfbf
-URxvt*color13: #64282a
-URxvt*color14: #777777
-URxvt*color15: #ed7578
+URxvt*foreground: #c7ccd1
+URxvt*background: #1c2023
+URxvt*cursorColor: #c7ccd1
+URxvt*color0: #1c2023
+URxvt*color8: #747c84
+URxvt*color1: #c7ae95
+URxvt*color9: #c7ae95
+URxvt*color2: #95c7ae
+URxvt*color10: #95c7ae
+URxvt*color3: #aec795
+URxvt*color11: #aec795
+URxvt*color4: #ae95c7
+URxvt*color12: #ae95c7
+URxvt*color5: #c795ae
+URxvt*color13: #c795ae
+URxvt*color6: #95aec7
+URxvt*color14: #95aec7
+URxvt*color7: #c7ccd1
+URxvt*color15: #f3f4f5
