@@ -12,9 +12,6 @@ exec udiskie
 # launch redshift
 exec redshift-gtk
 
-# enable xautolock to handle i3lock
-# exec xautolock -time 1 -locker "i3lock -i /home/thrax/GoogleDrive/non_school_related/wallpapers/misc/YhkeIQZ.png -e"
-
 # set modkey
 set $mod Mod1
 
@@ -25,11 +22,6 @@ gaps outer 50
 
 # Font for window titles. Will also be used by the bar unless a different font
 font xft:DejaVu Sans Mono 10
-# font pango:Lucida Grande 11
-
-# change styling of borders
-new_window 1pixel
-new_window pixel 2
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -81,22 +73,11 @@ bindsym $mod+v split v
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen
 
-# change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+Shift+s layout stacking
-# bindsym $mod+Shift+t layout tabbed
-# bindsym $mod+Shift+g layout toggle split
-
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
-
-# focus the parent container
-# bindsym $mod+a focus parent
-
-# focus the child container
-# bindsym $mod+d focus child
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -133,28 +114,21 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
 
-	# modified to use lijk
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym i resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
+    # These bindings trigger as soon as you enter the resize mode
+    bindsym j resize shrink width 10 px or 10 ppt
+    bindsym i resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
 
-	# modified switched up/down
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Up resize grow height 10 px or 10 ppt
-        bindsym Down resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Up resize grow height 10 px or 10 ppt
+    bindsym Down resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
@@ -183,19 +157,25 @@ bar {
     # attributes from i3 fork
     height 20
 
-colors  {
-            background #2d2d2d
-            statusline #dedede
-            separator #2d2d2d
-            focused_workspace #d64937 #d64937 #dedede
-            active_workspace #2d2d2d #5f676a #dedede
-            inactive_workspace #2d2d2d #2d2d2d #888888
-            urgent_workspace #333333 #900000 #ffffff
-	}
+    colors {
+        background #1c2023
+        statusline #95c7ae
+        separator #1c2023
+
+        # colors outline background number
+        focused_workspace #1c2023 #1c2023 #95c7ae
+        active_workspace #ee920e #ee920e #382d1c
+        inactive_workspace #1c2023 #1c2023 #4C5157
+        urgent_workspace #990000 #990000 #ffffff
+    }
 
 }
 
-client.focused #d64937 #d64937 #dedede #d64937
-client.unfocused #2d2d2d #2d2d2d #dedede #2d2d2d
-client.focused_inactive #2d2d2d #333333 #dedede #2d2d2d
-client.urgent #383a3b #383a3b #ee0000 #383a3b
+# window borders
+new_window pixel 3
+new_float pixel 3
+# border colors border background text indicator
+client.focused #c7ccd1 #c7ccd1 #ffffff #95c7ae
+client.unfocused #1c2023 #1c2023 #ffffff #1c2023
+client.urgent #990000 #990000 #ffffff #990000
+client.focused_inactive #1c2023 #1c2023 #ffffff #1c2023 
