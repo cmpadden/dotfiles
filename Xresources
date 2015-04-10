@@ -19,11 +19,12 @@ URxvt.loginShell: true
 URxvt.saveLines: 500
 URxvt.internalBorder: 5
 URxvt.lineSpace: 0
-urxvt*cursorBlink:      true
 urxvt.transparent:      false
+urxvt*cursorBlink:      true
 urxvt*allow_bold:       true
 URxvt*inheritPixmap:    false
 URxvt*.transparent: false
+URxvt*visualBell:  false
 
 ! Fonts
 ! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
