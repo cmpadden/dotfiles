@@ -151,7 +151,8 @@ bar {
 
     position bottom
     tray_output primary
-    font pango:FontAwesome, Icons 10
+    # font pango:FontAwesome, Icons 10
+    font xft:DejaVu Sans Mono 10
     status_command i3blocks
 
     # attributes from i3 fork
