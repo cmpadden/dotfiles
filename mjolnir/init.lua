@@ -103,7 +103,7 @@ hotkey.bind(shiftmash, 'd', open_dictionary)
 
 local function open_iterm()
     alert.show("Terminal!", 0.75)
-    application.launchorfocus("terminal.app")
+    os.execute("open -n -a 'iterm.app'")
 end
 
 hotkey.bind(mash, 'return', open_iterm)
