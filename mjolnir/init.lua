@@ -19,7 +19,7 @@ local shiftmash = {"shift", "cmd"}
 local animation_time = 0.075
  
 -- move window to left and resize to half-screen
-hotkey.bind(mash, "a", function()
+hotkey.bind(shiftmash, "a", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
@@ -31,7 +31,7 @@ hotkey.bind(mash, "a", function()
 end)
  
  -- move window to right and resize to half-screen
-hotkey.bind(mash, "d", function()
+hotkey.bind(shiftmash, "d", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
@@ -43,7 +43,7 @@ hotkey.bind(mash, "d", function()
 end)
  
 -- move window to top and resize to half-screen
-hotkey.bind(mash, "w", function()
+hotkey.bind(shiftmash, "w", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
@@ -55,7 +55,7 @@ hotkey.bind(mash, "w", function()
 end)
  
 -- move window to bottom and resize to half-screen
-hotkey.bind(mash, "s", function()
+hotkey.bind(shiftmash, "x", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
@@ -67,7 +67,7 @@ hotkey.bind(mash, "s", function()
 end)
  
 -- move window to left and resize to full-screen
-hotkey.bind(mash, "m", function()
+hotkey.bind(shiftmash, "f", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
@@ -79,7 +79,7 @@ hotkey.bind(mash, "m", function()
 end)
  
 -- move window to center and resize to two-thirds-screen
-hotkey.bind(mash, "c", function()
+hotkey.bind(shiftmash, "s", function()
     local win = window.focusedwindow()
     local frame = win:frame()
     local sframe = screen:mainscreen():fullframe()
