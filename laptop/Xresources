@@ -1,0 +1,67 @@
+!-------------------------------------------------------------------------------
+! Xft settings
+!-------------------------------------------------------------------------------
+ 
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: false
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+
+!-------------------------------------------------------------------------------
+! URxvt settings
+!-------------------------------------------------------------------------------
+ 
+URxvt.depth: 32
+URxvt.loginShell: true
+URxvt.saveLines: 500
+URxvt.internalBorder: 5
+URxvt.lineSpace: 0
+urxvt.transparent:      false
+urxvt*cursorBlink:      true
+urxvt*allow_bold:       true
+URxvt*inheritPixmap:    false
+URxvt*.transparent: false
+URxvt*visualBell:  false
+
+! Fonts
+! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
+URxvt.font: xft:DejaVu Sans Mono-13:antialias=true:hinting=true
+URxvt.boldFont: xft:DejaVu Sans Mono-13:antialias=true:hinting=true
+
+! Fix font space
+URxvt*letterSpace: -1
+ 
+! Scrollbar
+URxvt.scrollBar: false
+
+! Cursor
+URxvt.cursorBlink: true
+
+! Pointer
+URxvt.pointerBlank: true
+ 
+!-------------------------------------------------------------------------------
+! Colors
+!------------------------------------------------------------------------------- 
+URxvt*foreground: #c7ccd1
+URxvt*background: #1c2023
+URxvt*cursorColor: #c7ccd1
+URxvt*color0: #1c2023
+URxvt*color8: #747c84
+URxvt*color1: #c7ae95
+URxvt*color9: #c7ae95
+URxvt*color2: #95c7ae
+URxvt*color10: #95c7ae
+URxvt*color3: #aec795
+URxvt*color11: #aec795
+URxvt*color4: #ae95c7
+URxvt*color12: #ae95c7
+URxvt*color5: #c795ae
+URxvt*color13: #c795ae
+URxvt*color6: #95aec7
+URxvt*color14: #95aec7
+URxvt*color7: #c7ccd1
+URxvt*color15: #f3f4f5
