@@ -2,12 +2,12 @@
 ! Xft settings
 !-------------------------------------------------------------------------------
  
-Xft.dpi: 96
+Xft.dpi: 180
 Xft.antialias: true
 Xft.hinting: true
 Xft.rgba: rgb
 Xft.autohint: false
-Xft.hintstyle: hintslight
+Xft.hintstyle: hintfull
 Xft.lcdfilter: lcddefault
 
 !-------------------------------------------------------------------------------
@@ -28,8 +28,8 @@ URxvt*visualBell:  false
 
 ! Fonts
 ! URxvt.font: -*-terminus-medium-*-*-*-*-140-*-*-*-*-iso8859-1
-URxvt.font: xft:DejaVu Sans Mono-13:antialias=true:hinting=true
-URxvt.boldFont: xft:DejaVu Sans Mono-13:antialias=true:hinting=true
+URxvt.font: xft:DejaVu Sans Mono-10:antialias=true:hinting=true
+URxvt.boldFont: xft:DejaVu Sans Mono-10:antialias=true:hinting=true
 
 ! Fix font space
 URxvt*letterSpace: -1
