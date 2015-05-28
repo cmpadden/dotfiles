@@ -130,7 +130,7 @@ bindsym $mod+r mode "resize"
 # Power control mode
 set $power_control "[l]ock log[o]ut [s]uspend [h]ybernate [r]eboot [p]oweroff"
 mode $power_control {
-    bindsym l exec ~/Documents/dotfiles/i3/scripts/lock.sh; mode "default"
+    bindsym l exec i3lock -c 000000; mode "default"
     bindsym o exec i3-msg exit; mode "default"
     bindsym s exec systemctl suspend; mode "default"
     bindsym h exec systemctl hybernate; mode "default"
