@@ -1,0 +1,22 @@
+# xbacklight and kbdlight (AUR) needed
+
+"amixer set Master playback 5%+"
+    XF86AudioRaiseVolume
+
+"amixer set Master playback 5%-"
+    XF86AudioLowerVolume
+
+"amixer set Master toggle"
+    XF86AudioMute
+
+"xbacklight -dec 10"
+  XF86MonBrightnessDown
+
+"xbacklight -inc 10"
+  XF86MonBrightnessUp
+
+"kbdlight up"
+  XF86KbdBrightnessUp
+
+"kbdlight down"
+  XF86KbdBrightnessDown
