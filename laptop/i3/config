@@ -6,11 +6,8 @@ exec xrdb -merge /home/thrax/.Xresources
 # set background
 exec sh ~/.fehbg
 
-# launche udiskie
-# exec udiskie
-
-# launch redshift
-# exec redshift-gtk
+# enable xbindkeys
+exec xbindkeys
 
 # set modkey
 set $mod Mod1
