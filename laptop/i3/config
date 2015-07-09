@@ -13,7 +13,7 @@ exec xbindkeys
 set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
-font xft:DejaVu Sans Mono 14
+# font xft:DejaVu Sans Mono 15
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -124,6 +124,8 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
+# custom binds
+
 # Power control mode
 set $power_control "[l]ock log[o]ut [s]uspend [h]ybernate [r]eboot [p]oweroff"
 mode $power_control {
@@ -138,34 +140,44 @@ mode $power_control {
 }
 bindsym $mod+n mode $power_control
 
-# uses conky to generate the bar
+# display vim cheatsheet
+bindsym $mod+o exec mupdf ~/vimcheatsheet.pdf &
+
 bar {
 
     position bottom
     tray_output primary
-    font xft:DejaVu Sans Mono 14
+    font xft:DejaVu Sans Mono 16
     status_command i3status
-
+    
+    # hide bar until modifier is pressed
+    mode hide
+    hidden_state hide
+    modifier $mod
 
     colors {
-        background #1c2023
-        statusline #95c7ae
-        separator #1c2023
 
-        # colors outline background number
-        focused_workspace #1c2023 #1c2023 #95c7ae
-        active_workspace #ee920e #ee920e #382d1c
-        inactive_workspace #1c2023 #1c2023 #4C5157
-        urgent_workspace #990000 #990000 #ffffff
+        background #080808 
+        statusline #FFFFFF
+        separator  #808080
+
+        # colors            outline    background    number
+        focused_workspace   #080808    #222222       #FFFFFF
+        active_workspace    #080808    #080808       #797979 
+        inactive_workspace  #080808    #080808       #4F4F4F
+        urgent_workspace    #080808    #080808       #EA4C59
     }
 
 }
 
 # window borders
-new_window pixel 3
-new_float pixel 3
-# border colors border background text indicator
-client.focused #c7ccd1 #c7ccd1 #ffffff #95c7ae
-client.unfocused #1c2023 #1c2023 #ffffff #1c2023
-client.urgent #990000 #990000 #ffffff #990000
-client.focused_inactive #1c2023 #1c2023 #ffffff #1c2023 
+new_window pixel 1
+new_float pixel  1
+
+# border colors            border     background    text       indicator
+client.focused             #1F1F1F    #505050       #BBBBBB    #4F4F4F
+client.focused_inactive    #1A1A1A    #1A1A1A       #424242    #121212
+client.unfocused           #1A1A1A    #1A1A1A       #4F4F4F    #1A1A1A
+client.urgent              #1A1A1A    #3B89B5       #A5A5A5    #1A1A1A
+client.background          #121212
+

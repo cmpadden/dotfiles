@@ -65,3 +65,12 @@ URxvt*color6: #95aec7
 URxvt*color14: #95aec7
 URxvt*color7: #c7ccd1
 URxvt*color15: #f3f4f5
+
+ 
+!-------------------------------------------------------------------------------
+! Perl Extensions
+! font-size requires urxvt-font-size-git from the AUR
+!------------------------------------------------------------------------------- 
+URxvt.perl-ext-common: font-size
+URxvt.keysym.C-Up:  perl:font-size:increase
+URxvt.keysym.C-Down:  perl:font-size:decrease
