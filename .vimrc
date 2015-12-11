@@ -13,3 +13,5 @@ set expandtab
 set background=dark
 set colorcolumn=80
 highlight ColorColumn ctermbg=4
+
+let mapleader = ","
