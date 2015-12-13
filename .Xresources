@@ -83,7 +83,6 @@ URxvt.pointerBlank: true
 
 *background:            S_base03
 *foreground:            S_base00
-*fading:                40
 *fadeColor:             S_base03
 *cursorColor:           S_base1
 *pointerColorBackground:S_base01

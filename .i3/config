@@ -1,7 +1,7 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 # makes sure Xresources is most recent
-exec xrdb -merge /home/thrax/.Xresources
+exec xrdb -merge ~/.Xresources
 
 # set background
 exec sh ~/.fehbg
@@ -13,14 +13,13 @@ exec xbindkeys
 set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
-# font xft:DejaVu Sans Mono 15
+font xft:DejaVu Sans Mono 15
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
-#bindsym $mod+Return exec urxvt -e bash -c "tmux -q has-session && exec tmux attach-session -d || exec tmux new-session -n$USER -s$USER@$HOSTNAME"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -124,8 +123,6 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-# custom binds
-
 # Power control mode
 set $power_control "[l]ock log[o]ut [s]uspend [h]ybernate [r]eboot [p]oweroff"
 mode $power_control {
@@ -140,14 +137,11 @@ mode $power_control {
 }
 bindsym $mod+n mode $power_control
 
-# display vim cheatsheet
-bindsym $mod+o exec mupdf ~/vimcheatsheet.pdf &
-
 bar {
 
     position bottom
     tray_output primary
-    font xft:DejaVu Sans Mono 16
+    # font xft:DejaVu Sans Mono 16
     status_command i3status
     
     # hide bar until modifier is pressed
@@ -171,8 +165,8 @@ bar {
 }
 
 # window borders
-new_window pixel 1
-new_float pixel  1
+# new_window pixel 1
+# new_float pixel  1
 
 # border colors            border     background    text       indicator
 client.focused             #1F1F1F    #505050       #BBBBBB    #4F4F4F
