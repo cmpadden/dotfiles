@@ -73,6 +73,14 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
+# put workspaces on specific screens
+workspace 1 output DVI-I-2
+workspace 2 output DVI-I-2
+workspace 3 output DVI-I-2
+workspace 4 output DVI-I-3
+workspace 5 output DVI-I-3
+workspace 6 output DVI-I-3
+
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -80,10 +88,6 @@ bindsym $mod+3 workspace 3
 bindsym $mod+4 workspace 4
 bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
@@ -92,22 +96,6 @@ bindsym $mod+Shift+3 move container to workspace 3
 bindsym $mod+Shift+4 move container to workspace 4
 bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
-
-# put workspaces on specific screens
-workspace 1 output DVI-i-2
-workspace 2 output DVI-i-2
-workspace 3 output DVI-i-2
-workspace 4 output DVI-i-2
-workspace 5 output DVI-i-2
-workspace 6 output DVI-i-3
-workspace 7 output DVI-i-3
-workspace 8 output DVI-i-3
-workspace 9 output DVI-i-3
-workspace 10 output DVI-i-3
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -158,34 +146,23 @@ bar {
     tray_output primary
     status_command i3status
     
-    # hide bar until modifier is pressed
-    # mode hide
-    # hidden_state hide
-    # modifier $mod
-
     colors {
+        background #0a2329
+        statusline #839496
 
-        background #262626
-        statusline #FFFFFF
-        separator  #808080
-
-        # colors            outline    background    number
-        focused_workspace   #080808    #222222       #FFFFFF
-        active_workspace    #080808    #080808       #797979 
-        inactive_workspace  #080808    #080808       #4F4F4F
-        urgent_workspace    #080808    #080808       #EA4C59
+        focused_workspace  #b58900 #111111
+        inactive_workspace #586e75 #111111
+        urgent_workspace   #839496 #dc322f
+        active_workspace   #839496 #111111
     }
 
 }
 
+client.focused          #cb4b16 #cb4b16 #fdf6e3
+client.focused_inactive #657b83 #657b83 #fdf6e3
+client.unfocused        #586e75 #586e75 #eee8d5
+client.urgent           #dc322f #dc322f #fdf6e3
+
 # window borders
  new_window pixel 3
  new_float pixel  3
-
-# border colors            border     background    text       indicator
-client.focused             #1F1F1F    #505050       #BBBBBB    #4F4F4F
-client.focused_inactive    #1A1A1A    #1A1A1A       #424242    #121212
-client.unfocused           #1A1A1A    #1A1A1A       #4F4F4F    #1A1A1A
-client.urgent              #1A1A1A    #3B89B5       #A5A5A5    #1A1A1A
-client.background          #121212
-

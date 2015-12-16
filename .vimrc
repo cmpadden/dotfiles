@@ -21,3 +21,6 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 let mapleader = ","
+
+" enable spellcheck when editing .tex documents
+autocmd FileType tex setlocal spell spelllang=en_us
