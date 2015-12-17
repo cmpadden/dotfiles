@@ -17,10 +17,14 @@ filetype plugin indent on
 
 set relativenumber
 
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 let mapleader = ","
 
 " enable spellcheck when editing .tex documents
 autocmd FileType tex setlocal spell spelllang=en_us
+
+" elixir specific settings
+" au BufRead,BufNewFile *.ex, *.exs   set tabstop=2
+" au BufRead,BufNewFile *.ex, *.exs   set shiftwidth=2
