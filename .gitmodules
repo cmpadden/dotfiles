@@ -4,12 +4,3 @@
 [submodule "vim/.vim/bundle/vim-colors-solarized"]
 	path = vim/.vim/bundle/vim-colors-solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
-[submodule "vim/.vim/bundle/vim-elixir"]
-	path = vim/.vim/bundle/vim-elixir
-	url = https://github.com/elixir-lang/vim-elixir.git
-[submodule "vim/.vim/bundle/vim-clojure-static"]
-	path = vim/.vim/bundle/vim-clojure-static
-	url = https://github.com/guns/vim-clojure-static.git
-[submodule "vim/.vim/bundle/vim-fireplace"]
-	path = vim/.vim/bundle/vim-fireplace
-	url = https://github.com/tpope/vim-fireplace.git
