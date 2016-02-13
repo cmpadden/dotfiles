@@ -12,6 +12,6 @@ $ git submodule update
 
 2) Restore Desired Configuration Files
 ```shell
-$ stow emacs
-$ stow i3
+$ chmod +x .local/bin/bootstrap.sh
+$ .local/bin/bootstrap.sh
 ```
