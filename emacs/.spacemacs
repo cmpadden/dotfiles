@@ -30,6 +30,7 @@
      ranger
      scheme
      shell
+     spell-checking
      )
    dotspacemacs-additional-packages '()
    dotspacemacs-excluded-packages '()
@@ -107,8 +108,18 @@ in `dotspacemacs/user-config'."
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+
+  ;; powerline separators set to straight-lines
   (setq powerline-default-separator 'nil)
-  )
+
+  ;; LaTeX : To perform full-document previews
+  ;; When you open up a compiled PDF, the preview will update
+  ;; automatically when you re-compile
+  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+
+  (setq-default TeX-engine 'xelatex)
+
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
