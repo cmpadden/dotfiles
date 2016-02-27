@@ -7,3 +7,6 @@
 [submodule "emacs/.emacs.d"]
 	path = emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs.git
+[submodule "vim/.vim/bundle/vim-slime"]
+	path = vim/.vim/bundle/vim-slime
+	url = git://github.com/jpalardy/vim-slime.git

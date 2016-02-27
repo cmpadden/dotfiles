@@ -25,6 +25,9 @@ let mapleader = ","
 " enable spellcheck when editing .tex documents
 autocmd FileType tex setlocal spell spelllang=en_us
 
+" enable tmux support for slime-vim
+let g:slime_target = "tmux"
+
 " elixir specific settings
 " au BufRead,BufNewFile *.ex, *.exs   set tabstop=2
 " au BufRead,BufNewFile *.ex, *.exs   set shiftwidth=2
