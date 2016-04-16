@@ -1,3 +1,18 @@
 set gui=nonavigation
 set hintchars=asdfghjklqwertyuiop
-" colorscheme molokai
+
+"colorscheme darkness
+"colorscheme desert
+"colorscheme indigo-fx3
+"colorscheme indigo
+"colorscheme janus
+"colorscheme seaweed
+"colorscheme simple
+"colorscheme solarized_dark
+"colorscheme sweets_snaka
+"colorscheme sweets
+colorscheme vimpwhite
+"colorscheme voqn
+"colorscheme wa_sweets
+"colorscheme ywgx
+"colorscheme zenburn

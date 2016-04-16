@@ -4,7 +4,7 @@
 # Usage
 1) Clone and Initialize the Repository
 ```shell
-$ git clone https://github.com/cmpadden/dotfiles.git ~/.
+$ git clone https://github.com/cmpadden/dotfiles.git ~/dotfiles
 $ cd ~/dotfiles
 $ git submodule init
 $ git submodule update

@@ -15,11 +15,9 @@ if !exists("g:syntax_on")
 endif
 
 set background=dark
-colorscheme solarized
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=4
-
 
 " Leader Key
 let mapleader = "\<Space>"
