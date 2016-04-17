@@ -73,7 +73,10 @@ rofi.font:             Dejavu Sans Mono 10
 ! p: primary
 ! s: secondary
 
-#define c_background   #0F0F0F
+! Reference chart for 256-colors:
+! https://upload.wikimedia.org/wikipedia/en/1/15/Xterm_256color_chart.svg
+
+#define c_background   #121212
 #define c_foreground   #C8C8C8
 #define c_black_p      #251F1F
 #define c_black_s      #5E5E5E
