@@ -8,6 +8,12 @@
 # Prompts
 PS1="[\t \u@\h:\w ] $ "
 
+# Vi Editing Mode
+set -o vi
+
+# Keep the clear-screen binding even with vi-mode
+bind -m vi-insert "\C-l":clear-screen
+
 # Aliases
 alias l='ls --color=auto'
 alias ll='ls -alh --color=auto'
@@ -22,3 +28,4 @@ bind '"\e[B": history-search-forward'
 if which ruby >/dev/null && which gem >/dev/null; then
   PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 fi
+

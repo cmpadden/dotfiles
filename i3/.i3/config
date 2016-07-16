@@ -16,10 +16,19 @@ exec xrdb -merge ~/.Xresources
 exec sh ~/.fehbg
 
 # enable xbindkeys
-exec xbindkeys
+# exec xbindkeys
 
 # Monitor configuration; TODO move this elsewhere
 exec xrandr --output DVI-I-2 --mode 1920x1080 --rate 144.00 --right-of DVI-I-3
+
+# Redshift
+exec redshift -l 38.68:-77.43 -t 4000:3000
+
+# start tmux terminal on workspace 2
+# exec --no-startup-id i3-msg 'workspace 2: tty; exec tmux new-session -n $USER -s $USER@$HOSTNAME;'
+
+# start firefox on workspace 1 (switches back to workspace 1)
+exec --no-startup-id i3-msg 'workspace 1; exec firefox;'
 
 # set modkey
 set $mod Mod1
@@ -59,39 +68,25 @@ bindsym $mod+Shift+q kill
 # Rofi, a dmenu alternative program launcher
 bindsym $mod+p exec rofi -show run
 
-# modified to use lijk
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+i focus up
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# modified to use asdw
-# alternatively, you can use the cursor keys:
-bindsym $mod+a focus left
-bindsym $mod+s focus down
-bindsym $mod+w focus up
-bindsym $mod+d focus right
-
-# modified to use lijk
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+i move up
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
-# modified to use asdw
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+a move left
-bindsym $mod+Shift+s move down
-bindsym $mod+Shift+w move up
-bindsym $mod+Shift+d move right
-
 # split in horizontal orientation
-bindsym $mod+h split h
+# I don't use i3wm to its full potential
+# bindsym $mod+h split h
 
 # split in vertical orientation
-bindsym $mod+v split v
+# I don't use i3wm to its full potential
+# bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen
@@ -101,14 +96,6 @@ bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
-
-# put workspaces on specific screens
-workspace 1 output DVI-I-2
-workspace 2 output DVI-I-2
-workspace 3 output DVI-I-2
-workspace 4 output DVI-I-3
-workspace 5 output DVI-I-3
-workspace 6 output DVI-I-3
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -169,7 +156,6 @@ mode $power_control {
 }
 bindsym $mod+n mode $power_control
 
-
 ##################################                               
 #   _____      _                 #
 #  / ____|    | |                #
@@ -178,7 +164,6 @@ bindsym $mod+n mode $power_control
 # | |___| (_) | | (_) | |  \__ \ #
 #  \_____\___/|_|\___/|_|  |___/ #
 ##################################                               
-                               
 
 bar {
     position bottom
@@ -191,7 +176,7 @@ bar {
         separator  #666666
         
         # CLASS            BORDER  BACKGR. TEXT
-        focused_workspace  #FFFFFF #FFFFFF #000000
+        focused_workspace  #FFFFFF #000000 #FFFFFF
         active_workspace   #000000 #666666 #FFFFFF
         Inactive_workspace #000000 #000000 #FFFFFF
         urgent_workspace   #000000 #FF0000 #FFFFFF
