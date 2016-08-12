@@ -10,6 +10,8 @@ set softtabstop=4
 set shiftwidth=4
 filetype indent on
 
+set nowrap
+
 if !exists("g:syntax_on")
     syntax enable
 endif
