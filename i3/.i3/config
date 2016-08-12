@@ -19,22 +19,22 @@ exec sh ~/.fehbg
 # exec xbindkeys
 
 # Monitor configuration; TODO move this elsewhere
-exec xrandr --output DVI-I-2 --mode 1920x1080 --rate 144.00 --right-of DVI-I-3
+# exec xrandr --output DVI-I-2 --mode 1920x1080 --rate 144.00 --right-of DVI-I-3
 
 # Redshift
-exec redshift -l 38.68:-77.43 -t 4000:3000
+# exec redshift -l 38.68:-77.43 -t 4000:3000
 
 # start tmux terminal on workspace 2
 # exec --no-startup-id i3-msg 'workspace 2: tty; exec tmux new-session -n $USER -s $USER@$HOSTNAME;'
 
 # start firefox on workspace 1 (switches back to workspace 1)
-exec --no-startup-id i3-msg 'workspace 1; exec firefox;'
+# exec --no-startup-id i3-msg 'workspace 1; exec firefox;'
 
 # set modkey
 set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
-font xft:DejaVu Sans Mono 10 
+font xft:DejaVu Sans Mono 8 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -55,18 +55,19 @@ new_float pixel  2
 ############################################
 
 # start a terminal
-# bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec i3-sensible-terminal
 
 # start a terminal
-bindsym $mod+Return exec urxvt -e bash -c "tmux -q has-session \
-  && exec tmux attach-session -d \
-  || exec tmux new-session -n $USER -s $USER@$HOSTNAME"
+# bindsym $mod+Return exec urxvt -e bash -c "tmux -q has-session \
+#   && exec tmux attach-session -d \
+#   || exec tmux new-session -n $USER -s $USER@$HOSTNAME"
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # Rofi, a dmenu alternative program launcher
-bindsym $mod+p exec rofi -show run
+bindsym $mod+p exec dmenu_run
+# bindsym $mod+p exec rofi -show run
 
 # change focus
 bindsym $mod+h focus left
@@ -126,15 +127,15 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 mode "resize" {
 
     # These bindings trigger as soon as you enter the resize mode
-    bindsym j resize shrink width 10 px or 10 ppt
-    bindsym i resize grow height 10 px or 10 ppt
-    bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow width 10 px or 10 ppt
+    bindsym l resize shrink width 2 px or 2 ppt
+    bindsym k resize grow height 2 px or 2 ppt
+    bindsym j resize shrink height 2 px or 2 ppt
+    bindsym h resize grow width 2 px or 2 ppt
 
-    bindsym Left resize shrink width 10 px or 10 ppt
-    bindsym Up resize grow height 10 px or 10 ppt
-    bindsym Down resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Right resize shrink width 2 px or 2 ppt
+    bindsym Up resize grow height 2 px or 2 ppt
+    bindsym Down resize shrink height 2 px or 2 ppt
+    bindsym Left resize grow width 2 px or 2 ppt
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -176,7 +177,7 @@ bar {
         separator  #666666
         
         # CLASS            BORDER  BACKGR. TEXT
-        focused_workspace  #FFFFFF #000000 #FFFFFF
+        focused_workspace  #2ff9b7 #000000 #FFFFFF
         active_workspace   #000000 #666666 #FFFFFF
         Inactive_workspace #000000 #000000 #FFFFFF
         urgent_workspace   #000000 #FF0000 #FFFFFF
@@ -185,7 +186,7 @@ bar {
 }
 
 # CLASS                 BORDER  BACKGR. TEXT    INDICATOR CHILD_BORDER
-client.focused          #000000 #FFFFFF #FFFFFF #FFFFFF   #FFFFFF
+client.focused          #2ff9b7 #FFFFFF #FFFFFF #FFFFFF   #2ff9b7
 client.focused_inactive #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
 client.unfocused        #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
 client.urgent           #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
