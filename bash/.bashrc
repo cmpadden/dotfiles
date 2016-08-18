@@ -115,3 +115,6 @@ fi
 # History completion using arrows
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
+
+# Use vi-like keybindings
+set -o vi
