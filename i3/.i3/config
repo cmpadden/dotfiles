@@ -1,34 +1,10 @@
-#########################################
-#  _ ____     _____                     #
-# (_)___ \   / ____|                    #
-#  _  __) | | (_____      ____ _  __ _  #
-# | ||__ <   \___ \ \ /\ / / _` |/ _` | #
-# | |___) |  ____) \ V  V / (_| | (_| | #
-# |_|____/  |_____/ \_/\_/ \__,_|\__, | #
-#                                 __/ | #
-#                                |___/  #
-#########################################
+# General {{{
 
 # makes sure Xresources is most recent
 exec xrdb -merge ~/.Xresources
 
-# set background
-exec sh ~/.fehbg
-
-# enable xbindkeys
-# exec xbindkeys
-
-# Monitor configuration; TODO move this elsewhere
-# exec xrandr --output DVI-I-2 --mode 1920x1080 --rate 144.00 --right-of DVI-I-3
-
-# Redshift
-# exec redshift -l 38.68:-77.43 -t 4000:3000
-
-# start tmux terminal on workspace 2
-# exec --no-startup-id i3-msg 'workspace 2: tty; exec tmux new-session -n $USER -s $USER@$HOSTNAME;'
-
-# start firefox on workspace 1 (switches back to workspace 1)
-# exec --no-startup-id i3-msg 'workspace 1; exec firefox;'
+# set solid-color background
+exec --no-startup-id xsetroot -solid "#444444"
 
 # set modkey
 set $mod Mod1
@@ -39,28 +15,17 @@ font xft:DejaVu Sans Mono 8
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# window borders
+# window borders - hides window decorations
+# new_window normal
 new_window pixel 2
 new_float pixel  2
 
-############################################
-#  ____  _           _ _                   #
-# |  _ \(_)         | (_)                  #
-# | |_) |_ _ __   __| |_ _ __   __ _ ___   #
-# |  _ <| | '_ \ / _` | | '_ \ / _` / __|  #
-# | |_) | | | | | (_| | | | | | (_| \__ \  #
-# |____/|_|_| |_|\__,_|_|_| |_|\__, |___/  #
-#                               __/ |      #
-#                              |___/       #
-############################################
+# }}}
+
+# Bindings {{{
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
-
-# start a terminal
-# bindsym $mod+Return exec urxvt -e bash -c "tmux -q has-session \
-#   && exec tmux attach-session -d \
-#   || exec tmux new-session -n $USER -s $USER@$HOSTNAME"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -82,11 +47,9 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # split in horizontal orientation
-# I don't use i3wm to its full potential
 # bindsym $mod+h split h
 
 # split in vertical orientation
-# I don't use i3wm to its full potential
 # bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
@@ -157,37 +120,34 @@ mode $power_control {
 }
 bindsym $mod+n mode $power_control
 
-##################################                               
-#   _____      _                 #
-#  / ____|    | |                #
-# | |     ___ | | ___  _ __ ___  #
-# | |    / _ \| |/ _ \| '__/ __| #
-# | |___| (_) | | (_) | |  \__ \ #
-#  \_____\___/|_|\___/|_|  |___/ #
-##################################                               
+# }}}
+
+# Colors {{{
 
 bar {
     position bottom
     tray_output primary
     status_command i3status
-    
+
     colors {
         background #000000
         statusline #FFFFFF
-        separator  #666666
+        separator  #444444
         
         # CLASS            BORDER  BACKGR. TEXT
-        focused_workspace  #2ff9b7 #000000 #FFFFFF
-        active_workspace   #000000 #666666 #FFFFFF
-        Inactive_workspace #000000 #000000 #FFFFFF
-        urgent_workspace   #000000 #FF0000 #FFFFFF
-        binding_mode       #000000 #900000 #FFFFFF
+        focused_workspace  #000000 #000000 #FFFFFF
+        active_workspace   #000000 #000000 #444444
+        Inactive_workspace #000000 #000000 #444444
+        urgent_workspace   #000000 #000000 #FF0000
+        binding_mode       #000000 #000000 #444444
     }
 }
 
 # CLASS                 BORDER  BACKGR. TEXT    INDICATOR CHILD_BORDER
-client.focused          #2ff9b7 #FFFFFF #FFFFFF #FFFFFF   #2ff9b7
-client.focused_inactive #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
-client.unfocused        #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
-client.urgent           #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
-client.placeholder      #000000 #000000 #FFFFFF #FFFFFF   #FFFFFF
+client.focused          #000000 #000000 #FFFFFF #000000   #444444
+client.focused_inactive #000000 #000000 #444444 #000000   #000000
+client.unfocused        #000000 #000000 #444444 #000000   #000000
+client.urgent           #000000 #000000 #444444 #000000   #000000
+client.placeholder      #000000 #000000 #444444 #000000   #000000
+
+# }}}
