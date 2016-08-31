@@ -28,6 +28,14 @@ URxvt.pointerBlank:     true
 URxvt.font:             xft:DejaVu Sans Mono-10:antialias=true:hinting=true
 URxvt.boldFont:         xft:DejaVu Sans Mono-10:antialias=true:hinting=true
 
+! perl scripts
+URxvt.perl-ext-common: font-size
+
+! key-bindings for font-size control (plus/minus/0)
+URxvt.keysym.Control-0x3d: perl:font-size:increase
+URxvt.keysym.Control-0x2d: perl:font-size:decrease
+URxvt.keysym.Control-0x30: perl:font-size:reset
+
 ! }}}
 
 ! Rofi {{{
