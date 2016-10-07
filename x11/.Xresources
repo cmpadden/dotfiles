@@ -38,128 +38,25 @@ URxvt.keysym.Control-0x30: perl:font-size:reset
 
 ! }}}
 
-! Rofi {{{
-
-rofi.opacity:          100
-rofi.width:            30
-rofi.lines:            5
-rofi.columns:          1
-rofi.bw:               3
-rofi.location:         0
-rofi.padding:          5
-rofi.yoffset:          0
-rofi.xoffset:          0
-rofi.separator-style:  dash
-rofi.font:             Dejavu Sans Mono 10 
-
-! }}}
-
 ! Colors {{{
 
-! p: primary
-! s: secondary
-
-! Reference chart for 256-colors:
-! https://upload.wikimedia.org/wikipedia/en/1/15/Xterm_256color_chart.svg
-
-! #define c_background   #121212
-! #define c_foreground   #C8C8C8
-
-! #define c_background   #454442
-! #define c_foreground   #EDEDED
-! 
-! #define c_black_p      #251F1F
-! #define c_black_s      #5E5E5E
-! #define c_red          #EB4509
-! #define c_green_p      #94E76B
-! #define c_green_s      #95E76B
-! #define c_yellow       #FFAC18
-! #define c_blue         #46AEDE
-! #define c_magenta      #E32C57
-! #define c_cyan         #D6DBAC
-! #define c_white        #EFEFEF
-! 
-! URxvt.background: c_background
-! URxvt.foreground: c_foreground
-! URxvt.color0:     c_black_p
-! URxvt.color8:     c_black_s
-! URxvt.color1:     c_red
-! URxvt.color9:     c_red
-! URxvt.color2:     c_green_p
-! URxvt.color10:    c_green_s
-! URxvt.color3:     c_yellow
-! URxvt.color11:    c_yellow
-! URxvt.color4:     c_blue
-! URxvt.color12:    c_blue
-! URxvt.color5:     c_magenta
-! URxvt.color13:    c_magenta
-! URxvt.color6:     c_cyan
-! URxvt.color14:    c_cyan
-! URxvt.color7:     c_white
-! URxvt.color15:    c_white
-! 
-
-#define S_base3               #002b36
-#define S_base2               #073642
-#define S_base1               #586e75
-#define S_base0               #657b83
-#define S_base00              #839496
-#define S_base01              #93a1a1
-#define S_base02              #eee8d5
-#define S_base03              #fdf6e3
-
-URxvt.background:             S_base3
-URxvt.foreground:             S_base00
-URxvt.fadeColor:              S_base3
-URxvt.cursorColor:            S_base01
-URxvt.pointerColorBackground: S_base1
-URxvt.pointerColorForeground: S_base01
-
-#define S_yellow              #b58900
-#define S_orange              #cb4b16
-#define S_red                 #dc322f
-#define S_magenta             #d33682
-#define S_violet              #6c71c4
-#define S_blue                #268bd2
-#define S_cyan                #2aa198
-#define S_green               #859900
-
-!! black dark/light
-URxvt.Color0:                 S_base02
-URxvt.Color8:                 S_base03
-
-!! red dark/light
-URxvt.color1:                 S_red
-URxvt.color9:                 S_orange
-
-!! green dark/light
-URxvt.color2:                 S_green
-URxvt.color10:                S_base01
-
-!! yellow dark/light
-URxvt.color3:                 S_yellow
-URxvt.color11:                S_base00
-
-!! blue dark/light
-URxvt.color4:                 S_blue
-URxvt.color12:                S_base0
-
-!! magenta dark/light
-URxvt.color5:                 S_magenta
-URxvt.color13:                S_violet
-
-!! cyan dark/light
-URxvt.color6:                 S_cyan
-URxvt.color14:                S_base1
-
-!! white dark/light
-URxvt.color7:                 S_base2
-URxvt.color15:                S_base3
-
-! rofi.bg:          S_base3
-! rofi.fg:          S_base00
-! rofi.hlbg:        S_base1
-! rofi.hlfg:        S_base01
-! rofi.bc:          S_base3
+URxvt.foreground: #F8F8F2
+URxvt.background: #282A36
+URxvt.color0:     #000000
+URxvt.color8:     #4D4D4D
+URxvt.color1:     #FF5555
+URxvt.color9:     #FF6E67
+URxvt.color2:     #50FA7B
+URxvt.color10:    #5AF78E
+URxvt.color3:     #F1FA8C
+URxvt.color11:    #F4F99D
+URxvt.color4:     #CAA9FA
+URxvt.color12:    #CAA9FA
+URxvt.color5:     #FF79C6
+URxvt.color13:    #FF92D0
+URxvt.color6:     #8BE9FD
+URxvt.color14:    #9AEDFE
+URxvt.color7:     #BFBFBF
+URxvt.color15:    #E6E6E6
 
 ! }}}
