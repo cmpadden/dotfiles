@@ -1,7 +1,6 @@
-" file: .vimrc
-
 set encoding=utf-8
 set term=screen-256color
+set t_Co=256
 
 call pathogen#infect()
 call pathogen#helptags()
@@ -19,8 +18,7 @@ set shiftwidth=4
 filetype indent on
 
 syntax enable
-set background=light
-colorscheme solarized
+set background=dark
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=4
@@ -28,6 +26,3 @@ highlight ColorColumn ctermbg=4
 set foldmethod=marker
 
 let mapleader = "\<Space>"
-let g:slime_target = "tmux"
-let g:slime_python_ipython = 1
-
