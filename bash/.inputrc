@@ -1,0 +1,6 @@
+set editing-mode vi
+set completion-ignore-case on
+set show-all-if-unmodified on
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
