@@ -1,28 +1,27 @@
-set encoding=utf-8
-set term=screen-256color
-set t_Co=256
+" Plugins
+call plug#begin()
 
-call pathogen#infect()
-call pathogen#helptags()
+    Plug 'tpope/vim-sensible'
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'vimwiki/vimwiki'
 
-set number
-set relativenumber
+    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 
-set nowrap
+call plug#end()
 
-set tabstop=8
-set expandtab
-set softtabstop=4
-set shiftwidth=4
-
-filetype indent on
-
-syntax enable
-set background=dark
-
-set colorcolumn=80
-highlight ColorColumn ctermbg=4
-
-set foldmethod=marker
-
+" Leader
 let mapleader = "\<Space>"
+map <Leader>vr :r source ~/.vimrc<CR>
+map <Leader>ve :e ~/.vimrc<CR>
+
+if !empty(glob("~/.vim/plugged/ctrlp.vim"))
+    map <Leader>ff :CtrlP<CR>
+    map <Leader>fc :CtrlP .<CR> 
+    map <Leader>fb :CtrlPBuffer<CR> 
+    map <Leader>fm :CtrlPMixed<CR>
+endif
+
+" Misc.
+set nowrap
+set background=dark
+set foldmethod=marker
