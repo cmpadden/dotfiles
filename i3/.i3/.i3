@@ -1,1 +1,0 @@
-/home/cmp/documents/cmpadden/.i3/
