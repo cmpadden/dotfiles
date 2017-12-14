@@ -1,62 +1,118 @@
-! Xft {{{
+! -------------------------------------------------------------------------------- 
+! Xft
+! -------------------------------------------------------------------------------- 
  
-Xft.dpi:          96 
-Xft.antialias:    true
-Xft.hinting:      true
-Xft.rgba:         rgb
-Xft.autohint:     false
-Xft.hintstyle:    hintfull
-Xft.lcdfilter:    lcddefault
+! Xft.dpi:          96 
+! Xft.antialias:    true
+! Xft.hinting:      true
+! Xft.rgba:         rgb
+! Xft.autohint:     false
+! Xft.hintstyle:    hintfull
+! Xft.lcdfilter:    lcddefault
 
-! }}}
-
-! URxvt {{{
+! -------------------------------------------------------------------------------- 
+! URxvt
+! -------------------------------------------------------------------------------- 
  
 URxvt.depth:            32
-URxvt.loginShell:       true
 URxvt.saveLines:        500
-URxvt.internalBorder:   5
-URxvt.lineSpace:        0
+URxvt.internalBorder:   8
 URxvt.transparent:      false
-URxvt.cursorBlink:      true
-URxvt.allow_bold:       true
-URxvt.inheritPixmap:    false
 URxvt.visualBell:       false
-URxvt.letterSpace:      -1
 URxvt.scrollBar:        false
-URxvt.pointerBlank:     true
-URxvt.font:             xft:DejaVu Sans Mono-10:antialias=true:hinting=true
-URxvt.boldFont:         xft:DejaVu Sans Mono-10:antialias=true:hinting=true
+URxvt.lineSpace:        0
+URxvt.letterSpace:      0
 
-! perl scripts
-URxvt.perl-ext-common: font-size
+! /usr/share/fonts/misc/fonts.alias
+! fc-list
+#define termfont      xft:xos4 Terminus-10
+URxvt.font:           termfont
+URxvt.boldFont:       termfont
+URxvt.italicFont:     termfont
+URxvt.boldItalicFont: termfont
 
-! key-bindings for font-size control (plus/minus/0)
-URxvt.keysym.Control-0x3d: perl:font-size:increase
-URxvt.keysym.Control-0x2d: perl:font-size:decrease
-URxvt.keysym.Control-0x30: perl:font-size:reset
+! -------------------------------------------------------------------------------- 
+! Rofi
+! -------------------------------------------------------------------------------- 
 
-! }}}
+! State            BG        FG        BGALT     HLBG      HLFG
+rofi.color-normal: #000000,  #444444,  #000000,  #000000,  #FFFFFF
+rofi.color-urgent: #000000,  #444444,  #000000,  #000000,  #FF0000
+rofi.color-active: #000000,  #444444,  #000000,  #000000,  #FFFFFF
 
-! Colors {{{
+!                  BG        FG        SEP
+rofi.color-window: #000000,  #000000,  #FFFFFF
 
-URxvt.foreground: #F8F8F2
-URxvt.background: #282A36
-URxvt.color0:     #000000
-URxvt.color8:     #4D4D4D
-URxvt.color1:     #FF5555
-URxvt.color9:     #FF6E67
-URxvt.color2:     #50FA7B
-URxvt.color10:    #5AF78E
-URxvt.color3:     #F1FA8C
-URxvt.color11:    #F4F99D
-URxvt.color4:     #CAA9FA
-URxvt.color12:    #CAA9FA
-URxvt.color5:     #FF79C6
-URxvt.color13:    #FF92D0
-URxvt.color6:     #8BE9FD
-URxvt.color14:    #9AEDFE
-URxvt.color7:     #BFBFBF
-URxvt.color15:    #E6E6E6
+rofi.color-enabled:     false
+rofi.fake-transparency: false
+rofi.font:              xos4 Terminus 10
+rofi.fullscreen:        false
+rofi.hide-scrollbar:    true
+rofi.line-margin:       5
+rofi.lines:             5
+rofi.location:          0
+rofi.opacity:           0
+rofi.padding:           8
+rofi.separator-style:   none
+rofi.width:             20
+rofi.xoffset:           0
+rofi.yoffset:           0
 
-! }}}
+! -------------------------------------------------------------------------------- 
+! Colors
+! -------------------------------------------------------------------------------- 
+
+! Base16 Solarized Dark
+! Scheme: Ethan Schoonover (http://ethanschoonover.com/solarized)
+
+#define base00 #002b36
+#define base01 #073642
+#define base02 #586e75
+#define base03 #657b83
+#define base04 #839496
+#define base05 #93a1a1
+#define base06 #eee8d5
+#define base07 #fdf6e3
+#define base08 #dc322f
+#define base09 #cb4b16
+#define base0A #b58900
+#define base0B #859900
+#define base0C #2aa198
+#define base0D #268bd2
+#define base0E #6c71c4
+#define base0F #d33682
+
+*.foreground:   base05
+#ifdef background_opacity
+*.background:   [background_opacity]base00
+#else
+*.background:   base00
+#endif
+*.cursorColor:  base05
+
+*.color0:       base00
+*.color1:       base08
+*.color2:       base0B
+*.color3:       base0A
+*.color4:       base0D
+*.color5:       base0E
+*.color6:       base0C
+*.color7:       base05
+
+*.color8:       base03
+*.color9:       base08
+*.color10:      base0B
+*.color11:      base0A
+*.color12:      base0D
+*.color13:      base0E
+*.color14:      base0C
+*.color15:      base07
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*.color16:      base09
+*.color17:      base0F
+*.color18:      base01
+*.color19:      base02
+*.color20:      base04
+*.color21:      base06
