@@ -1,0 +1,21 @@
+/******************************************************************************
+ * Interface customization for Firefox Quantum
+ * ~/Library/Application\ Support/Profiles/$PROFILE/chrome/userChrome.css
+ ******************************************************************************/
+
+/* Hide horizontal tabs at the top of the window #1349 */
+
+#main-window[tabsintitlebar="true"]:not([extradragspace="true"]) #TabsToolbar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#main-window:not([tabsintitlebar="true"]) #TabsToolbar {
+    visibility: collapse !important;
+}
+
+/* Hide the "Tree Style Tab" header at the top of the sidebar #1397 */
+
+#sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
+  display: none;
+}
