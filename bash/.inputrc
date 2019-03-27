@@ -4,3 +4,12 @@ set show-all-if-unmodified on
 
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
+
+# clear screen in vi mode
+$if mode=vi
+    set keymap vi-command
+        Control-l: clear-screen
+    set keymap vi-insert
+        Control-l: clear-screen 
+$endif
