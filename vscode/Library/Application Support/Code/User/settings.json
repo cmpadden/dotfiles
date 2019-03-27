@@ -1,0 +1,117 @@
+{
+    "workbench.colorCustomizations": {
+        "[Visual Studio Light]": {
+            "activityBar.foreground": "#4E4E4E",
+            "activityBar.background": "#F0F0F0",
+            "activityBar.border": "#D6D6D6",
+            "activityBar.dropBackground": "#D6D6D6",
+            "activityBar.inactiveForeground": "#4E4E4E",
+            "activityBarBadge.foreground": "#4E4E4E",
+            "activityBarBadge.background": "#D6D6D6",
+        },
+        "statusBar.foreground": "#D6D6D6",
+        "statusBar.background": "#4E4E4E",
+        "statusBar.border": "#4E4E4E",
+        "statusBar.debuggingForeground": "#D6D6D6",
+        "statusBar.debuggingBackground": "#630031",
+        "statusBar.debuggingBorder": "#4E4E4E",
+        "statusBar.noFolderForeground": "#ff0000",
+        "statusBar.noFolderBackground": "#005f5f",
+        "statusBar.noFolderBorder": "#ff0000",
+    },
+    "workbench.colorTheme": "Visual Studio Light",
+    "workbench.startupEditor": "none",
+    "editor.renderWhitespace": "boundary",
+    "editor.codeLens": false,
+    "vim.leader": " ",
+    "vim.visualstar": true,
+    "editor.lineNumbers": "off",
+    "editor.minimap.enabled": false,
+    "workbench.iconTheme": "vs-minimal",
+    "vim.sneak": true,
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                ">"
+            ],
+            "commands": [
+                "editor.action.indentLines"
+            ]
+        },
+        {
+            "before": [
+                "<"
+            ],
+            "commands": [
+                "editor.action.outdentLines"
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "]",
+                "e"
+            ],
+            "commands": [
+                "editor.action.marker.nextInFiles",
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "e"
+            ],
+            "commands": [
+                "editor.action.marker.prevInFiles",
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "b",
+                "t"
+            ],
+            "commands": [
+                "bookmarks.toggle"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "b",
+                "b"
+            ],
+            "commands": [
+                "bookmarks.list"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s"
+            ],
+            "commands": [
+                "editor.action.insertSnippet"
+            ]
+        }
+    ],
+    "workbench.settings.enableNaturalLanguageSearch": false,
+    "window.newWindowDimensions": "maximized",
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.confirmOnExit": true,
+    "workbench.panel.defaultLocation": "right",
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+    "editor.snippetSuggestions": "top",
+    "python.linting.pydocstyleEnabled": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.editor.tabCloseButton": "left",
+    "python.pythonPath": "/usr/local/bin/python3",
+    "workbench.statusBar.feedback.visible": false,
+    "workbench.sideBar.location": "left",
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
+    "python.dataScience.changeDirOnImportExport": false,
+    "python.formatting.provider": "black",
+}
