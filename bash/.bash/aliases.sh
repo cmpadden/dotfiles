@@ -1,19 +1,7 @@
-# -------------------------------------------------------------------
-# Directory Movement
-# -------------------------------------------------------------------
-
-alias ..='cd ..'
-
-# -------------------------------------------------------------------
-# Directory Information
-# -------------------------------------------------------------------
-
+alias d='ddgr'
+alias drmf='docker rmi -f $(docker images -q)'
 alias l='ls -alh'
-alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
-
-# -------------------------------------------------------------------
-# Git
-# -------------------------------------------------------------------
+alias venvc='python3 -m virtualenv venv'
 
 # gu shows a list of all developers and the number of commits they've made
 alias gu="git shortlog | grep -E '^[^ ]'"
