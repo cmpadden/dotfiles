@@ -72,3 +72,38 @@ repeatn() {
     python -c "print 'x' * $1"
 }
 
+
+# -------------------------------------------------------------------
+# Java Decompile using IntelliJ
+# -------------------------------------------------------------------
+
+java_decompile() {
+
+    # Ensure 2 arguments are passed
+    if [ ! "$#" -eq 2 ]; then
+        echo "Usage: java_decompile <source file> <destination directory>"
+        return 1
+    fi
+
+    if [ ! -f "$1" ]; then
+        echo "File does not exist: $1"
+        return 1
+    fi
+
+    if [ ! -d "$2" ]; then
+        echo "Directory does not exist: $2"
+        return 1
+    fi
+
+    java -cp /Applications/IntelliJ\ IDEA\ CE.app/Contents/plugins/java-decompiler/lib/java-decompiler.jar \
+        org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler "$1" "$2"
+}
+
+
+# -------------------------------------------------------------------
+# Trigger notification (useful for things like sleep 5 && notify)
+# -------------------------------------------------------------------
+
+notify() {
+    osascript -e "display notification \"Notification from $(tty)\""
+}
