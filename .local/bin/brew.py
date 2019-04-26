@@ -17,6 +17,7 @@ packages = [
     'parquet-tools',
     'proselint',
     'ranger',
+    'reattach-to-user-namespace',
     'screen',
     'shellcheck',
     'stow',
@@ -30,6 +31,7 @@ packages = [
 # Filtered list from `brew cask list -1`
 casks = [
     'docker',
+    'gimp',
     'google-cloud-sdk',
     'slack',
     'spectacle',
