@@ -46,6 +46,7 @@ define() {
 # Attempt all variants of caesar cipher
 # https://chris-lamb.co.uk/posts/decrypting-caesar-cipher-using-shell
 # -------------------------------------------------------------------
+
 decaesar() {
     for I in $(seq 25); do
         echo "$1" | tr "[:lower:]" "[:upper:]" | tr $(printf "%${I}s" | tr ' ' '.')\A-Z A-ZA-Z
@@ -107,3 +108,17 @@ java_decompile() {
 notify() {
     osascript -e "display notification \"Notification from $(tty)\""
 }
+
+# -------------------------------------------------------------------
+# Temporary File Server
+# -------------------------------------------------------------------
+
+serve() {
+    if [ -z "$1" ]; then
+      echo "Usage: serve <directory>"
+      return 1
+    fi
+
+    python3 -m http.server 3333 --directory "$1"
+}
+
