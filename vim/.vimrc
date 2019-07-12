@@ -27,7 +27,6 @@ if exists('*minpac#init')
 
     " Additional plugins
     call minpac#add('SirVer/ultisnips')
-    call minpac#add('aklt/plantuml-syntax')
     call minpac#add('editorconfig/editorconfig-vim')
     call minpac#add('honza/vim-snippets')
     call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' })
@@ -35,7 +34,9 @@ if exists('*minpac#init')
     call minpac#add('junegunn/vim-easy-align')
     call minpac#add('maralla/completor.vim')
     call minpac#add('plytophogy/vim-virtualenv')
+    call minpac#add('sheerun/vim-polyglot')
     call minpac#add('tpope/vim-commentary')
+    call minpac#add('tpope/vim-dadbod')
     call minpac#add('tpope/vim-fugitive')
     call minpac#add('tpope/vim-surround')
     call minpac#add('tpope/vim-vinegar')
@@ -92,17 +93,16 @@ vnoremap // y/\V<C-R>"<CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" run SQL on last using this currently hard-coded DB
+vnoremap <C-r> :DB g:d<CR>
 
-" Easily run Python code
+" run Python code
 augroup pythonMappings
     autocmd!
     autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
 augroup END
 
 " Completor
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 noremap <silent> <leader>gd :call completor#do('definition')<CR>
 noremap <silent> <leader>gc :call completor#do('doc')<CR>
 noremap <silent> <leader>gh :call completor#do('hover')<CR>
@@ -122,12 +122,21 @@ let g:vimwiki_table_mappings = 0
 
 " Ale
 let g:ale_sign_column_always = 1
+let g:ale_sign_error = '•'
+let g:ale_sign_warning = '•'
+
 let g:airline#extensions#ale#enabled = 1
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
+
 let g:ale_fixers = {
 \   '*':      ['remove_trailing_lines', 'trim_whitespace'],
 \   'python': ['black', 'isort'],
 \   'yaml':   ['prettier'],
+\}
+
+let g:ale_linters = {
+\   'python': ['flake8', 'pydocstyle'],
+\   'markdown': ['proselint', 'mdl'],
 \}
 
 " airline
@@ -158,10 +167,17 @@ set expandtab
 set shiftwidth=4
 set smarttab
 set softtabstop=0
-set textwidth=80
+set textwidth=79
+set colorcolumn=80
 
 set backspace=2
 
+" fold outer-most indents for python files
+" augroup pythonFolding
+"     autocmd!
+"     autocmd Filetype python set foldmethod=indent
+"     autocmd Filetype python set foldnestmax=1
+" augroup END
 
 " hide scrollbars in GUI
 if has('gui')
@@ -197,3 +213,40 @@ augroup helpFileType
     autocmd!
     autocmd FileType help wincmd L
 augroup END
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   Theming                                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" small tweak to colors - will eventually move to a separate file
+
+" no background on gutter
+highlight clear SignColumn
+
+" use foreground colors for gutter icons
+highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
+highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                  Functions                                  "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function! ToggleSignColumn()
+    if &signcolumn ==# 'no'
+        let &signcolumn = 'yes'
+    else
+        let &signcolumn = 'no'
+    endif
+endfunction
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   Private                                   "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+if filereadable(expand('~/.vim/db.vim'))
+  source ~/.vim/db.vim
+endif
+
