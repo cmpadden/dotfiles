@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# compressed file expander 
+# compressed file expander
 # (from https://github.com/myfreeweb/zshuery/blob/master/zshuery.sh)
 # -------------------------------------------------------------------
 
@@ -114,11 +114,82 @@ notify() {
 # -------------------------------------------------------------------
 
 serve() {
-    if [ -z "$1" ]; then
-      echo "Usage: serve <directory>"
-      return 1
-    fi
 
-    python3 -m http.server 3333 --directory "$1"
+openssl req \
+  -new \
+  -newkey rsa:4096 \
+  -days 365 \
+  -nodes \
+  -x509 \
+  -subj "/C=US/ST=DC/L=Washington/O=Tmp/CN=localhost" \
+  -keyout localhost.key \
+  -out localhost.cert
+
+python3 << EOF
+from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
+import ssl
+
+host = 'localhost'
+port = 4443
+
+httpd = HTTPServer((host, port), SimpleHTTPRequestHandler)
+httpd.socket = ssl.wrap_socket (httpd.socket,
+        keyfile='localhost.key',
+        certfile='localhost.cert', server_side=True)
+
+print(f"Hosting Files on https://{host}:{port}")
+
+httpd.serve_forever()
+EOF
+
 }
 
+# -------------------------------------------------------------------
+# fzf [https://github.com/junegunn/fzf/wiki/examples]
+# -------------------------------------------------------------------
+
+# fd - cd to selected directory
+fd() {
+  local dir
+  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir" || exit
+}
+
+# fkill - kill processes
+fkill() {
+  local pid
+  if [ "$UID" != "0" ]; then
+      pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+  else
+      pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+  fi
+
+  if [ "x$pid" != "x" ]; then
+      echo $pid | xargs kill -${1:-9}
+  fi
+}
+
+# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+fgb() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branch=$(echo "$branches" | fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+
+fpass() {
+  local stores store
+  stores=$(find "$HOME/.password-store/" -name "*.gpg" | sed 's/^.*-store\/\/\(.*\)\.gpg/\1/g')
+  store=$(echo "$stores" | fzf +m)
+  pass -c "$store"
+}
+
+
+fbrew() {
+  local prog
+  prog=$(brew search | fzf +m)
+  echo $prog
+  if [ -n "$prog" ]; then
+    brew install "$prog"
+  fi
+}
