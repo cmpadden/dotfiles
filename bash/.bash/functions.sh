@@ -168,14 +168,13 @@ fkill() {
   fi
 }
 
-# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+# fbr - checkout git branch (including remote branches)
 fgb() {
   local branches branch
-  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branches=$(git branch --all | grep -v HEAD) &&
   branch=$(echo "$branches" | fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
   git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
-
 
 fpass() {
   local stores store
@@ -192,4 +191,18 @@ fbrew() {
   if [ -n "$prog" ]; then
     brew install "$prog"
   fi
+}
+
+
+# -------------------------------------------------------------------
+# color codes
+# -------------------------------------------------------------------
+
+color_codes() {
+    for i in {0..255} ; do
+        printf "%3d \x1b[48;5;%sm   \e[0m " "$i" "$i"
+        if (( (i+1) % 8 == 0 )); then
+            printf "\n";
+        fi
+    done
 }
