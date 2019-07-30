@@ -21,22 +21,27 @@ source "$HOME/.bash/shopt.sh"
 # filter `.DS_Store` from bash completion
 export FIGNORE=$FIGNORE:.DS_Store
 
-# set `EDITOR` depending on what is available
-PATH_MVIM=$(command -v mvim)
-PATH_VI=$(command -v vi)
-if [ -n "$PATH_MVIM" ]; then
-    export EDITOR="$PATH_MVIM"
-else
-    export EDITOR="$PATH_VI"
+# fzf layout
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+
+# bash completion
+if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+    # shellcheck source=/dev/null
+    source  "$(brew --prefix)/etc/bash_completion"
 fi
 
 # gcloud bash completion
-if [[ -d '/usr/local/Caskroom/google-cloud-sdk' ]]; then
-    source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc'
-    source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc'
+if [[ -d "$(brew --prefix)/Caskroom/google-cloud-sdk" ]]; then
+    # shellcheck source=/dev/null
+    source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
+    # shellcheck source=/dev/null
+    source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
 fi
 
-# Ensure `tmux` is installed
+JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_HOME
+
+# Auto-attach a tmux session
 if [ -x "$(command -v tmux)" ]; then
     # Do not run when already inside of a `tmux` session
     if [ -z "$TMUX" ]; then
