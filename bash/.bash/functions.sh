@@ -3,14 +3,14 @@
 # (from https://github.com/myfreeweb/zshuery/blob/master/zshuery.sh)
 # -------------------------------------------------------------------
 
-ex() {
+extract() {
     if [[ -f $1 ]]; then
         case $1 in
           *.tar.bz2) tar xvjf "$1";;
           *.tar.gz) tar xvzf "$1";;
           *.tar.xz) tar xvJf "$1";;
           *.tar.lzma) tar --lzma xvf "$1";;
-          *.bz2) bunzip "$1";;
+          *.bz2) bzip2 -d "$1";;
           *.rar) unrar "$1";;
           *.gz) gunzip "$1";;
           *.tar) tar xvf "$1";;
@@ -106,7 +106,15 @@ java_decompile() {
 # -------------------------------------------------------------------
 
 notify() {
-    osascript -e "display notification \"Notification from $(tty)\""
+    local title="Shell Notification"
+    local text="!"
+    if [ "$#" -eq 1 ]; then
+        text="$1"
+    elif [ "$#" -eq 2 ]; then
+        title="$1"
+        text="$2"
+    fi
+    osascript -e "display notification \"$text\" with title \"$title\""
 }
 
 # -------------------------------------------------------------------
