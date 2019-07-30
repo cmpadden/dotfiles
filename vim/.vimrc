@@ -11,6 +11,7 @@ endif
 "                                   Plugins                                    "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+
 if empty(glob('~/.vim/pack/minpac/opt/minpac'))
     silent !git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac
     " augroup startupVimEnter
@@ -44,6 +45,7 @@ if exists('*minpac#init')
     call minpac#add('vim-airline/vim-airline-themes')
     call minpac#add('vimwiki/vimwiki')
     call minpac#add('w0rp/ale')
+    call minpac#add('jpalardy/vim-slime')
 
     " requires vim 8.1
     if v:version >= 801
@@ -61,8 +63,8 @@ let mapleader = "\<Space>"
 " fzf
 nnoremap <c-f>b :Buffers<CR>
 nnoremap <c-f>c :Colors<CR>
-nnoremap <c-f>a :Ag<CR>
 nnoremap <c-f>g :Ag<CR>
+nnoremap <c-f>t :Tags<CR>
 nnoremap <c-f>f :GFiles<CR>
 nnoremap <c-f>h :Helptags<CR>
 nnoremap <c-f>l :Lines<CR>
@@ -116,12 +118,17 @@ noremap <silent> <leader>gh :call completor#do('hover')<CR>
 let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
 let g:UltiSnipsEditSplit = 'vertical'
+let g:snips_author = 'Colton'
+
+" I don't care what people say, these settings are not intuitive...
+let g:UltiSnipsSnippetsDir = '~/.vim/custom_snippets'
+let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
 
 " Wiki (table tabs prevent ultisnips)
 let g:vimwiki_table_mappings = 0
 
 " Ale
-let g:ale_sign_column_always = 1
+let g:ale_sign_column_always = 0
 let g:ale_sign_error = '•'
 let g:ale_sign_warning = '•'
 
@@ -145,6 +152,12 @@ let g:airline_theme='minimalist'
 " completor
 let g:completor_python_binary = '/usr/local/bin/python3'
 
+" slime
+let g:slime_target = 'tmux'
+let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{right-of}'}
+let g:slime_dont_ask_default = 1
+
+let g:EditorConfig_exclude_patterns = ['fugitive://.\*', 'scp://.\*']
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                   Settings                                   "
@@ -249,4 +262,3 @@ endfunction
 if filereadable(expand('~/.vim/db.vim'))
   source ~/.vim/db.vim
 endif
-
