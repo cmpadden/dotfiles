@@ -49,3 +49,6 @@ if [ -x "$(command -v tmux)" ]; then
         tmux attach || tmux new-session
     fi
 fi
+
+# Hook `direnv` into the shell (https://github.com/direnv/direnv)
+eval "$(direnv hook bash)"
