@@ -46,6 +46,12 @@ CASKS=(
   spectacle
 )
 
+
+CASKS_EXTRA=(
+  gimp
+  docker
+)
+
 brew update
 
 for p in ${PACKAGES[*]}; do
