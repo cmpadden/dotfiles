@@ -1,0 +1,13 @@
+" gui
+" guiset_quiet tabs autohide
+" guiset_quiet navbar none
+
+" Redirect to old reddit
+autocmd DocStart www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
+
+" Defined in src/excmds.ts:934
+bind / fillcmdline find
+bind ? fillcmdline find -?
+bind n findnext 1
+bind N findnext -1
+bind ,/ nohlsearch
