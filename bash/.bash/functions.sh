@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # -------------------------------------------------------------------
 # compressed file expander
 # (from https://github.com/myfreeweb/zshuery/blob/master/zshuery.sh)
@@ -191,7 +193,6 @@ fpass() {
   pass -c "$store"
 }
 
-
 fbrew() {
   local prog
   prog=$(brew search | fzf +m)
@@ -200,7 +201,6 @@ fbrew() {
     brew install "$prog"
   fi
 }
-
 
 # -------------------------------------------------------------------
 # color codes
@@ -213,4 +213,20 @@ color_codes() {
             printf "\n";
         fi
     done
+}
+
+# -------------------------------------------------------------------
+# fzf for search pydocs
+# -------------------------------------------------------------------
+
+fpy() {
+  if [[ "$#" == 0 ]]; then
+    echo "Please provide a pydoc search term..."
+    return 1
+  fi
+  local module
+  module=$(pydoc -k "$1" 2>/dev/null | fzf)
+  if [[ -n $module ]]; then
+    pydoc "$module"
+  fi
 }
