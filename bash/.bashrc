@@ -21,6 +21,9 @@ source "$HOME/.bash/shopt.sh"
 # filter `.DS_Store` from bash completion
 export FIGNORE=$FIGNORE:.DS_Store
 
+# do not allow `pip intall` outside of virtual environments
+export PIP_REQUIRE_VIRTUALENV=true
+
 # fzf layout
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
