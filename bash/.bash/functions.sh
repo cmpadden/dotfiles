@@ -230,3 +230,13 @@ fpy() {
     pydoc "$module"
   fi
 }
+
+# -----------------------------------------------------------------------------
+
+color_square() {
+  if [[ "$#" == 0 ]]; then
+    echo "Provide hex color code"
+    return 1
+  fi
+  convert -size 100x100 xc:"$1" "100x00_${1}.png"
+}
