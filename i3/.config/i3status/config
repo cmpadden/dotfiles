@@ -1,17 +1,45 @@
 # i3status configuration file.
 # see "man i3status" for documentation.
 
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
 general {
-    colors = false
     interval = 5
+
+    colors = true
+    color_good      = "#4AB549"
+    color_degraded  = "#FFDF3A"
+    color_bad       = "#CA3B3B"
+    color_separator = "#000000"
 }
 
-# order += "battery all"
-# order += "volume master"
 order += "ipv6"
 order += "wireless _first_"
 order += "ethernet _first_"
+order += "battery all"
+order += "disk /"
+order += "memory"
+order += "cpu_usage"
+order += "volume master"
 order += "tztime local"
+
+ipv6 {
+    format_up = "%ip"
+    format_down = ""
+}
+
+wireless _first_ {
+    format_up = "W:%quality %essid %ip"
+    format_down = ""
+}
+
+ethernet _first_ {
+    format_up = "E: %ip"
+    format_down = ""
+}
 
 battery all {
     format = "%status %percentage"
@@ -22,30 +50,29 @@ battery all {
     low_threshold = 15
 }
 
+disk "/" {
+    format = "ROOT %used / %total (%percentage_used)"
+}
+
+memory {
+    format = "RAM %used / %available (%percentage_used)"
+    threshold_degraded = "1G"
+    format_degraded = "MEMORY < %available"
+}
+
+cpu_usage {
+    format = "%cpu0 %cpu1 %cpu2 %cpu3"
+    max_threshold = 75
+    degraded_threshold = 25
+}
+
 volume master {
     format = "VOL %volume"
-    format_muted = "MUTE (%volume)"
+    format_muted = "MUTED (%volume)"
     device = "default"
     mixer = "Master"
     mixer_idx = 0
 }
-
-ipv6 {
-    format_up = "%ip"
-    format_down = ""
-}
-
-wireless _first_ {
-    format_up = "W: (%quality at %essid) %ip"
-    format_down = ""
-}
-
-ethernet _first_ {
-    # if you use %speed, i3status requires root privileges
-    format_up = "E: %ip"
-    format_down = ""
-}
-
 
 tztime local {
     format = "%a, %d %b %y %T"
