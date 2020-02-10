@@ -33,7 +33,6 @@ if exists('*minpac#init')
     call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' })
     call minpac#add('junegunn/fzf.vim')
     call minpac#add('junegunn/vim-easy-align')
-    call minpac#add('maralla/completor.vim')
     call minpac#add('plytophogy/vim-virtualenv')
     call minpac#add('sheerun/vim-polyglot')
     call minpac#add('tpope/vim-commentary')
@@ -45,7 +44,14 @@ if exists('*minpac#init')
     call minpac#add('vim-airline/vim-airline-themes')
     call minpac#add('vimwiki/vimwiki')
     call minpac#add('w0rp/ale')
-    call minpac#add('jpalardy/vim-slime')
+
+
+    call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
+    " let g:coc_global_extensions = [
+    "       \ 'coc-ultisnips',
+    "       \ 'coc-python',
+    "       \ ]
+    " :CocInstall coc-metals
 
     " requires vim 8.1
     if v:version >= 801
@@ -104,10 +110,26 @@ augroup pythonMappings
     autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
 augroup END
 
-" Completor
-noremap <silent> <leader>gd :call completor#do('definition')<CR>
-noremap <silent> <leader>gc :call completor#do('doc')<CR>
-noremap <silent> <leader>gh :call completor#do('hover')<CR>
+" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+nmap <leader>rn <Plug>(coc-rename)
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -137,8 +159,9 @@ let g:ale_fix_on_save = 0
 
 let g:ale_fixers = {
 \   '*':      ['remove_trailing_lines', 'trim_whitespace'],
-\   'python': ['black', 'isort'],
+\   'python': ['autopep8', 'yapf'],
 \   'yaml':   ['prettier'],
+\   'markdown': ['prettier'],
 \}
 
 let g:ale_linters = {
@@ -148,6 +171,9 @@ let g:ale_linters = {
 
 " airline
 let g:airline_theme='minimalist'
+
+" coc
+let g:airline#extensions#coc#enabled = 1
 
 " completor
 let g:completor_python_binary = '/usr/local/bin/python3'
