@@ -27,22 +27,30 @@ export PIP_REQUIRE_VIRTUALENV=true
 # fzf layout
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
-# bash completion
-if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-    # shellcheck source=/dev/null
-    source  "$(brew --prefix)/etc/bash_completion"
-fi
+# MacOS Specific Configurations
+if [[ "$OSTYPE" =~ ^darwin ]]; then
 
-# gcloud bash completion
-if [[ -d "$(brew --prefix)/Caskroom/google-cloud-sdk" ]]; then
-    # shellcheck source=/dev/null
-    source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
-    # shellcheck source=/dev/null
-    source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
-fi
+  # filter `.DS_Store` from bash completion
+  export FIGNORE=$FIGNORE:.DS_Store
 
-JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-export JAVA_HOME
+  # bash completion
+  if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+      # shellcheck source=/dev/null
+      source  "$(brew --prefix)/etc/bash_completion"
+  fi
+
+  # gcloud bash completion
+  if [[ -d "$(brew --prefix)/Caskroom/google-cloud-sdk" ]]; then
+      # shellcheck source=/dev/null
+      source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
+      # shellcheck source=/dev/null
+      source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+  fi
+
+  JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+  export JAVA_HOME
+
+fi
 
 # Auto-attach a tmux session
 if [ -x "$(command -v tmux)" ]; then
@@ -54,4 +62,6 @@ if [ -x "$(command -v tmux)" ]; then
 fi
 
 # Hook `direnv` into the shell (https://github.com/direnv/direnv)
-eval "$(direnv hook bash)"
+if [ -x "$(command -v direnv)" ]; then
+  eval "$(direnv hook bash)"
+fi

@@ -1,0 +1,20 @@
+! -----------------------------------------------------------------------------
+! URxvt
+! -----------------------------------------------------------------------------
+
+URxvt.depth:            32
+URxvt.saveLines:        500
+URxvt.internalBorder:   8
+URxvt.transparent:      false
+URxvt.visualBell:       false
+URxvt.scrollBar:        false
+URxvt.lineSpace:        0
+URxvt.letterSpace:      0
+
+! /usr/share/fonts/misc/fonts.alias
+! fc-list
+#define termfont      xft:DejaVu Sans Mono:pixelsize=12
+URxvt.font:           termfont
+URxvt.boldFont:       termfont
+URxvt.italicFont:     termfont
+URxvt.boldItalicFont: termfont
