@@ -1,15 +1,55 @@
+#
+# References:
+#  - https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Sample-Init-File
+#  - https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
+#
+
+# The editing-mode variable controls which default set of key bindings is used.
+# By default, Readline starts up in Emacs editing mode, where the keystrokes
+# are most similar to Emacs. This variable can be set to either ‘emacs’ or
+# ‘vi’.
 set editing-mode vi
+
+# If set to ‘on’, Readline performs filename matching and completion in a
+# case-insensitive fashion. The default value is ‘off’.
 set completion-ignore-case on
+
+# This alters the default behavior of the completion functions. If set to ‘on’,
+# words which have more than one possible completion cause the matches to be
+# listed immediately instead of ringing the bell. The default value is ‘off’.
+set show-all-if-ambiguous on
+
+# This alters the default behavior of the completion functions in a fashion
+# similar to show-all-if-ambiguous. If set to ‘on’, words which have more than
+# one possible completion without any possible partial completion (the possible
+# completions don’t share a common prefix) cause the matches to be listed
+# immediately instead of ringing the bell. The default value is ‘off’.
 set show-all-if-unmodified on
 
+# If set to ‘on’, Readline displays possible completions using different colors
+# to indicate their file type. The color definitions are taken from the value
+# of the LS_COLORS environment variable. The default is ‘off’.
+set colored-stats on
+
+# If set to ‘on’, menu completion displays the common prefix of the list of
+# possible completions (which may be empty) before cycling through the list.
+# The default is ‘off’.
+set menu-complete-display-prefix on
+
+# Use <tab> and <shift-tab> to move through the list of possible completions
+TAB:menu-complete
+"\e[Z": menu-complete-backward
+
+# Arrow keys to navigate history
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
-
-# clear screen in vi mode
+# clear screen in vi modes
 $if mode=vi
     set keymap vi-command
         Control-l: clear-screen
     set keymap vi-insert
         Control-l: clear-screen 
 $endif
+
+
