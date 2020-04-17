@@ -1,2 +1,5 @@
 *.swp
-vim/.vim/plugged
+vim/.vim/pack
+vim/.vim/view
+vim/.vim/.netrwhist
+vim/.vim/*.vim
