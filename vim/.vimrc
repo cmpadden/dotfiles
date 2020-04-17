@@ -1,23 +1,15 @@
-" For a paranoia.
-" Normally `:set nocp` is not needed, because it is done automatically
-" when .vimrc is found.
+scriptencoding utf-8
+
+" set `no compatible` when compatible is set -- useful for  `vim -u <file>`
 if &compatible
-  " `:set nocp` has many side effects. Therefore this should be done
-  " only when 'compatible' is set.
+  " vint: next-line -ProhibitSetNoCompatible
   set nocompatible
 endif
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                   Plugins                                    "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+" Plugins {{{
 
 if empty(glob('~/.vim/pack/minpac/opt/minpac'))
     silent !git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac
-    " augroup startupVimEnter
-    "     autocmd!
-    "     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    " augroup END
 endif
 
 if exists('*minpac#init')
@@ -30,28 +22,33 @@ if exists('*minpac#init')
     call minpac#add('SirVer/ultisnips')
     call minpac#add('editorconfig/editorconfig-vim')
     call minpac#add('honza/vim-snippets')
+    call minpac#add('jpalardy/vim-slime')
     call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' })
     call minpac#add('junegunn/fzf.vim')
+    call minpac#add('junegunn/goyo.vim')
     call minpac#add('junegunn/vim-easy-align')
     call minpac#add('plytophogy/vim-virtualenv')
     call minpac#add('sheerun/vim-polyglot')
     call minpac#add('tpope/vim-commentary')
     call minpac#add('tpope/vim-dadbod')
     call minpac#add('tpope/vim-fugitive')
+    call minpac#add('tpope/vim-obsession')
     call minpac#add('tpope/vim-surround')
-    call minpac#add('tpope/vim-vinegar')
     call minpac#add('vim-airline/vim-airline')
     call minpac#add('vim-airline/vim-airline-themes')
     call minpac#add('vimwiki/vimwiki')
     call minpac#add('w0rp/ale')
 
+    call minpac#add('chrisbra/Colorizer')
 
     call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
     " let g:coc_global_extensions = [
-    "       \ 'coc-ultisnips',
+    "       \ 'coc-json',
+    "       \ 'coc-metals',
     "       \ 'coc-python',
+    "       \ 'coc-ultisnips',
+    "       \ 'coc-vetur',
     "       \ ]
-    " :CocInstall coc-metals
 
     " requires vim 8.1
     if v:version >= 801
@@ -60,21 +57,33 @@ if exists('*minpac#init')
 
 endif
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                  Mappings                                  "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+
+" Mappings  {{{
 
 let mapleader = "\<Space>"
+
+nmap <leader>ve :e $MYVIMRC<CR>
+nmap <leader>vv :source $MYVIMRC<CR>
+
+
+" override `ag` command to exclude filenames in search
+"
+" -n, --nth=N[,..]      Comma-separated list of field index expressions
+"                       for limiting search scope. Each can be a non-zero
+"                       integer or a range expression ([BEGIN]..[END]).
+" -d, --delimiter=STR   Field delimiter regex (default: AWK-style)
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " fzf
 nnoremap <c-f>b :Buffers<CR>
 nnoremap <c-f>c :Colors<CR>
 nnoremap <c-f>g :Ag<CR>
 nnoremap <c-f>t :Tags<CR>
-nnoremap <c-f>f :GFiles<CR>
 nnoremap <c-f>h :Helptags<CR>
 nnoremap <c-f>l :Lines<CR>
-nnoremap <c-f>n :Files<CR>
+nnoremap <c-f>n :GFiles<CR>
+nnoremap <c-f>f :Files<CR>
 nnoremap <c-f>s :Snippets<CR>
 
 " ale
@@ -121,6 +130,15 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OrderImports :call CocAction('runCommand', 'editor.action.organizeImport')
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 nmap <leader>rn <Plug>(coc-rename)
 
 function! s:show_documentation()
@@ -131,68 +149,112 @@ function! s:show_documentation()
   endif
 endfunction
 
+" Reference: https://scalameta.org/metals/docs/editors/vim.html
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                  Variables                                   "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <silent> <c-c>a :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <c-c>e :<C-u>CocList extensions<cr>
+nnoremap <silent> <c-c>c :<C-u>CocList commands<cr>
+nnoremap <silent> <c-c>o :<C-u>CocList outline<cr>
+nnoremap <silent> <c-c>s :<C-u>CocList -I symbols<cr>
+nnoremap <silent> <c-c>j :<C-u>CocNext<CR>
+nnoremap <silent> <c-c>k :<C-u>CocPrev<CR>
+nnoremap <silent> <c-c>p :<C-u>CocListResume<CR>
 
-" Snippets
+" Toggle panel with Tree Views
+nnoremap <silent> <c-c>t :<C-u>CocCommand metals.tvp<CR>
+
+" Toggle Tree View 'metalsBuild'
+nnoremap <silent> <c-c>tb :<C-u>CocCommand metals.tvp metalsBuild<CR>
+
+" Toggle Tree View 'metalsCompile'
+nnoremap <silent> <c-c>tc :<C-u>CocCommand metals.tvp metalsCompile<CR>
+
+" Reveal current current class (trait or object) in Tree View 'metalsBuild'
+nnoremap <silent> <c-c>tf :<C-u>CocCommand metals.revealInTreeView metalsBuild<CR>
+
+" Use `wn` and `wp` instead of <tab> <s-tab>
+nmap <Leader>wn <Plug>VimwikiNextLink
+nmap <Leader>wp <Plug>VimwikiPrevLink
+
+map <silent> <leader>wf :Files ~/vimwiki<cr>
+
+" }}}
+
+" Global Variables (Plugin Configurations) {{{
+
+" UltiSnips
+
 let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
 let g:UltiSnipsEditSplit = 'vertical'
 let g:snips_author = 'Colton'
-
-" I don't care what people say, these settings are not intuitive...
 let g:UltiSnipsSnippetsDir = '~/.vim/custom_snippets'
 let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
 
-" Wiki (table tabs prevent ultisnips)
+" VimWiki
+
+" Disable table navigation via tabs due to conflicts
 let g:vimwiki_table_mappings = 0
+
+" set VimWiki path, and use markdown as syntax
+let g:vimwiki_list = [{'syntax': 'markdown',
+                      \ 'ext': '.md'}]
+
+" Save VimWiki to iCloud if possible
+let s:icloud = expand('~/Library/Mobile Documents/com~apple~CloudDocs')
+if isdirectory(s:icloud)
+    let g:vimwiki_list[0].path = s:icloud . '/vimwiki'
+endif
+
+" don't associate external markdown files outside of vimwiki as vmiwiki " filetype
+" https://github.com/vimwiki/vimwiki/issues/95
+let g:vimwiki_global_ext = 0
 
 " Ale
 let g:ale_sign_column_always = 0
 let g:ale_sign_error = '•'
 let g:ale_sign_warning = '•'
-
-let g:airline#extensions#ale#enabled = 1
 let g:ale_fix_on_save = 0
-
 let g:ale_fixers = {
 \   '*':      ['remove_trailing_lines', 'trim_whitespace'],
 \   'python': ['autopep8', 'yapf'],
 \   'yaml':   ['prettier'],
 \   'markdown': ['prettier'],
 \}
-
 let g:ale_linters = {
-\   'python': ['flake8', 'pydocstyle'],
+\   'python': ['flake8', 'mypy'],
 \   'markdown': ['proselint', 'mdl'],
 \}
 
-" airline
+" \   'python': ['flake8', 'pydocstyle', 'mypy'],
+
+" Airline
+let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#coc#enabled = 1
 let g:airline_theme='minimalist'
 
-" coc
-let g:airline#extensions#coc#enabled = 1
+" skip displaying encoding if utf-8
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 
-" completor
-let g:completor_python_binary = '/usr/local/bin/python3'
 
-" slime
+" Slime
 let g:slime_target = 'tmux'
 let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{right-of}'}
 let g:slime_dont_ask_default = 1
 
+" EditorConfig
 let g:EditorConfig_exclude_patterns = ['fugitive://.\*', 'scp://.\*']
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                   Settings                                   "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" disable persistant directory listings
+let g:netrw_fastbrowse = 0
+
+" }}}
+
+" General Settings {{{
 
 filetype indent plugin on
 
 syntax on
-set background=light
 
 set hidden
 set incsearch
@@ -206,17 +268,14 @@ set expandtab
 set shiftwidth=4
 set smarttab
 set softtabstop=0
+
 set textwidth=79
 set colorcolumn=80
 
 set backspace=2
 
-" fold outer-most indents for python files
-" augroup pythonFolding
-"     autocmd!
-"     autocmd Filetype python set foldmethod=indent
-"     autocmd Filetype python set foldnestmax=1
-" augroup END
+" increase height to improve message visiliity
+set cmdheight=2
 
 " hide scrollbars in GUI
 if has('gui')
@@ -226,12 +285,17 @@ endif
 
 set dictionary=/usr/share/dict/words
 
-" I keep typing :W instead of :w and it's driving me insane...
-command W w
+" language servers can have issues with backup files
+set nobackup
+set nowritebackup
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                   Commands                                   "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" number of milliseconds for swap file to be written
+" decreasing this improves diagnostic messages in coc-nvim
+set updatetime=300
+
+" }}}
+
+" Commands {{{
 
 command! Hex :%!xxd
 command! Dehex :%!xxd -r
@@ -243,9 +307,12 @@ command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update('', {'
 command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
 command! PackStatus packadd minpac | source $MYVIMRC | call minpac#status()
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                Auto Commands                                 "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" alias :W to :w for sanity reasons
+command W w
+
+" }}}
+
+" Auto Commands {{{
 
 " after opening `help` files, move them to the right
 augroup helpFileType
@@ -253,24 +320,32 @@ augroup helpFileType
     autocmd FileType help wincmd L
 augroup END
 
+" enable spell checking for certain file types
+augroup spellChecking
+    autocmd!
+    autocmd FileType vimwiki setlocal spell
+    autocmd FileType markdown setlocal spell
+augroup END
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                   Theming                                    "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
 
-" small tweak to colors - will eventually move to a separate file
+" Formatting and Colors {{{
 
-" no background on gutter
-highlight clear SignColumn
 
 " use foreground colors for gutter icons
 highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
 highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
 
+" https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
+highlight ColorColumn ctermbg=0
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                  Functions                                  "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set background=dark
+
+" }}}
+
+" Functions {{{
+set signcolumn=yes
 
 function! ToggleSignColumn()
     if &signcolumn ==# 'no'
@@ -280,11 +355,28 @@ function! ToggleSignColumn()
     endif
 endfunction
 
+" no background on gutter
+highlight clear SignColumn
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                   Private                                   "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+
+" WIP {{{
 
 if filereadable(expand('~/.vim/db.vim'))
   source ~/.vim/db.vim
 endif
+
+" " Load refactored configuration files
+" function! LoadConfigs()
+"     for config in split(globpath('$HOME/.vim', '*.vim'), '\n')
+"         echom 'File: ' . config
+"     endfor
+" endfunction
+
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" }}}
+
