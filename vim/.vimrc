@@ -18,16 +18,15 @@ if exists('*minpac#init')
     call minpac#init()
     call minpac#add('k-takata/minpac', {'type': 'opt'})
 
-    " Additional plugins
     call minpac#add('SirVer/ultisnips')
-    call minpac#add('editorconfig/editorconfig-vim')
+    call minpac#add('alok/notational-fzf-vim')
+    call minpac#add('chrisbra/Colorizer')
+    call minpac#add('chriskempson/base16-vim')
     call minpac#add('honza/vim-snippets')
     call minpac#add('jpalardy/vim-slime')
     call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' })
     call minpac#add('junegunn/fzf.vim')
-    call minpac#add('junegunn/goyo.vim')
     call minpac#add('junegunn/vim-easy-align')
-    call minpac#add('plytophogy/vim-virtualenv')
     call minpac#add('sheerun/vim-polyglot')
     call minpac#add('tpope/vim-commentary')
     call minpac#add('tpope/vim-dadbod')
@@ -39,16 +38,14 @@ if exists('*minpac#init')
     call minpac#add('vimwiki/vimwiki')
     call minpac#add('w0rp/ale')
 
-    call minpac#add('chrisbra/Colorizer')
-
     call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
-    " let g:coc_global_extensions = [
-    "       \ 'coc-json',
-    "       \ 'coc-metals',
-    "       \ 'coc-python',
-    "       \ 'coc-ultisnips',
-    "       \ 'coc-vetur',
-    "       \ ]
+    let g:coc_global_extensions = [
+          \ 'coc-json',
+          \ 'coc-metals',
+          \ 'coc-python',
+          \ 'coc-ultisnips',
+          \ 'coc-vetur',
+          \ ]
 
     " requires vim 8.1
     if v:version >= 801
@@ -66,13 +63,7 @@ let mapleader = "\<Space>"
 nmap <leader>ve :e $MYVIMRC<CR>
 nmap <leader>vv :source $MYVIMRC<CR>
 
-
 " override `ag` command to exclude filenames in search
-"
-" -n, --nth=N[,..]      Comma-separated list of field index expressions
-"                       for limiting search scope. Each can be a non-zero
-"                       integer or a range expression ([BEGIN]..[END]).
-" -d, --delimiter=STR   Field delimiter regex (default: AWK-style)
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " fzf
@@ -89,7 +80,6 @@ nnoremap <c-f>s :Snippets<CR>
 " ale
 nmap <silent> ]e <Plug>(ale_next_wrap)
 nmap <silent> [e <Plug>(ale_previous_wrap)
-nnoremap <leader>af :ALEFix<CR>
 
 " easy-align
 xmap ga <Plug>(EasyAlign)
@@ -130,17 +120,6 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OrderImports :call CocAction('runCommand', 'editor.action.organizeImport')
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-nmap <leader>rn <Plug>(coc-rename)
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -149,8 +128,12 @@ function! s:show_documentation()
   endif
 endfunction
 
-" Reference: https://scalameta.org/metals/docs/editors/vim.html
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OrderImports :call CocAction('runCommand', 'editor.action.organizeImport')
 
+nmap <leader>rn <Plug>(coc-rename)
+
+" Reference: https://scalameta.org/metals/docs/editors/vim.html
 nnoremap <silent> <c-c>a :<C-u>CocList diagnostics<cr>
 nnoremap <silent> <c-c>e :<C-u>CocList extensions<cr>
 nnoremap <silent> <c-c>c :<C-u>CocList commands<cr>
@@ -159,6 +142,7 @@ nnoremap <silent> <c-c>s :<C-u>CocList -I symbols<cr>
 nnoremap <silent> <c-c>j :<C-u>CocNext<CR>
 nnoremap <silent> <c-c>k :<C-u>CocPrev<CR>
 nnoremap <silent> <c-c>p :<C-u>CocListResume<CR>
+nnoremap <silent> <c-c>f :call CocAction('format')<CR>
 
 " Toggle panel with Tree Views
 nnoremap <silent> <c-c>t :<C-u>CocCommand metals.tvp<CR>
@@ -172,26 +156,29 @@ nnoremap <silent> <c-c>tc :<C-u>CocCommand metals.tvp metalsCompile<CR>
 " Reveal current current class (trait or object) in Tree View 'metalsBuild'
 nnoremap <silent> <c-c>tf :<C-u>CocCommand metals.revealInTreeView metalsBuild<CR>
 
+nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
+
 " Use `wn` and `wp` instead of <tab> <s-tab>
 nmap <Leader>wn <Plug>VimwikiNextLink
 nmap <Leader>wp <Plug>VimwikiPrevLink
 
-map <silent> <leader>wf :Files ~/vimwiki<cr>
+" Notes
+nnoremap <silent> <leader>nn :NV<CR>
+
+" set workspace for python files
+" https://github.com/neoclide/coc.nvim/wiki/Using-workspaceFolders#resolve-workspace-folder
+autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 
 " }}}
 
 " Global Variables (Plugin Configurations) {{{
 
 " UltiSnips
-
-let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
-let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
 let g:UltiSnipsEditSplit = 'vertical'
-let g:snips_author = 'Colton'
-let g:UltiSnipsSnippetsDir = '~/.vim/custom_snippets'
+let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
+let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
 let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
-
-" VimWiki
+let g:snips_author = 'Colton'
 
 " Disable table navigation via tabs due to conflicts
 let g:vimwiki_table_mappings = 0
@@ -204,7 +191,11 @@ let g:vimwiki_list = [{'syntax': 'markdown',
 let s:icloud = expand('~/Library/Mobile Documents/com~apple~CloudDocs')
 if isdirectory(s:icloud)
     let g:vimwiki_list[0].path = s:icloud . '/vimwiki'
+    let g:nv_search_paths = [s:icloud . '/vimwiki']
 endif
+
+" notational-fzf-vim
+let g:nv_create_note_key = 'ctrl-x'
 
 " don't associate external markdown files outside of vimwiki as vmiwiki " filetype
 " https://github.com/vimwiki/vimwiki/issues/95
@@ -226,16 +217,11 @@ let g:ale_linters = {
 \   'markdown': ['proselint', 'mdl'],
 \}
 
-" \   'python': ['flake8', 'pydocstyle', 'mypy'],
-
 " Airline
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#coc#enabled = 1
-let g:airline_theme='minimalist'
-
-" skip displaying encoding if utf-8
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-
+let g:airline_theme='minimalist'
 
 " Slime
 let g:slime_target = 'tmux'
@@ -308,7 +294,7 @@ command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
 command! PackStatus packadd minpac | source $MYVIMRC | call minpac#status()
 
 " alias :W to :w for sanity reasons
-command W w
+command! W w
 
 " }}}
 
@@ -327,25 +313,22 @@ augroup spellChecking
     autocmd FileType markdown setlocal spell
 augroup END
 
-" }}}
+" Help Vim recognize *.sbt and *.sc as Scala files
+augroup scalaFiletypes
+    autocmd BufRead,BufNewFile *.sbt,*.sc set filetype=scala
+augroup END
 
-" Formatting and Colors {{{
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
-
-" use foreground colors for gutter icons
-highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
-highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
-
-" https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-highlight ColorColumn ctermbg=0
-
-
-set background=dark
+augroup foldmethod_markers
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
 
 " }}}
 
 " Functions {{{
-set signcolumn=yes
 
 function! ToggleSignColumn()
     if &signcolumn ==# 'no'
@@ -355,28 +338,27 @@ function! ToggleSignColumn()
     endif
 endfunction
 
+" }}}
+
+" Formatting and Colors {{{
+
+set signcolumn=yes
+
+" https://github.com/chriskempson/base16-vim/#256-colorspace
+let base16colorspace=256
+
+" apply base16 colorscheme
+set background=dark
+colorscheme base16-phd
+
 " no background on gutter
 highlight clear SignColumn
 
-" }}}
+" use foreground colors for gutter icons
+highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
+highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
 
-" WIP {{{
-
-if filereadable(expand('~/.vim/db.vim'))
-  source ~/.vim/db.vim
-endif
-
-" " Load refactored configuration files
-" function! LoadConfigs()
-"     for config in split(globpath('$HOME/.vim', '*.vim'), '\n')
-"         echom 'File: ' . config
-"     endfor
-" endfunction
-
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-augroup END
+" https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
+highlight ColorColumn ctermbg=0
 
 " }}}
-
