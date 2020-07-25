@@ -1,0 +1,25 @@
+# NOTE: must have a check for Cyclic dependencies or random strings in your
+# snippet. You can use 'if not snip.c' to make sure to only expand random
+# output once.
+
+global !p
+""" Shared Python code for all.snippets
+"""
+import random
+import string
+from uuid import uuid4
+endglobal
+
+snippet rand "Random String (16)" w
+`!p
+if not snip.c:
+    cs = string.ascii_uppercase + string.digits
+    snip.rv = "".join([random.choice(cs) for n in range(16)])
+`
+endsnippet
+
+snippet uuid "UUIDv4" w
+`!p
+if not snip.c:
+    snip.rv = str(uuid4())`
+endsnippet

@@ -1,0 +1,15 @@
+snippet arr "Array Cheatsheet"
+arr=("${1}")
+endsnippet
+
+snippet fora "for array items"
+for item in "${arr[@]}"; do
+    printf "%s\n" "${1:\$item}"
+done
+endsnippet
+
+snippet forai "for array items with index"
+for ix in ${!${1:arr}[*]}; do
+    printf "%4d: %s\n" "$ix" "${${1:arr}[$ix]}"
+done
+endsnippet
