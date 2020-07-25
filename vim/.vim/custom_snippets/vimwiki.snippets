@@ -1,0 +1,48 @@
+global !p
+""" Shared Python code for vimwiki.snippets
+"""
+import datetime
+
+def weekdays(snip, reverse=False):
+    """ Print weekdays in markdown format
+    :param snip:
+    :param reverse: order days from Friday to Monday when True
+    """
+    today = datetime.date.today()
+    idx = (today.weekday() + 1) % 7
+    if reverse:
+        days = reversed(range(1, 6))
+    else:
+        days = range(1, 6)
+    for i in days:
+        weekday = today - datetime.timedelta(idx-i)
+        snip += "## " + weekday.strftime("%a, %Y-%m-%d")
+        snip += ""
+endglobal
+
+snippet days "Weekly task log"
+`!p
+weekdays(snip)
+`
+endsnippet
+
+snippet rdays "Weekly task log (reversed)"
+`!p
+weekdays(snip, reverse=True)
+`
+endsnippet
+
+snippet hours "Hourly task log"
+- [ ]  9:00 AM -  9:30 AM : 
+- [ ]  9:00 AM -  9:30 AM : 
+- [ ]  9:30 AM - 10:00 AM : 
+- [ ] 10:00 AM - 11:00 AM : 
+- [ ] 11:00 AM - 11:30 AM : -- BREAK --
+- [ ] 11:30 AM - 12:45 PM : 
+- [ ] 12:45 PM -  2:00 PM : 
+- [ ]  2:00 PM -  2:20 PM : 
+- [ ]  2:20 PM -  3:30 PM : 
+- [ ]  3:30 PM -  4:00 PM : -- BREAK --
+- [ ]  4:00 PM -  4:45 PM : 
+- [ ]  4:45 PM -  5:00 PM : 
+endsnippet
