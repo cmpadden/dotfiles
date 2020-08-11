@@ -65,3 +65,5 @@ fi
 if [ -x "$(command -v direnv)" ]; then
   eval "$(direnv hook bash)"
 fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

@@ -222,6 +222,8 @@ let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#coc#enabled = 1
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 let g:airline_theme='minimalist'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#bufferline#enabled = 1
 
 " Slime
 let g:slime_target = 'tmux'
