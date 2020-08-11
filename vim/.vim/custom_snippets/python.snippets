@@ -96,3 +96,8 @@ df = spark.createDataFrame(
     ['id', 'msg']
 )
 endsnippet
+
+snippet window "Spark Window"
+w = Window.partitionBy("${1:column}")
+df = df.withColumn("${2:column_aggregate}", F.max("${1:column}").over(w))
+endsnippet
