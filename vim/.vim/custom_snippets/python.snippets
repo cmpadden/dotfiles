@@ -1,3 +1,7 @@
+###############################################################################
+#                                   Logging                                   #
+###############################################################################
+
 snippet p "Print"
 print("$0")
 endsnippet
@@ -14,6 +18,22 @@ endsnippet
 snippet l "Log"
 logging.info("${1}")
 endsnippet
+
+###############################################################################
+#                                   General                                   #
+###############################################################################
+
+snippet write_csv "Write to CSV"
+import csv
+
+with open('output.csv', 'w') as f:
+    w = csv.writer(f)
+    w.writerow([$0])
+endsnippet
+
+###############################################################################
+#                                   Pandas                                    #
+###############################################################################
 
 snippet pd "Import Pandas as `pd`"
 import pandas as pd
@@ -48,14 +68,6 @@ snippet pcat "Concatenate dataframes"
 pd.concat([$0])
 endsnippet
 
-snippet write_csv "Write to CSV"
-import csv
-
-with open('output.csv', 'w') as f:
-    w = csv.writer(f)
-    w.writerow([$0])
-endsnippet
-
 snippet plot "Generate matplotlib to file"
 axes = df.plot(subplots=True)[0]
 axes.set_title("${1:Plot Title}")
@@ -63,7 +75,18 @@ fig = axes.get_figure()
 fig.savefig("${0:output.png}")
 endsnippet
 
-snippet sdf "Manual Instantiate Spark DataFrame"
+###############################################################################
+#                                    Spark                                    #
+###############################################################################
+
+snippet ss "Spark Session"
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.appName("${0:Spark Session}").getOrCreate()
+sc = spark.sparkContext
+endsnippet
+
+snippet sdf "Manually Instantiate Spark DataFrame"
 df = spark.createDataFrame(
     [
         (1, 'foo'),
@@ -72,11 +95,4 @@ df = spark.createDataFrame(
     ],
     ['id', 'msg']
 )
-endsnippet
-
-snippet ss "Spark Session"
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder.appName("${0:Spark Session}").getOrCreate()
-sc = spark.sparkContext
 endsnippet
