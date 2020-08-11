@@ -29,6 +29,7 @@ c.fonts.hints = "20pt default_family"
 c.tabs.indicator.width = 0
 c.tabs.position = "right"
 c.tabs.title.format = "{audio}{current_title}"
+c.tabs.title.format_pinned = "{audio}{current_title}"
 c.tabs.width = 200
 
 c.hints.mode = "letter"
