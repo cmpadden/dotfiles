@@ -101,3 +101,10 @@ snippet window "Spark Window"
 w = Window.partitionBy("${1:column}")
 df = df.withColumn("${2:column_aggregate}", F.max("${1:column}").over(w))
 endsnippet
+
+snippet sjson "Spark Read Newline Delimited JSON"
+df = spark \ 
+    .read \
+    .option("multiline", False) \
+    .json("${:input.json}")
+endsnippet
