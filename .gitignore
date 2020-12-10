@@ -1,8 +1,11 @@
 *.swp
-vim/.vim/pack
-vim/.vim/view
-vim/.vim/.netrwhist
+
 vim/.vim/*.vim
+vim/.vim/.netrwhist
+vim/.vim/autoload/
+vim/.vim/plugged/
+vim/.vim/spell/
+vim/.vim/view
 
 qutebrowser/.qutebrowser/bookmarks/urls
 qutebrowser/.qutebrowser/quickmarks
