@@ -355,17 +355,17 @@ set signcolumn=yes
 let base16colorspace=256
 
 " apply base16 colorscheme
-set background=dark
-colorscheme base16-phd
+set background=light
+colorscheme base16-solarized-light
 
 " no background on gutter
-highlight clear SignColumn
+" highlight clear SignColumn
 
 " use foreground colors for gutter icons
 highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
 highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
 
 " https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-highlight ColorColumn ctermbg=0
+highlight ColorColumn ctermbg=18
 
 " }}}
