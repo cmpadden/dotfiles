@@ -4,6 +4,73 @@
 # https://github.com/alacritty/alacritty/releases
 
 schemas:
+
+  solarized-light: &solarized-light
+    primary:
+      background: '0xfdf6e3'
+      foreground: '0x586e75'
+    cursor:
+      text: '0xfdf6e3'
+      cursor: '0x586e75'
+    normal:
+      black:   '0xfdf6e3'
+      red:     '0xdc322f'
+      green:   '0x859900'
+      yellow:  '0xb58900'
+      blue:    '0x268bd2'
+      magenta: '0x6c71c4'
+      cyan:    '0x2aa198'
+      white:   '0x586e75'
+    bright:
+      black:   '0x839496'
+      red:     '0xdc322f'
+      green:   '0x859900'
+      yellow:  '0xb58900'
+      blue:    '0x268bd2'
+      magenta: '0x6c71c4'
+      cyan:    '0x2aa198'
+      white:   '0x002b36'
+    indexed_colors:
+      - { index: 16, color: '0xcb4b16' }
+      - { index: 17, color: '0xd33682' }
+      - { index: 18, color: '0xeee8d5' }
+      - { index: 19, color: '0x93a1a1' }
+      - { index: 20, color: '0x657b83' }
+      - { index: 21, color: '0x073642' }
+
+  mocha: &mocha
+    primary:
+      background: '0x3b3228'
+      foreground: '0xd0c8c6'
+    cursor:
+      text: '0x3b3228'
+      cursor: '0xd0c8c6'
+    normal:
+      black:   '0x3b3228'
+      red:     '0xcb6077'
+      green:   '0xbeb55b'
+      yellow:  '0xf4bc87'
+      blue:    '0x8ab3b5'
+      magenta: '0xa89bb9'
+      cyan:    '0x7bbda4'
+      white:   '0xd0c8c6'
+    bright:
+      black:   '0x7e705a'
+      red:     '0xcb6077'
+      green:   '0xbeb55b'
+      yellow:  '0xf4bc87'
+      blue:    '0x8ab3b5'
+      magenta: '0xa89bb9'
+      cyan:    '0x7bbda4'
+      white:   '0xf5eeeb'
+    indexed_colors:
+      - { index: 16, color: '0xd28b71' }
+      - { index: 17, color: '0xbb9584' }
+      - { index: 18, color: '0x534636' }
+      - { index: 19, color: '0x645240' }
+      - { index: 20, color: '0xb8afad' }
+      - { index: 21, color: '0xe9e1dd' }
+
   dark: &dark
     primary:
       background: '0x061229'
@@ -36,60 +103,67 @@ schemas:
       - { index: 19, color: '0x4d5666' }
       - { index: 20, color: '0x9a99a3' }
       - { index: 21, color: '0xdbdde0' }
+
   light: &light
     primary:
-      background: '0xebf8ff'
-      foreground: '0x516d7b'
+      background: '0xffffff'
+      foreground: '0x404040'
     cursor:
-      text: '0xebf8ff'
-      cursor: '0x516d7b'
+      text: '0xffffff'
+      cursor: '0x404040'
     normal:
-      black:   '0xebf8ff'
-      red:     '0xd22d72'
-      green:   '0x568c3b'
-      yellow:  '0x8a8a0f'
-      blue:    '0x257fad'
-      magenta: '0x6b6bb8'
-      cyan:    '0x2d8f6f'
-      white:   '0x516d7b'
+      black:   '0xffffff'
+      red:     '0xc41a15'
+      green:   '0x007400'
+      yellow:  '0x826b28'
+      blue:    '0x0000ff'
+      magenta: '0xa90d91'
+      cyan:    '0x318495'
+      white:   '0x404040'
     bright:
-      black:   '0x7195a8'
-      red:     '0xd22d72'
-      green:   '0x568c3b'
-      yellow:  '0x8a8a0f'
-      blue:    '0x257fad'
-      magenta: '0x6b6bb8'
-      cyan:    '0x2d8f6f'
-      white:   '0x161b1d'
+      black:   '0x808080'
+      red:     '0xc41a15'
+      green:   '0x007400'
+      yellow:  '0x826b28'
+      blue:    '0x0000ff'
+      magenta: '0xa90d91'
+      cyan:    '0x318495'
+      white:   '0x5e5e5e'
     indexed_colors:
-      - { index: 16, color: '0x935c25' }
-      - { index: 17, color: '0xb72dd2' }
-      - { index: 18, color: '0xc1e4f6' }
-      - { index: 19, color: '0x7ea2b4' }
-      - { index: 20, color: '0x5a7b8c' }
-      - { index: 21, color: '0x1f292e' }
+      - { index: 16, color: '0xeb8500' }
+      - { index: 17, color: '0x826b28' }
+      - { index: 18, color: '0xc0c0c0' }
+      - { index: 19, color: '0xc0c0c0' }
+      - { index: 20, color: '0x808080' }
+      - { index: 21, color: '0x404040' }
 
-colors: *dark
+# colors: *dark
+# colors: *light
+# colors: *mocha
+colors: *solarized-light
 
 window:
   title: Alacritty
+  padding:
+    x: 10
+    y: 10
 
 scrolling:
   history: 0
 
 font:
   normal:
-    family: Menlo
-    style: Regular
+    family: DejaVu Sans Mono
+    style: Book
   bold:
-    family: Menlo
-    style: Regular
+    family: DejaVu Sans Mono
+    style: Book
   italic:
-    family: Menlo
-    style: Italic
+    family: DejaVu Sans Mono
+    style: Oblique
   bold_italic:
-    family: Menlo
-    style: Regular
+    family: DejaVu Sans Mono
+    style: Book
   size: 12.0
   offset:
     x: 0
