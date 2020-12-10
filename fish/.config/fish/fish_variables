@@ -7,7 +7,9 @@ SETUVAR --export OBJC_DISABLE_INITIALIZE_FORK_SAFETY:YES
 SETUVAR __fish_initialized:3100
 SETUVAR _fish_abbr_ga:git\x20add\x20
 SETUVAR _fish_abbr_gd:git\x20diff
+SETUVAR _fish_abbr_gp:git\x20pull\x20origin\x20master
 SETUVAR _fish_abbr_gs:git\x20status\x20\x2e
+SETUVAR _fish_abbr_gundo:git\x20reset\x20\x2d\x2dsoft\x20HEAD\x7e1
 SETUVAR _fish_abbr_m:make
 SETUVAR fish_color_autosuggestion:777777
 SETUVAR fish_color_cancel:normal
