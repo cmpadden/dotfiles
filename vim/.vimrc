@@ -8,51 +8,56 @@ endif
 
 " Plugins {{{
 
-if empty(glob('~/.vim/pack/minpac/opt/minpac'))
-    silent !git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl
+    \ --fail
+    \ --location
+    \ --output ~/.vim/autoload/plug.vim
+    \ --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-if exists('*minpac#init')
+call plug#begin('~/.vim/plugged')
 
-    " minpac
-    call minpac#init()
-    call minpac#add('k-takata/minpac', {'type': 'opt'})
+Plug 'SirVer/ultisnips'
+Plug 'alok/notational-fzf-vim'
+Plug 'chrisbra/Colorizer'
+Plug 'chriskempson/base16-vim'
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'honza/vim-snippets'
+Plug 'jpalardy/vim-slime'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dadbod'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vimwiki/vimwiki'
+Plug 'w0rp/ale'
 
-    call minpac#add('SirVer/ultisnips')
-    call minpac#add('alok/notational-fzf-vim')
-    call minpac#add('chrisbra/Colorizer')
-    call minpac#add('chriskempson/base16-vim')
-    call minpac#add('honza/vim-snippets')
-    call minpac#add('jpalardy/vim-slime')
-    call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' })
-    call minpac#add('junegunn/fzf.vim')
-    call minpac#add('junegunn/vim-easy-align')
-    call minpac#add('sheerun/vim-polyglot')
-    call minpac#add('tpope/vim-commentary')
-    call minpac#add('tpope/vim-dadbod')
-    call minpac#add('tpope/vim-fugitive')
-    call minpac#add('tpope/vim-obsession')
-    call minpac#add('tpope/vim-surround')
-    call minpac#add('vim-airline/vim-airline')
-    call minpac#add('vim-airline/vim-airline-themes')
-    call minpac#add('vimwiki/vimwiki')
-    call minpac#add('w0rp/ale')
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-    call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
-    let g:coc_global_extensions = [
-          \ 'coc-json',
-          \ 'coc-metals',
-          \ 'coc-python',
-          \ 'coc-ultisnips',
-          \ 'coc-vetur',
-          \ ]
+let g:coc_global_extensions = [
+      \ 'coc-json',
+      \ 'coc-metals',
+      \ 'coc-python',
+      \ 'coc-ultisnips',
+      \ 'coc-vetur',
+      \ ]
 
-    " requires vim 8.1
-    if v:version >= 801
-        call minpac#add('iamcco/markdown-preview.nvim', { 'do': {-> mkdp#util#install()} })
-    endif
-
+" requires vim 8.1
+if v:version >= 801
+    Plug 'iamcco/markdown-preview.nvim', { 'do': {-> mkdp#util#install()} }
 endif
+
+" Initialize plugin system
+call plug#end()
 
 " }}}
 
@@ -227,7 +232,7 @@ let g:airline#extensions#bufferline#enabled = 1
 
 " Slime
 let g:slime_target = 'tmux'
-let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{right-of}'}
+let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{last}'}
 let g:slime_dont_ask_default = 1
 
 " EditorConfig
@@ -350,17 +355,17 @@ set signcolumn=yes
 let base16colorspace=256
 
 " apply base16 colorscheme
-set background=dark
-colorscheme base16-phd
+set background=light
+colorscheme base16-solarized-light
 
 " no background on gutter
-highlight clear SignColumn
+" highlight clear SignColumn
 
 " use foreground colors for gutter icons
 highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
 highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
 
 " https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-highlight ColorColumn ctermbg=0
+highlight ColorColumn ctermbg=18
 
 " }}}
