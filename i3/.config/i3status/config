@@ -17,12 +17,13 @@ general {
 }
 
 order += "ipv6"
-order += "wireless _first_"
-order += "ethernet _first_"
 order += "battery all"
 order += "disk /"
 order += "memory"
 order += "cpu_usage"
+order += "cpu_temperature 0"
+order += "wireless _first_"
+order += "ethernet _first_"
 order += "volume master"
 order += "tztime local"
 
@@ -51,19 +52,24 @@ battery all {
 }
 
 disk "/" {
-    format = "ROOT %used / %total (%percentage_used)"
+    format = "ROOT %used/%total (%percentage_used)"
 }
 
 memory {
-    format = "RAM %used / %available (%percentage_used)"
+    format = "RAM %used/%available (%percentage_used)"
     threshold_degraded = "1G"
     format_degraded = "MEMORY < %available"
 }
 
 cpu_usage {
-    format = "%cpu0 %cpu1 %cpu2 %cpu3"
+    format = "CPU %cpu0 %cpu1 %cpu2 %cpu3"
     max_threshold = 75
     degraded_threshold = 25
+}
+
+cpu_temperature 0 {
+    format = "%degrees °C"
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input"
 }
 
 volume master {
@@ -75,5 +81,5 @@ volume master {
 }
 
 tztime local {
-    format = "%a, %d %b %y %T"
+    format = "%a, %d %b %y %I:%M %p"
 }
