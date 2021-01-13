@@ -72,25 +72,28 @@ schemas:
 colors: *dark
 
 window:
-  title: Alacritty
+  title: Terminal
+  padding:
+    x: 4
+    y: 4
 
 scrolling:
   history: 0
 
 font:
   normal:
-    family: Menlo
+    family: monospace
     style: Regular
   bold:
-    family: Menlo
+    family: monospace
     style: Regular
   italic:
-    family: Menlo
+    family: monospace
     style: Italic
   bold_italic:
-    family: Menlo
+    family: monospace
     style: Regular
-  size: 12.0
+  size: 10.0
   offset:
     x: 0
     y: 0
@@ -111,7 +114,15 @@ cursor:
 
 live_config_reload: true
 
-shell:
-  program: /usr/local/bin/fish
-  args:
-    - --login
+
+# shell:
+#   program: /usr/local/bin/fish
+#   args:
+#     - --login
+
+key_bindings:
+  - { key: V,        mods: Control|Shift,           action: Paste }
+  - { key: C,        mods: Control|Shift,           action: Copy }
+
+mouse_bindings:
+  - { mouse: Middle, action: PasteSelection }
