@@ -197,6 +197,8 @@ let s:icloud = expand('~/Library/Mobile Documents/com~apple~CloudDocs')
 if isdirectory(s:icloud)
     let g:vimwiki_list[0].path = s:icloud . '/vimwiki'
     let g:nv_search_paths = [s:icloud . '/vimwiki']
+else
+    let g:nv_search_paths = ['~/vimwiki']
 endif
 
 " notational-fzf-vim
