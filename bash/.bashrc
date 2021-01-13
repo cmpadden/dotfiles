@@ -52,12 +52,16 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 
 fi
 
-# Auto-attach a tmux session
-if [ -x "$(command -v tmux)" ]; then
-    # Do not run when already inside of a `tmux` session
-    if [ -z "$TMUX" ]; then
-        # Attach to an existing session, or create a new session
-        tmux attach || tmux new-session
+# Auto-attach a tmux session in non-virtual consoles
+if [[ $DISPLAY ]]; then
+    # If not running interactively, do not do anything
+    [[ $- != *i* ]] && return
+    if [ -x "$(command -v tmux)" ]; then
+        # Do not run when already inside of a `tmux` session
+        if [ -z "$TMUX" ]; then
+            # Attach to an existing session, or create a new session
+            tmux attach || tmux new-session
+        fi
     fi
 fi
 
