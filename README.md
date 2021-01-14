@@ -1,6 +1,17 @@
-# Dotfiles
+<div align="center">
+  <img
+    src="https://raw.githubusercontent.com/cmpadden/dotfiles/master/dotfiles.svg" 
+    alt="Logo project" 
+    height="80" 
+  />
+  <br>
+  <br>
+  <p>
+     <i>Personal System Configuration Files</i>
+  </p>
+</div>
 
-Personalized environment configuration files
+---
 
 ## Dependencies
 
