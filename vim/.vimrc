@@ -46,7 +46,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 let g:coc_global_extensions = [
       \ 'coc-json',
       \ 'coc-metals',
-      \ 'coc-python',
+      \ 'coc-pyright',
       \ 'coc-ultisnips',
       \ 'coc-vetur',
       \ ]
@@ -81,6 +81,7 @@ nnoremap <c-f>l :Lines<CR>
 nnoremap <c-f>n :GFiles<CR>
 nnoremap <c-f>f :Files<CR>
 nnoremap <c-f>s :Snippets<CR>
+nnoremap <c-p> :GFiles<CR>
 
 " ale
 nmap <silent> ]e <Plug>(ale_next_wrap)
@@ -358,10 +359,10 @@ let base16colorspace=256
 
 " apply base16 colorscheme
 set background=light
-colorscheme base16-solarized-light
+" colorscheme base16-solarized-light
 
 " no background on gutter
-" highlight clear SignColumn
+highlight clear SignColumn
 
 " use foreground colors for gutter icons
 highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
