@@ -73,7 +73,8 @@ schemas:
 
   dark: &dark
     primary:
-      background: '0x061229'
+      # background: '0x061229'
+      background: '0x000000'
       foreground: '0xb8bbc2'
     cursor:
       text: '0x061229'
@@ -105,42 +106,67 @@ schemas:
       - { index: 21, color: '0xdbdde0' }
 
   light: &light
+      primary:
+        background: '#FFFFFF'
+        foreground: '#000000'
+      normal:
+        black:      '#000000'
+        red:        '#990000'
+        green:      '#00A600'
+        yellow:     '#999900'
+        blue:       '#0000B2'
+        magenta:    '#B200B2'
+        cyan:       '#00A6B2'
+        white:      '#BFBFBF'
+      bright:
+        black:      '#666666'
+        red:        '#E50000'
+        green:      '#00D900'
+        yellow:     '#E5E500'
+        blue:       '#0000FF'
+        magenta:    '#E500E5'
+        cyan:       '#00E5E5'
+        white:      '#E5E5E5'
+
+  heath-light: &heath-light
     primary:
-      background: '0xffffff'
-      foreground: '0x404040'
+      # background: '0xf7f3f7'
+      background: '0xf7f3f7'
+      foreground: '0x695d69'
     cursor:
-      text: '0xffffff'
-      cursor: '0x404040'
+      text: '0xf7f3f7'
+      cursor: '0x695d69'
     normal:
-      black:   '0xffffff'
-      red:     '0xc41a15'
-      green:   '0x007400'
-      yellow:  '0x826b28'
-      blue:    '0x0000ff'
-      magenta: '0xa90d91'
-      cyan:    '0x318495'
-      white:   '0x404040'
+      black:   '0xf7f3f7'
+      red:     '0xca402b'
+      green:   '0x918b3b'
+      yellow:  '0xbb8a35'
+      blue:    '0x516aec'
+      magenta: '0x7b59c0'
+      cyan:    '0x159393'
+      white:   '0x695d69'
     bright:
-      black:   '0x808080'
-      red:     '0xc41a15'
-      green:   '0x007400'
-      yellow:  '0x826b28'
-      blue:    '0x0000ff'
-      magenta: '0xa90d91'
-      cyan:    '0x318495'
-      white:   '0x5e5e5e'
+      black:   '0x9e8f9e'
+      red:     '0xca402b'
+      green:   '0x918b3b'
+      yellow:  '0xbb8a35'
+      blue:    '0x516aec'
+      magenta: '0x7b59c0'
+      cyan:    '0x159393'
+      white:   '0x1b181b'
     indexed_colors:
-      - { index: 16, color: '0xeb8500' }
-      - { index: 17, color: '0x826b28' }
-      - { index: 18, color: '0xc0c0c0' }
-      - { index: 19, color: '0xc0c0c0' }
-      - { index: 20, color: '0x808080' }
-      - { index: 21, color: '0x404040' }
+      - { index: 16, color: '0xa65926' }
+      - { index: 17, color: '0xcc33cc' }
+      - { index: 18, color: '0xd8cad8' }
+      - { index: 19, color: '0xab9bab' }
+      - { index: 20, color: '0x776977' }
+      - { index: 21, color: '0x292329' }
 
 # colors: *dark
 # colors: *light
+colors: *heath-light
 # colors: *mocha
-colors: *solarized-light
+# colors: *solarized-light
 
 window:
   title: Terminal
@@ -153,18 +179,18 @@ scrolling:
 
 font:
   normal:
-    family: DejaVu Sans Mono
-    style: Book
+    family: JetBrains Mono
+    style: Regular
   bold:
-    family: DejaVu Sans Mono
-    style: Book
+    family: JetBrains Mono
+    style: Bold
   italic:
-    family: DejaVu Sans Mono
-    style: Oblique
+    family: JetBrains Mono
+    style: Italic
   bold_italic:
-    family: DejaVu Sans Mono
-    style: Book
-  size: 10.0
+    family: JetBrains Mono
+    style: Bold Italic
+  size: 12.0
   offset:
     x: 0
     y: 0
