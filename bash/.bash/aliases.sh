@@ -26,8 +26,9 @@ gscp() {
 }
 
 # Vim
-alias fvim="vim \$(fzf)"
-alias notes='vim -c "execute \"normal \<Plug>VimwikiIndex\""'
+if hash nvim 2>/dev/null; then
+    alias vim="nvim"
+fi
 
 # https://github.com/ogham/exa
 if hash exa 2>/dev/null; then
