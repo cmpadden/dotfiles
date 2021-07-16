@@ -47,6 +47,8 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
       source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
   fi
 
+  # See `brew info` for post-installation instructions:
+  # sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
   JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
   export JAVA_HOME
 
@@ -65,3 +67,6 @@ fi
 if [ -x "$(command -v direnv)" ]; then
   eval "$(direnv hook bash)"
 fi
+
+# OSX 10.15 SILENCE BASH DEPRECATION MESSAGE
+export BASH_SILENCE_DEPRECATION_WARNING=1
