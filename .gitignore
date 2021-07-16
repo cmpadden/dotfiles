@@ -3,3 +3,4 @@ vim/.vim/pack
 vim/.vim/view
 vim/.vim/.netrwhist
 vim/.vim/*.vim
+.DS_Store
