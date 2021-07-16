@@ -240,3 +240,7 @@ color_square() {
   fi
   convert -size 100x100 xc:"$1" "100x00_${1}.png"
 }
+
+mkpyenv() {
+    echo "layout python-venv python3" >> .envrc
+}
