@@ -21,6 +21,11 @@ if hash bat 2>/dev/null; then
         --wrap=never"
 fi
 
+# Alias Neovim to Vim if installed
+if hash nvim 2>/dev/null; then
+    alias vim="nvim"
+fi
+
 # Notes
 alias n="cd \${HOME}/workspace/personal-mkdocs/docs/"
 alias nv="vim \${HOME}/workspace/personal-mkdocs/docs/"
@@ -28,3 +33,8 @@ alias nv="vim \${HOME}/workspace/personal-mkdocs/docs/"
 # Python
 alias venvc='python3 -m virtualenv venv'
 alias ipy="python -m IPython --matplotlib"
+
+# Rsync
+alias rscp='rsync -aP'
+alias rsmv='rsync -aP --remove-source-files'
+
