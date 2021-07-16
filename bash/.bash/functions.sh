@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
-# -------------------------------------------------------------------
-# compressed file expander
-# (from https://github.com/myfreeweb/zshuery/blob/master/zshuery.sh)
-# -------------------------------------------------------------------
-
 extract() {
+    # compressed file expander
+    # https://github.com/myfreeweb/zshuery/blob/master/zshuery.sh
     if [[ -f $1 ]]; then
         case $1 in
           *.tar.bz2) tar xvjf "$1";;
@@ -29,12 +26,9 @@ extract() {
     fi
 }
 
-# -------------------------------------------------------------------
-# shell function to define words
-# http://vikros.tumblr.com/post/23750050330/cute-little-function-time
-# -------------------------------------------------------------------
-
 define() {
+    # define words
+    # http://vikros.tumblr.com/post/23750050330/cute-little-function-time
     if [ $# -ge 2 ]; then
         echo "givedef: too many arguments" >&2
         return 1
@@ -43,44 +37,36 @@ define() {
     fi
 }
 
-
-# -------------------------------------------------------------------
-# Attempt all variants of caesar cipher
-# https://chris-lamb.co.uk/posts/decrypting-caesar-cipher-using-shell
-# -------------------------------------------------------------------
-
 decaesar() {
+    # attempt all variants of caesar cipher
+    # https://chris-lamb.co.uk/posts/decrypting-caesar-cipher-using-shell
     for I in $(seq 25); do
         echo "$1" | tr "[:lower:]" "[:upper:]" | tr $(printf "%${I}s" | tr ' ' '.')\A-Z A-ZA-Z
     done
 }
 
-# Convert hex to decimal
 htod() {
+    # convert hex to decimal
     printf "%d\\n" "$1"
 }
 
-# Convert ASCII to hexcode
 atoh() {
+    # convert ASCII to hexcode
     python2 -c "print '$1'.encode(\"hex\")"
 }
 
-# Convert hexcode to ASCII
 htoa() {
+    # convert hexcode to ASCII
     python2 -c "print '$1'.decode(\"hex\")"
 }
 
-# Repeat `x` a given number of times
 repeatn() {
+    # repeat `x` `n` number of times
     python -c "print 'x' * $1"
 }
 
-
-# -------------------------------------------------------------------
-# Java Decompile using IntelliJ
-# -------------------------------------------------------------------
-
 java_decompile() {
+    # java decompile using binary included with IntelliJ
 
     # Ensure 2 arguments are passed
     if [ ! "$#" -eq 2 ]; then
@@ -102,12 +88,8 @@ java_decompile() {
         org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler "$1" "$2"
 }
 
-
-# -------------------------------------------------------------------
-# Trigger notification (useful for things like sleep 5 && notify)
-# -------------------------------------------------------------------
-
 notify() {
+  # MacOS notifications (useful for things like sleep 5 && notify)
     local title="Shell Notification"
     local text="!"
     if [ "$#" -eq 1 ]; then
@@ -119,11 +101,9 @@ notify() {
     osascript -e "display notification \"$text\" with title \"$title\""
 }
 
-# -------------------------------------------------------------------
-# Temporary File Server
-# -------------------------------------------------------------------
 
 serve() {
+  # File server with SSL
 
 openssl req \
   -new \
@@ -154,18 +134,14 @@ EOF
 
 }
 
-# -------------------------------------------------------------------
-# fzf [https://github.com/junegunn/fzf/wiki/examples]
-# -------------------------------------------------------------------
-
-# fd - cd to selected directory
 fd() {
+  # FZF change directories
   local dir
   dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir" || exit
 }
 
-# fkill - kill processes
 fkill() {
+  # FZF kill process
   local pid
   if [ "$UID" != "0" ]; then
       pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
@@ -178,8 +154,8 @@ fkill() {
   fi
 }
 
-# fbr - checkout git branch (including remote branches)
 fgb() {
+  # FZF checkout git branches, w/ remote branches
   local branches branch
   branches=$(git branch --all | grep -v HEAD) &&
   branch=$(echo "$branches" | fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
@@ -187,6 +163,7 @@ fgb() {
 }
 
 fpass() {
+  # FZF password-store
   local stores store
   stores=$(find "$HOME/.password-store/" -name "*.gpg" | sed 's/^.*-store\/\/\(.*\)\.gpg/\1/g')
   store=$(echo "$stores" | fzf +m)
@@ -194,6 +171,7 @@ fpass() {
 }
 
 fbrew() {
+  # FZF homebrew
   local prog
   prog=$(brew search | fzf +m)
   echo $prog
@@ -201,10 +179,6 @@ fbrew() {
     brew install "$prog"
   fi
 }
-
-# -------------------------------------------------------------------
-# color codes
-# -------------------------------------------------------------------
 
 color_codes() {
     for i in {0..255} ; do
@@ -215,11 +189,8 @@ color_codes() {
     done
 }
 
-# -------------------------------------------------------------------
-# fzf for search pydocs
-# -------------------------------------------------------------------
-
 fpy() {
+  # fzf for search pydocs
   if [[ "$#" == 0 ]]; then
     echo "Please provide a pydoc search term..."
     return 1
@@ -231,8 +202,6 @@ fpy() {
   fi
 }
 
-# -----------------------------------------------------------------------------
-
 color_square() {
   if [[ "$#" == 0 ]]; then
     echo "Provide hex color code"
@@ -241,6 +210,17 @@ color_square() {
   convert -size 100x100 xc:"$1" "100x00_${1}.png"
 }
 
+
 mkpyenv() {
     echo "layout python-venv python3" >> .envrc
 }
+
+get_background_image() {
+    osascript -e 'tell app "finder" to get posix path of (get desktop picture as alias)'
+}
+
+cheat() {
+    # community driven documentation
+    curl cheat.sh/"$1"
+}
+

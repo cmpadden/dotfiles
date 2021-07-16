@@ -56,8 +56,12 @@ if __name__ == "__main__":
 
     target = os.path.expanduser("~")
 
-    for f in sorted(os.listdir()):
-        if os.path.isdir(f) and not f.startswith('.'):
+    stowed_directories = sorted([
+            f for f in os.listdir()
+            if os.path.isdir(f) and not f.startswith('.')
+    ])
+
+    for f in stowed_directories:
             print("{:<10} (y/N)".format(f), end=' ')
             if input().lower().startswith("y"):
                 print("Restoring...")
