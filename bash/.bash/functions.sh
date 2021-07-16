@@ -210,6 +210,11 @@ color_square() {
   convert -size 100x100 xc:"$1" "100x00_${1}.png"
 }
 
+
+mkpyenv() {
+    echo "layout python-venv python3" >> .envrc
+}
+
 get_background_image() {
     osascript -e 'tell app "finder" to get posix path of (get desktop picture as alias)'
 }
@@ -219,10 +224,3 @@ cheat() {
     curl cheat.sh/"$1"
 }
 
-
-
-# https://news.ycombinator.com/item?id=22464510
-function ssht() {
-    ssh -t "$@" "command -v tmux && tmux -u new-session -A -s default"
-}
-# alias ssh=ssht
