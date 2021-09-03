@@ -2,10 +2,9 @@
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 
-" Set `python3` host program to use version from `homebrew`
-" > brew link python@3.8
-" > /usr/local/bin/python3 -m pip install --user --upgrade pip --user
-" > /usr/local/bin/python3 -m pip install --user pynvim
+" Neovim requires `pynvim` to be installed on the host program. This can be
+" done by issuing the following command:
+" PIP_REQUIRE_VIRTUALENV=false /usr/bin/python3 -m pip install --user pynvim
 
 if filereadable('/usr/local/bin/python3')
     " MacOS

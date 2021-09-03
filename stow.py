@@ -57,7 +57,7 @@ if __name__ == "__main__":
     target = os.path.expanduser("~")
 
     stowed_directories = sorted([
-            f for f in os.listdir() 
+            f for f in os.listdir()
             if os.path.isdir(f) and not f.startswith('.')
     ])
 
