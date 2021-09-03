@@ -6,6 +6,15 @@ let &packpath = &runtimepath
 " > brew link python@3.8
 " > /usr/local/bin/python3 -m pip install --user --upgrade pip --user
 " > /usr/local/bin/python3 -m pip install --user pynvim
-let g:python3_host_prog = '/usr/local/bin/python3'
+
+if filereadable('/usr/local/bin/python3')
+    " MacOS
+    let g:python3_host_prog = '/usr/local/bin/python3'
+elseif filereadable('/usr/local/bin/python3')
+    " Linux
+    let g:python3_host_prog = '/usr/bin/python3'
+endif
+
+
 
 source ~/.vimrc
