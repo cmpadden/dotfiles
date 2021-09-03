@@ -48,6 +48,7 @@ let g:coc_global_extensions = [
       \ 'coc-pyright',
       \ 'coc-ultisnips',
       \ 'coc-vetur',
+      \ 'coc-prettier',
       \ ]
 
 " requires vim 8.1 or nvim
@@ -328,6 +329,7 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 augroup foldmethod_markers
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType python setlocal foldmethod=marker
 augroup END
 
 " }}}
@@ -351,9 +353,13 @@ set signcolumn=yes
 " https://github.com/chriskempson/base16-vim/#256-colorspace
 let base16colorspace=256
 
+" support true colors
+set termguicolors
+
 " apply base16 colorscheme
+" colorscheme base16-atlas
 set background=light
-" colorscheme base16-solarized-light
+colorscheme base16-tomorrow
 
 " no background on gutter
 highlight clear SignColumn
@@ -363,6 +369,6 @@ highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
 highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
 
 " https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-highlight ColorColumn ctermbg=18
+highlight ColorColumn ctermbg=223
 
 " }}}

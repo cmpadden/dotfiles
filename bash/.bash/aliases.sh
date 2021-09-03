@@ -3,8 +3,7 @@ alias drmf='docker rmi -f $(docker images -q)'
 alias drmp='docker kill $(docker ps -q)'
 
 # Git
-alias gs="git status -sb"
-alias gss="git status"
+alias gs="git status"
 alias gd="git diff"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 
@@ -43,7 +42,7 @@ fi
 # https://github.com/sharkdp/bat
 if hash bat 2>/dev/null; then
     alias cat="bat \
-        --theme=ansi-dark \
+        --theme=ansi \
         --style header,grid \
         --pager=never \
         --wrap=never"
