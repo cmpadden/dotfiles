@@ -52,6 +52,14 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 
 fi
 
+
+# bash completions
+if [ -r /usr/share/bash-completion/bash_completion ]; then
+    source /usr/share/bash-completion/bash_completion
+else
+    echo "Missing: /usr/share/bash-completion/bash_completion"
+fi
+
 # Auto-attach to a tmux session
 # If not running interactively, do not do anything
 [[ $- != *i* ]] && return
@@ -69,3 +77,16 @@ if [ -x "$(command -v direnv)" ]; then
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [ -d /usr/lib/jvm/java-15-openjdk ]; then
+    export JAVA_HOME=/usr/lib/jvm/java-15-openjdk
+fi
+
+if [ -d /usr/lib/jvm/java-8-openjdk ]; then
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk/jre
+fi
+
+# if [ -d /usr/lib/jvm/java-16-openjdk ]; then
+#     export JAVA_HOME=/usr/lib/jvm/java-16-openjdk
+# fi
+
