@@ -21,7 +21,6 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'SirVer/ultisnips'
-Plug 'alok/notational-fzf-vim'
 Plug 'chrisbra/Colorizer'
 Plug 'chriskempson/base16-vim'
 Plug 'dart-lang/dart-vim-plugin'
@@ -51,9 +50,9 @@ let g:coc_global_extensions = [
       \ 'coc-vetur',
       \ ]
 
-" requires vim 8.1
-if v:version >= 801
-    Plug 'iamcco/markdown-preview.nvim', { 'do': {-> mkdp#util#install()} }
+" requires vim 8.1 or nvim
+if has('nvim')
+    Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 endif
 
 " Initialize plugin system
@@ -197,13 +196,8 @@ let g:vimwiki_list = [{'syntax': 'markdown',
 let s:icloud = expand('~/Library/Mobile Documents/com~apple~CloudDocs')
 if isdirectory(s:icloud)
     let g:vimwiki_list[0].path = s:icloud . '/vimwiki'
-    let g:nv_search_paths = [s:icloud . '/vimwiki']
 else
-    let g:nv_search_paths = ['~/vimwiki']
 endif
-
-" notational-fzf-vim
-let g:nv_create_note_key = 'ctrl-x'
 
 " don't associate external markdown files outside of vimwiki as vmiwiki " filetype
 " https://github.com/vimwiki/vimwiki/issues/95
