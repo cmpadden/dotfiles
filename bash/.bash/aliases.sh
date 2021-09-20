@@ -10,7 +10,7 @@ alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 # Python
 alias venvc='python3 -m virtualenv venv'
 alias ipy="python -m IPython --matplotlib"
-alias mkpyenv="echo \"layout python-venv python3\" >> .envrc && direnv allow"
+alias mkpyenv="echo \"layout python-venv python3\" > .envrc && direnv allow"
 alias pydoc='python -m pydoc'
 
 # GCP

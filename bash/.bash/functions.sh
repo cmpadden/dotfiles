@@ -210,11 +210,6 @@ color_square() {
   convert -size 100x100 xc:"$1" "100x00_${1}.png"
 }
 
-
-mkpyenv() {
-    echo "layout python-venv python3" >> .envrc
-}
-
 get_background_image() {
     osascript -e 'tell app "finder" to get posix path of (get desktop picture as alias)'
 }
