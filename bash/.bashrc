@@ -106,3 +106,5 @@ fi
 #     export JAVA_HOME=/usr/lib/jvm/java-16-openjdk
 # fi
 
+# https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
+export GPG_TTY=$(tty)
