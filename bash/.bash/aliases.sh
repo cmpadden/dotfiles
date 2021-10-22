@@ -6,6 +6,7 @@ alias drmp='docker kill $(docker ps -q)'
 alias gs="git status"
 alias gd="git diff"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
+alias git_delete_merged="git branch --merged | grep -v 'master' | xargs git branch -d"
 
 # Python
 alias venvc='python3 -m virtualenv venv'
@@ -25,8 +26,11 @@ gscp() {
 }
 
 # Vim
+alias v="vim"
+
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
+    alias n="nvim"
 fi
 
 # https://github.com/ogham/exa
@@ -55,10 +59,6 @@ fi
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
 fi
-
-# Notes
-alias n="cd \${HOME}/workspace/personal-mkdocs/docs/"
-alias nv="vim \${HOME}/workspace/personal-mkdocs/docs/"
 
 # Python
 alias venvc='python3 -m virtualenv venv'
