@@ -2,15 +2,13 @@
 --                                Bound Alerts                                --
 --------------------------------------------------------------------------------
 
-local obj = {}
-
 local helpers = require("modules.helpers")
 
-function obj.alertCurrentTrack()
+hs.hotkey.bind(HYPER, "2", function()
     hs.spotify.displayCurrentTrack()
-end
+end)
 
-function obj.alertSystemInformation()
+hs.hotkey.bind(HYPER, "x", function()
     local attrs = {}
     attrs[#attrs + 1] = {
         name = "System Time",
@@ -25,11 +23,4 @@ function obj.alertSystemInformation()
         value = tostring(hs.caffeinate.get("displayIdle")),
     }
     helpers:show("System Information", attrs, helpers.styles.success)
-end
-
-function obj.init()
-    hs.hotkey.bind(HYPER, "2", obj.alertCurrentTrack)
-    hs.hotkey.bind(HYPER, "x", obj.alertSystemInformation)
-end
-
-return obj
+end)

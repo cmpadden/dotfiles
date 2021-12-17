@@ -41,7 +41,7 @@ spoon.SpoonInstall:andUse('LookupSelection', {
 spoon.SpoonInstall:andUse("AppLauncher", {
   hotkeys = {
     c = "Calendar",
-    k = "Terminal.app",
+    k = "kitty",
     l = "Slack",
     m = "Mail",
     n = "Notion",

@@ -2,20 +2,18 @@
 --                                  Watchers                                  --
 --------------------------------------------------------------------------------
 
-local obj = {}
-
-local alerts = require("modules.alerts")
-local helpers = require("modules.helpers")
-
 -- automatically maximize launched application main window
-function obj.cbApplication(appName, eventType, appObject)
+local function cbApplication(appName, eventType, appObject)
     if eventType == hs.application.watcher.launched then
         hs.alert.show("Application Launched: " .. appName)
         appObject:mainWindow():moveToUnit(hs.layout.maximized)
+        -- elseif (eventType == hs.application.watcher.activated) then
+        --     hs.alert.show('Application Activated: ' .. appName)
     end
 end
+local _ = hs.application.watcher.new(cbApplication):start()
 
-function obj.cbDownloads(files, flagTables)
+local function callback_pathwatcher(files, flagTables)
     local mods = {}
     for ix, file in pairs(files) do
         local events = {}
@@ -29,21 +27,17 @@ function obj.cbDownloads(files, flagTables)
     end
     helpers:show("Downloads Updated", mods)
 end
+local _ = hs.pathwatcher.new(os.getenv("HOME") .. "/Downloads/", callback_pathwatcher):start()
 
-function obj.cbCaffeine(type)
+local function caffeine_callback(type)
     -- if type == hs.caffeinate.watcher.screensDidLock then
     --     hs.alert.showWithImage('LOCKED', LOGO)
     -- end
     if type == hs.caffeinate.watcher.screensDidUnlock then
-        alerts.alertSystemInformation()
+        alertSystemInfo()
     end
 end
-
-function obj.init()
-    local _ = hs.application.watcher.new(obj.cbApplication):start()
-    local _ = hs.pathwatcher.new(os.getenv("HOME") .. "/Downloads/", obj.cbDownloads):start()
-    local _ = hs.caffeinate.watcher.new(obj.cbCaffeine):start()
-end
+hs.caffeinate.watcher.new(caffeine_callback):start()
 
 -- hs.screen.watcher.new(function()
 --     hs.alert.show("Screen Watcher Event")
@@ -74,4 +68,3 @@ end
 --end
 --local _ = hs.battery.watcher.new(cbBattery):start()
 
-return obj
