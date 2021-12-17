@@ -70,7 +70,7 @@ alias rsmv='rsync -aP --remove-source-files'
 
 # https://github.com/ggreer/the_silver_searcher
 if hash ag 2>/dev/null; then
-    alias grep="ag --hidden --ignore .git"
+    alias grep="ag --hidden --ignore .git --ignore node_modules"
 else
   echo "\`ag\` not installed -- falling back to \`grep\`"
 fi
