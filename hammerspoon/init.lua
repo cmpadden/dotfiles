@@ -22,21 +22,16 @@ HYPER = { "cmd", "ctrl" }
 HYPER_SHIFT = { "cmd", "ctrl", "shift" }
 
 require("modules.plugins")
+require("modules.alerts")
 require("modules.caffeine")
+require("modules.watchers")
 require("modules.window")
-
-local watchers = require("modules.watchers")
-watchers.init()
-
-local alerts = require("modules.alerts")
-alerts.init()
 
 -- Custom Spoons
 
 hs.loadSpoon("Pass")
 spoon.Pass:bindHotkeys({
     toggle_pass = { { "cmd", "ctrl" }, "p" },
-    toggle_login = { { "cmd", "ctrl" }, "l" },
     toggle_otp = { { "cmd", "ctrl" }, "o" },
 })
 
