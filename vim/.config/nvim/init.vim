@@ -29,18 +29,20 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'SirVer/ultisnips'
-Plug 'airblade/vim-gitgutter'
 Plug 'chrisbra/Colorizer'
-Plug 'chriskempson/base16-vim'
-Plug 'dart-lang/dart-vim-plugin'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'honza/vim-snippets'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
+Plug 'lervag/vimtex'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dadbod'
@@ -49,16 +51,30 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vimwiki/vimwiki'
 Plug 'w0rp/ale'
 
+Plug 'heavenshell/vim-jsdoc', {
+  \ 'for': ['javascript', 'javascript.jsx','typescript'],
+  \ 'do': 'make install'
+\}
+
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+" Look into coc-snippets
+" https://github.com/neoclide/coc-snippets
+
 let g:coc_global_extensions = [
+      \ 'coc-git',
+      \ 'coc-html',
       \ 'coc-json',
       \ 'coc-metals',
+      \ 'coc-prettier',
       \ 'coc-pyright',
+      \ 'coc-tsserver',
       \ 'coc-ultisnips',
       \ 'coc-vetur',
-      \ 'coc-prettier',
       \ ]
 
 " Initialize plugin system
@@ -71,7 +87,7 @@ call plug#end()
 let mapleader = "\<Space>"
 
 nmap <leader>ve :e $MYVIMRC<CR>
-nmap <leader>vv :source $MYVIMRC<CR>
+nmap <leader>vr :source $MYVIMRC<CR>
 
 " override `ag` command to exclude filenames in search
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
@@ -123,6 +139,15 @@ augroup END
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap [g <Plug>(coc-git-prevchunk)
+
+nmap ]d <Plug>(coc-git-nextconflict)
+nmap [d <Plug>(coc-git-prevconflict)
+
+nmap gs <Plug>(coc-git-chunkinfo)
+nmap gu <Plug>(coc-git-chunkundo)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -186,6 +211,9 @@ autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 
 " Global Variables (Plugin Configurations) {{{
 
+" Goyo
+let g:goyo_height = '100%'
+
 " UltiSnips
 let g:UltiSnipsEditSplit = 'vertical'
 let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
@@ -221,11 +249,15 @@ let g:ale_fixers = {
 \   'python': ['autopep8', 'yapf'],
 \   'yaml':   ['prettier'],
 \   'markdown': ['prettier'],
+\   'javascript': ['tsserver'],
 \}
 let g:ale_linters = {
 \   'python': ['flake8', 'mypy'],
 \   'markdown': ['proselint', 'mdl'],
+\   'javascript': ['tsserver'],
 \}
+
+let g:ale_enabled = 0
 
 " Airline
 let g:airline#extensions#ale#enabled = 1
@@ -357,17 +389,16 @@ endfunction
 
 set signcolumn=yes
 
-" https://github.com/chriskempson/base16-vim/#256-colorspace
-let base16colorspace=256
-
 " support true colors
 set termguicolors
 
-" set background=dark
-" colorscheme base16-mocha
+" let g:nord_contrast = v:true
+" let g:nord_borders = v:true
+" colorscheme nord
 
-set background=light
-colorscheme base16-one-light
+" let g:tokyonight_style = "day"
+let g:tokyonight_style = "night"
+colorscheme tokyonight
 
 " no background on gutter
 " highlight clear SignColumn
