@@ -84,3 +84,18 @@ spoon.SpoonInstall:andUse("Seal",
     start = true,
   }
 )
+
+-- https://www.hammerspoon.org/Spoons/WindowGrid.html
+spoon.SpoonInstall:andUse("WindowGrid", {
+  hotkeys = {
+    show_grid = { HYPER, "g" }
+  }
+})
+
+-- https://github.com/dbalatero/VimMode.spoon
+-- local VimMode = hs.loadSpoon('VimMode')
+-- local vim = VimMode:new()
+-- vim
+--   :disableForApp('zoom.us')
+--   :enterWithSequence('jk')
+
