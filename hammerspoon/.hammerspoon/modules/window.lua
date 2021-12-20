@@ -8,17 +8,46 @@
 
 hs.window.animationDuration = 0
 
+local left33 = hs.geometry.rect(0, 0, 0.3333, 1)
+local right66 = hs.geometry.rect(0.3333, 0, 0.6666, 1)
+
+local LAYOUT_WIDESCREEN = {
+    { "Safari", nil, display_primary, left33, nil, nil },
+    { "Terminal", nil, display_primary, right66, nil, nil },
+    { "Spotify", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Slack", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Discord", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Messages", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Calendar", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Mail", nil, display_secondary, hs.layout.maximized, nil, nil },
+}
+
+local LAYOUT_DEFAULT = {
+    { "Safari", nil, display_primary, hs.layout.maximized, nil, nil },
+    { "kitty", nil, display_primary, hs.layout.maximized, nil, nil },
+    { "Terminal", nil, display_primary, hs.layout.maximized, nil, nil },
+    { "Notion", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Spotify", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Slack", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Discord", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Messages", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Calendar", nil, display_secondary, hs.layout.maximized, nil, nil },
+    { "Mail", nil, display_secondary, hs.layout.maximized, nil, nil },
+}
+
 spoon.SpoonInstall:andUse("WindowScreenLeftAndRight", {
     hotkeys = {
-        screen_left = { { "cmd", "shift" }, "Left" },
-        screen_right = { { "cmd", "shift" }, "Right" },
+        screen_left = { { "control", "cmd" }, "Left" },
+        screen_right = { { "control", "cmd" }, "Right" },
     },
 })
 
 spoon.SpoonInstall:andUse("WindowHalfsAndThirds", {
     hotkeys = {
-        left_half = { { "cmd" }, "Left" },
-        right_half = { { "cmd" }, "Right" },
+        third_left = { { "cmd" }, "Left" },
+        left_half = { { "cmd", "shift" }, "Left" },
+        third_right = { { "cmd" }, "Right" },
+        right_half = { { "cmd", "shift" }, "Right" },
         max_toggle = { { "cmd", "shift" }, "Up" },
         center = { { "cmd" }, "Up" },
     },
@@ -35,17 +64,12 @@ hs.hotkey.bind({ "cmd", "ctrl" }, "1", function()
         display_secondary = hs.screen.allScreens()[2]:name()
     end
 
-    local window_layout = {
-        { "Safari", nil, display_primary, hs.layout.maximized, nil, nil },
-        { "kitty", nil, display_primary, hs.layout.maximized, nil, nil },
-        { "Notion", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Spotify", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Slack", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Discord", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Messages", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Calendar", nil, display_secondary, hs.layout.maximized, nil, nil },
-        { "Mail", nil, display_secondary, hs.layout.maximized, nil, nil },
-    }
+    -- layout specificly for the ultrawide
+    if display_primary == 'DELL U3419W' then
+      window_layout = LAYOUT_WIDESCREEN
+    else
+      window_layout = LAYOUT_DEFAULT
+    end
 
     hs.alert.show(string.format(
         [[
