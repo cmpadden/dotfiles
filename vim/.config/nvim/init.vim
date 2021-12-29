@@ -1,18 +1,3 @@
-scriptencoding utf-8
-
-" PIP_REQUIRE_VIRTUALENV=false /usr/bin/python3 -m pip install --user pynvim
-if filereadable('/usr/local/bin/python3')
-    let g:python3_host_prog = '/usr/local/bin/python3'
-elseif filereadable('/usr/local/bin/python3')
-    let g:python3_host_prog = '/usr/bin/python3'
-endif
-
-" set `no compatible` when compatible is set -- useful for  `vim -u <file>`
-if &compatible
-  " vint: next-line -ProhibitSetNoCompatible
-  set nocompatible
-endif
-
 " Plugins {{{
 
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
@@ -26,24 +11,22 @@ if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.vim/plugged')
+call plug#begin(stdpath('data') . '/plugged')
 
-Plug 'SirVer/ultisnips'
 Plug 'chrisbra/Colorizer'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'ggandor/lightspeed.nvim'
 Plug 'honza/vim-snippets'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown' }
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/goyo.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'lervag/vimtex'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
-Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-fugitive'
@@ -51,19 +34,11 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
-
+Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 Plug 'heavenshell/vim-jsdoc', {
   \ 'for': ['javascript', 'javascript.jsx','typescript'],
   \ 'do': 'make install'
 \}
-
-
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
-" Look into coc-snippets
-" https://github.com/neoclide/coc-snippets
 
 let g:coc_global_extensions = [
       \ 'coc-git',
@@ -72,10 +47,16 @@ let g:coc_global_extensions = [
       \ 'coc-metals',
       \ 'coc-prettier',
       \ 'coc-pyright',
+      \ 'coc-snippets',
       \ 'coc-tsserver',
-      \ 'coc-ultisnips',
       \ 'coc-vetur',
       \ ]
+
+" Plug 'w0rp/ale'
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvim-telescope/telescope.nvim'
+" Plug 'sheerun/vim-polyglot'
+" Plug 'SirVer/ultisnips'
 
 " Initialize plugin system
 call plug#end()
@@ -103,10 +84,6 @@ nnoremap <c-f>n :GFiles<CR>
 nnoremap <c-f>f :Files<CR>
 nnoremap <c-f>s :Snippets<CR>
 nnoremap <c-p> :GFiles<CR>
-
-" ale
-nmap <silent> ]e <Plug>(ale_next_wrap)
-nmap <silent> [e <Plug>(ale_previous_wrap)
 
 " easy-align
 xmap ga <Plug>(EasyAlign)
@@ -196,6 +173,21 @@ nnoremap <silent> <c-c>tf :<C-u>CocCommand metals.revealInTreeView metalsBuild<C
 
 nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
 
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
 " Use `wn` and `wp` instead of <tab> <s-tab>
 nmap <Leader>wn <Plug>VimwikiNextLink
 nmap <Leader>wp <Plug>VimwikiPrevLink
@@ -214,53 +206,7 @@ autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 " Goyo
 let g:goyo_height = '100%'
 
-" UltiSnips
-let g:UltiSnipsEditSplit = 'vertical'
-let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
-let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
-let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
-let g:snips_author = 'Colton'
-
-" Disable table navigation via tabs due to conflicts
-let g:vimwiki_table_mappings = 0
-
-" set VimWiki path, and use markdown as syntax
-let g:vimwiki_list = [{'syntax': 'markdown',
-                      \ 'ext': '.md'}]
-
-" Save VimWiki to iCloud if possible
-let s:icloud = expand('~/Library/Mobile Documents/com~apple~CloudDocs')
-if isdirectory(s:icloud)
-    let g:vimwiki_list[0].path = s:icloud . '/vimwiki'
-else
-endif
-
-" don't associate external markdown files outside of vimwiki as vmiwiki " filetype
-" https://github.com/vimwiki/vimwiki/issues/95
-let g:vimwiki_global_ext = 0
-
-" Ale
-let g:ale_sign_column_always = 0
-let g:ale_sign_error = '•'
-let g:ale_sign_warning = '•'
-let g:ale_fix_on_save = 0
-let g:ale_fixers = {
-\   '*':      ['remove_trailing_lines', 'trim_whitespace'],
-\   'python': ['autopep8', 'yapf'],
-\   'yaml':   ['prettier'],
-\   'markdown': ['prettier'],
-\   'javascript': ['tsserver'],
-\}
-let g:ale_linters = {
-\   'python': ['flake8', 'mypy'],
-\   'markdown': ['proselint', 'mdl'],
-\   'javascript': ['tsserver'],
-\}
-
-let g:ale_enabled = 0
-
 " Airline
-let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#coc#enabled = 1
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 let g:airline_theme='minimalist'
@@ -282,12 +228,11 @@ let g:netrw_fastbrowse = 0
 
 " General Settings {{{
 
-filetype indent plugin on
+" https://neovim.io/doc/user/vim_diff.html
+" set hidden
+" set incsearch
+" set backspace=2
 
-syntax on
-
-set hidden
-set incsearch
 set list listchars=tab:>-,trail:.,extends:>
 set noswapfile
 set nowrap
@@ -302,7 +247,6 @@ set softtabstop=0
 set textwidth=79
 set colorcolumn=80
 
-set backspace=2
 
 " increase height to improve message visiliity
 set cmdheight=2
@@ -329,13 +273,6 @@ set updatetime=300
 
 command! Hex :%!xxd
 command! Dehex :%!xxd -r
-
-" Define user commands for updating/cleaning the plugins.  Each of them loads
-" minpac, reloads .vimrc to register the information of plugins, then performs
-" the task.
-command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update('', {'do': 'call minpac#status()'})
-command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
-command! PackStatus packadd minpac | source $MYVIMRC | call minpac#status()
 
 " alias :W to :w for sanity reasons
 command! W w
@@ -392,22 +329,13 @@ set signcolumn=yes
 " support true colors
 set termguicolors
 
-" let g:nord_contrast = v:true
-" let g:nord_borders = v:true
-" colorscheme nord
-
-" let g:tokyonight_style = "day"
 let g:tokyonight_style = "night"
 colorscheme tokyonight
 
 " no background on gutter
 " highlight clear SignColumn
 
-" use foreground colors for gutter icons
-highlight ALEErrorSign ctermfg=DarkRed ctermbg=NONE
-highlight ALEWarningSign ctermfg=Yellow ctermbg=NONE
-
 " https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-highlight ColorColumn ctermbg=223
+" highlight ColorColumn ctermbg=223
 
 " }}}

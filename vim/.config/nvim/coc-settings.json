@@ -1,4 +1,7 @@
 {
   "python.linting.flake8Enabled": true,
   "python.formatting.provider": "autopep8",
+  "Lua.diagnostics.disable": ["undefined-global"],
+  "snippets.userSnippetsDirectory": "~/.config/nvim/custom_snippets",
+  "snippets.snipmate.author": "Colton"
 }
