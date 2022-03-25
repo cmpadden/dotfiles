@@ -14,7 +14,7 @@ endif
 call plug#begin(stdpath('data') . '/plugged')
 
 " NOTE: use `gx` to open a URL in the web browser
-Plug 'chrisbra/Colorizer'                                                " https://github.com/chrisbra/Colorizer
+
 Plug 'editorconfig/editorconfig-vim'                                     " https://github.com/editorconfig/editorconfig-vim
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
 Plug 'ggandor/lightspeed.nvim'                                           " https://github.com/ggandor/lightspeed.nvim
@@ -27,6 +27,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }        " https
 Plug 'junegunn/fzf.vim'                                                  " https://github.com/junegunn/fzf.vim
 Plug 'junegunn/vim-easy-align'                                           " https://github.com/junegunn/vim-easy-align
 Plug 'lervag/vimtex'                                                     " https://github.com/lervag/vimtex
+Plug 'norcalli/nvim-colorizer.lua'                                       " https://github.com/norcalli/nvim-colorizer.lua
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'nvim-treesitter/playground'                                        " https://github.com/nvim-treesitter/playground
 Plug 'tpope/vim-commentary'                                              " https://github.com/tpope/vim-commentary
@@ -267,6 +268,8 @@ colorscheme tokyonight
 " }}}
 
 " Lua Configuration {{{
+
+lua require'colorizer'.setup()
 
 lua << EOF
 
