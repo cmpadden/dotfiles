@@ -13,32 +13,31 @@ endif
 
 call plug#begin(stdpath('data') . '/plugged')
 
-Plug 'chrisbra/Colorizer'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
-Plug 'ggandor/lightspeed.nvim'
-Plug 'honza/vim-snippets'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 'markdown' }
-Plug 'jpalardy/vim-slime'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'lervag/vimtex'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dadbod'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
-Plug 'heavenshell/vim-jsdoc', {
-  \ 'for': ['javascript', 'javascript.jsx','typescript'],
-  \ 'do': 'make install'
-\}
+" NOTE: use `gx` to open a URL in the web browser
+Plug 'chrisbra/Colorizer'                                                " https://github.com/chrisbra/Colorizer
+Plug 'editorconfig/editorconfig-vim'                                     " https://github.com/editorconfig/editorconfig-vim
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
+Plug 'ggandor/lightspeed.nvim'                                           " https://github.com/ggandor/lightspeed.nvim
+Plug 'heavenshell/vim-jsdoc', { 'do': 'make install' }                   " https://github.com/heavenshell/vim-jsdoc
+Plug 'honza/vim-snippets'                                                " https://github.com/honza/vim-snippets
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  } " https://github.com/iamcco/markdown-preview.nvim
+Plug 'joosepalviste/nvim-ts-context-commentstring'                       " https://github.com/JoosepAlviste/nvim-ts-context-commentstring
+Plug 'jpalardy/vim-slime'                                                " https://github.com/jpalardy/vim-slime
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }        " https://github.com/junegunn/fzf
+Plug 'junegunn/fzf.vim'                                                  " https://github.com/junegunn/fzf.vim
+Plug 'junegunn/vim-easy-align'                                           " https://github.com/junegunn/vim-easy-align
+Plug 'lervag/vimtex'                                                     " https://github.com/lervag/vimtex
+Plug 'neoclide/coc.nvim', {'branch': 'release'}                          " https://github.com/neoclide/coc.nvim
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " https://github.com/nvim-treesitter/nvim-treesitter
+Plug 'nvim-treesitter/playground'                                        " https://github.com/nvim-treesitter/playground
+Plug 'tpope/vim-commentary'                                              " https://github.com/tpope/vim-commentary
+Plug 'tpope/vim-dadbod'                                                  " https://github.com/tpope/vim-dadbod
+Plug 'tpope/vim-fugitive'                                                " https://github.com/tpope/vim-fugitive
+Plug 'tpope/vim-obsession'                                               " https://github.com/tpope/vim-obsession
+Plug 'tpope/vim-rhubarb'                                                 " https://github.com/tpope/vim-rhubarb
+Plug 'tpope/vim-surround'                                                " https://github.com/tpope/vim-surround
+Plug 'vim-airline/vim-airline'                                           " https://github.com/vim-airline/vim-airline
+Plug 'vim-airline/vim-airline-themes'                                    " https://github.com/vim-airline/vim-airline-themes
 
 let g:coc_global_extensions = [
       \ 'coc-git',
@@ -75,15 +74,13 @@ command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : 
 
 " fzf
 nnoremap <c-f>b :Buffers<CR>
-nnoremap <c-f>c :Colors<CR>
+nnoremap <c-f>c :BCommits<CR>
 nnoremap <c-f>g :Ag<CR>
-nnoremap <c-f>t :Tags<CR>
 nnoremap <c-f>h :Helptags<CR>
 nnoremap <c-f>l :Lines<CR>
 nnoremap <c-f>n :GFiles<CR>
 nnoremap <c-f>f :Files<CR>
 nnoremap <c-f>s :Snippets<CR>
-nnoremap <c-p> :GFiles<CR>
 
 " easy-align
 xmap ga <Plug>(EasyAlign)
@@ -116,6 +113,7 @@ augroup END
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
 
 nmap ]g <Plug>(coc-git-nextchunk)
 nmap [g <Plug>(coc-git-prevchunk)
@@ -203,6 +201,14 @@ autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 
 " Global Variables (Plugin Configurations) {{{
 
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  context_commentstring = {
+    enable = true
+  }
+}
+EOF
+
 " Goyo
 let g:goyo_height = '100%'
 
@@ -224,6 +230,9 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.\*', 'scp://.\*']
 " disable persistant directory listings
 let g:netrw_fastbrowse = 0
 
+" markdown-preview
+" let g:mkdp_auto_start = 0 " open the preview window after entering the markdown buffer
+
 " }}}
 
 " General Settings {{{
@@ -244,7 +253,7 @@ set shiftwidth=4
 set smarttab
 set softtabstop=0
 
-set textwidth=79
+set textwidth=120
 set colorcolumn=80
 
 
