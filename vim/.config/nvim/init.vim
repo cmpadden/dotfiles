@@ -48,14 +48,8 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'  " https://github.com/sirver/UltiSnips
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-
-" Plug 'w0rp/ale'
-" Plug 'nvim-lua/plenary.nvim'
-" Plug 'nvim-telescope/telescope.nvim'
-" Plug 'sheerun/vim-polyglot'
-" Plug 'SirVer/ultisnips'
 
 " Initialize plugin system
 call plug#end()
@@ -152,6 +146,13 @@ let g:netrw_fastbrowse = 0
 
 " markdown-preview
 " let g:mkdp_auto_start = 0 " open the preview window after entering the markdown buffer
+
+" UltiSnips
+let g:UltiSnipsEditSplit = 'vertical'
+let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
+let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
+let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
+let g:snips_author = 'Colton'
 
 " }}}
 
