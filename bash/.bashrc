@@ -1,5 +1,10 @@
 [[ $- != *i* ]] && return
 
+export PATH=/opt/homebrew/bin:$PATH
+export PATH="/opt/homebrew/opt/node@14/bin:$PATH"
+# export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
+# export PATH="/opt/homebrew/opt/node@17/bin:$PATH"
+
 # shellcheck source=/dev/null
 source "$HOME/.bash/aliases.sh"
 
@@ -31,12 +36,6 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
   # filter `.DS_Store` from bash completion
   export FIGNORE=$FIGNORE:.DS_Store
 
-  # bash completion
-  if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-      # shellcheck source=/dev/null
-      source  "$(brew --prefix)/etc/bash_completion"
-  fi
-
   # gcloud bash completion
   if [[ -d "$(brew --prefix)/Caskroom/google-cloud-sdk" ]]; then
       # shellcheck source=/dev/null
@@ -56,8 +55,10 @@ fi
 # bash completions
 if [ -r /usr/share/bash-completion/bash_completion ]; then
     source /usr/share/bash-completion/bash_completion
-else
-    echo "Missing: /usr/share/bash-completion/bash_completion"
+fi
+
+if [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
+    source "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
 # Auto-attach to a tmux session
@@ -108,3 +109,6 @@ fi
 
 # https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
 export GPG_TTY=$(tty)
+
+# rustup
+source "$HOME/.cargo/env"
