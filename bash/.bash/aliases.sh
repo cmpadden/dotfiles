@@ -14,6 +14,9 @@ alias ipy="python -m IPython --matplotlib"
 alias mkpyenv="echo \"layout python-venv python3\" > .envrc && direnv allow"
 alias pydoc='python -m pydoc'
 
+# Node
+alias npm="pnpm"
+
 # GCP
 alias gcp_project="gcloud info --format='value(config.project)'"
 
@@ -70,7 +73,7 @@ alias rsmv='rsync -aP --remove-source-files'
 
 # https://github.com/ggreer/the_silver_searcher
 if hash ag 2>/dev/null; then
-    alias grep="ag --hidden --ignore .git --ignore node_modules"
+    alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist"
 else
   echo "\`ag\` not installed -- falling back to \`grep\`"
 fi
