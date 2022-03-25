@@ -27,7 +27,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }        " https
 Plug 'junegunn/fzf.vim'                                                  " https://github.com/junegunn/fzf.vim
 Plug 'junegunn/vim-easy-align'                                           " https://github.com/junegunn/vim-easy-align
 Plug 'lervag/vimtex'                                                     " https://github.com/lervag/vimtex
-Plug 'neoclide/coc.nvim', {'branch': 'release'}                          " https://github.com/neoclide/coc.nvim
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'nvim-treesitter/playground'                                        " https://github.com/nvim-treesitter/playground
 Plug 'tpope/vim-commentary'                                              " https://github.com/tpope/vim-commentary
@@ -39,17 +38,15 @@ Plug 'tpope/vim-surround'                                                " https
 Plug 'vim-airline/vim-airline'                                           " https://github.com/vim-airline/vim-airline
 Plug 'vim-airline/vim-airline-themes'                                    " https://github.com/vim-airline/vim-airline-themes
 
-let g:coc_global_extensions = [
-      \ 'coc-git',
-      \ 'coc-html',
-      \ 'coc-json',
-      \ 'coc-metals',
-      \ 'coc-prettier',
-      \ 'coc-pyright',
-      \ 'coc-snippets',
-      \ 'coc-tsserver',
-      \ 'coc-vetur',
-      \ ]
+" LSP and Completion
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'SirVer/ultisnips'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
 " Plug 'w0rp/ale'
 " Plug 'nvim-lua/plenary.nvim'
@@ -109,86 +106,6 @@ augroup pythonMappings
     autocmd!
     autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
 augroup END
-
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-
-nmap ]g <Plug>(coc-git-nextchunk)
-nmap [g <Plug>(coc-git-prevchunk)
-
-nmap ]d <Plug>(coc-git-nextconflict)
-nmap [d <Plug>(coc-git-prevconflict)
-
-nmap gs <Plug>(coc-git-chunkinfo)
-nmap gu <Plug>(coc-git-chunkundo)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OrderImports :call CocAction('runCommand', 'editor.action.organizeImport')
-
-nmap <leader>rn <Plug>(coc-rename)
-
-" Reference: https://scalameta.org/metals/docs/editors/vim.html
-nnoremap <silent> <c-c>a :<C-u>CocList diagnostics<cr>
-nnoremap <silent> <c-c>e :<C-u>CocList extensions<cr>
-nnoremap <silent> <c-c>c :<C-u>CocList commands<cr>
-nnoremap <silent> <c-c>o :<C-u>CocList outline<cr>
-nnoremap <silent> <c-c>s :<C-u>CocList -I symbols<cr>
-nnoremap <silent> <c-c>j :<C-u>CocNext<CR>
-nnoremap <silent> <c-c>k :<C-u>CocPrev<CR>
-nnoremap <silent> <c-c>p :<C-u>CocListResume<CR>
-nnoremap <silent> <c-c>f :call CocAction('format')<CR>
-
-" Toggle panel with Tree Views
-nnoremap <silent> <c-c>t :<C-u>CocCommand metals.tvp<CR>
-
-" Toggle Tree View 'metalsBuild'
-nnoremap <silent> <c-c>tb :<C-u>CocCommand metals.tvp metalsBuild<CR>
-
-" Toggle Tree View 'metalsCompile'
-nnoremap <silent> <c-c>tc :<C-u>CocCommand metals.tvp metalsCompile<CR>
-
-" Reveal current current class (trait or object) in Tree View 'metalsBuild'
-nnoremap <silent> <c-c>tf :<C-u>CocCommand metals.revealInTreeView metalsBuild<CR>
-
-nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
-
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Use `wn` and `wp` instead of <tab> <s-tab>
-nmap <Leader>wn <Plug>VimwikiNextLink
-nmap <Leader>wp <Plug>VimwikiPrevLink
 
 " Notes
 nnoremap <silent> <leader>nn :NV<CR>
@@ -309,7 +226,7 @@ augroup scalaFiletypes
 augroup END
 
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 augroup foldmethod_markers
     autocmd!
@@ -346,5 +263,142 @@ colorscheme tokyonight
 
 " https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
 " highlight ColorColumn ctermbg=223
+
+" }}}
+
+" Lua Configuration {{{
+
+lua << EOF
+
+  -- References
+  -- * https://github.com/hrsh7th/nvim-cmp/
+  -- * https://github.com/neovim/nvim-lspconfig
+  -- * https://github.com/neovim/nvim-lspconfig#suggested-configuration
+  -- * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+  -- * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
+  -- * https://github.com/scalameta/nvim-metals/discussions/39
+
+  -- Dependencies
+  -- * brew install pyright
+  -- * brew install rust-analyzer
+  -- * brew install lua-language-server
+  -- * npm i -g typescript typescript-language-server
+  -- * npm i -g vls
+  -- * npm i -g vscode-langservers-extracted
+  -- * npm i -g @tailwindcss/language-server
+  -- * npm i -g bash-language-server
+
+  local cmp = require('cmp')
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local lspconfig = require('lspconfig')
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    mapping = {
+      ['<C-p>'] = cmp.mapping.select_prev_item(),
+      ['<C-n>'] = cmp.mapping.select_next_item(),
+      ['<C-l>'] = cmp.mapping.confirm({ 
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true 
+      }),
+      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'ultisnips' },
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Mappings
+  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  local opts = { noremap=true, silent=true }
+  vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+
+  -- Use an on_attach function to only map the following keys
+  -- after the language server attaches to the current buffer
+  local on_attach = function(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  
+    -- Mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  end
+
+  local servers = { 
+      'bashls',
+      'eslint',
+      'html',
+      'jsonls',
+      'pyright',
+      'rust_analyzer',
+      'sumneko_lua',
+      'tailwindcss',
+      'tsserver',
+      'vuels',
+  }
+  for _, lsp in ipairs(servers) do
+      lspconfig[lsp].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = {
+          debounce_text_changes = 150,
+        },
+      }
+  end
+
+EOF
 
 " }}}
