@@ -1,21 +1,3 @@
--- References
--- * https://github.com/hrsh7th/nvim-cmp/
--- * https://github.com/neovim/nvim-lspconfig
--- * https://github.com/neovim/nvim-lspconfig#suggested-configuration
--- * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
--- * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
--- * https://github.com/scalameta/nvim-metals/discussions/39
-
--- Dependencies
--- * brew install pyright
--- * brew install rust-analyzer
--- * brew install lua-language-server
--- * npm i -g typescript typescript-language-server
--- * npm i -g vls
--- * npm i -g vscode-langservers-extracted
--- * npm i -g @tailwindcss/language-server
--- * npm i -g bash-language-server
-
 local cmp = require('cmp')
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lspconfig = require('lspconfig')
@@ -29,9 +11,9 @@ cmp.setup({
   mapping = {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-l>'] = cmp.mapping.confirm({ 
+    ['<C-l>'] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
-      select = true 
+      select = true
     }),
     ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
@@ -84,7 +66,7 @@ vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<C
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -105,7 +87,7 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
-local servers = { 
+local servers = {
     'bashls',
     'eslint',
     'html',
@@ -124,5 +106,21 @@ for _, lsp in ipairs(servers) do
       flags = {
         debounce_text_changes = 150,
       },
+      settings = {
+        Lua = {
+          runtime = {
+            version = 'LuaJIT',
+          },
+          diagnostics = {
+            globals = {'vim', 'hs', 'spoon'},
+          },
+          workspace = {
+            library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+          },
+          telemetry = {
+            enable = false, -- Do not send telemetry data containing a randomized but unique identifier
+          },
+        }
+      }
     }
 end

@@ -271,5 +271,24 @@ colorscheme tokyonight
 
 " Lua Configuration {{{
 
+" References
+" * https://github.com/nanotee/nvim-lua-guide
+" * https://github.com/hrsh7th/nvim-cmp/
+" * https://github.com/neovim/nvim-lspconfig
+" * https://github.com/neovim/nvim-lspconfig#suggested-configuration
+" * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+" * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
+" * https://github.com/scalameta/nvim-metals/discussions/39
+"
+" Dependencies
+" * brew install pyright
+" * brew install rust-analyzer
+" * brew install lua-language-server
+" * npm i -g typescript typescript-language-server
+" * npm i -g vls
+" * npm i -g vscode-langservers-extracted
+" * npm i -g @tailwindcss/language-server
+" * npm i -g bash-language-server
+
 lua require('user.plugins')
 lua require('user.lsp')
