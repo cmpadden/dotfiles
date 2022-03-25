@@ -83,10 +83,12 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         fd \
         fzf \
         git \
+        cmake \
         httpie \
         imagemagick \
         jq \
         neovim \
+        node@16 \
         pandoc \
         pass \
         pass-otp \
@@ -95,20 +97,23 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         the_silver_searcher \
         tldr \
         tmux \
-        unrar \
-        watch \
-        &>/dev/null
+        yarn \
+        watch
 
     _log "Installing brew casks"
     brew install --cask \
-        alacritty \
+        docker \
+        google-cloud-sdk \
         hammerspoon \
-        keepingyouawake \
+        kitty \
         mpv \
         notion \
         slack \
-        spotify \
-        &>/dev/null
+        discord \
+        spotify
+
+    brew tap adoptopenjdk/openjdk
+    brew install --cask adoptopenjdk8
 
 
 fi
