@@ -22,6 +22,7 @@ local LAYOUT_PRIMARY = {
     { "Slack",     nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
     { "Spotify",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
     { "Terminal",  nil, nil, hs.geometry{x=0.3, y=0.0, w=0.7, h=1.0}, nil, nil },
+    { "kitty",     nil, nil, hs.geometry{x=0.3, y=0.0, w=0.7, h=1.0}, nil, nil },
     { "zoom.us",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
 }
 
@@ -37,6 +38,7 @@ local LAYOUT_SECONDARY = {
 
     -- center
     { "Terminal",  nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
+    { "kitty",     nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
     { "Logic Pro", nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
     { "zoom.us",   nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
 
@@ -62,6 +64,7 @@ local LAYOUT_CENTERED = {
     { "Slack",     nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
     { "Spotify",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
     { "Terminal",  nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
+    { "kitty",     nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
     { "zoom.us",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
 }
 
