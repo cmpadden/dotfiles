@@ -1,7 +1,33 @@
+-------------------------------------------------------------------------------------------------------------------------
+--                                                       null-ls                                                       --
+-------------------------------------------------------------------------------------------------------------------------
 
-require'colorizer'.setup()
+local null_ls_status_ok, null_ls = pcall(require, "null-ls")
+if not null_ls_status_ok then
+    return
+end
+null_ls.setup({
+    sources = {
+        null_ls.builtins.code_actions.shellcheck,
+        null_ls.builtins.completion.spell,
+        null_ls.builtins.diagnostics.flake8,
+        null_ls.builtins.diagnostics.pydocstyle,
+        null_ls.builtins.formatting.autopep8,
+        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.reorder_python_imports,
+        null_ls.builtins.formatting.stylua,
+    },
+})
 
-require('gitsigns').setup {
+-------------------------------------------------------------------------------------------------------------------------
+--                                                      gitsigns                                                       --
+-------------------------------------------------------------------------------------------------------------------------
+
+local gitsigns_ok, gitsigns = pcall(require, "gitsigns")
+if not gitsigns_ok then
+    return
+end
+gitsigns.setup{
   on_attach = function(bufnr)
     local function map(mode, lhs, rhs, opts)
         opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
@@ -33,3 +59,12 @@ require('gitsigns').setup {
   end
 }
 
+-------------------------------------------------------------------------------------------------------------------------
+--                                                      colorizer                                                      --
+-------------------------------------------------------------------------------------------------------------------------
+
+local colorizer_ok, colorizer = pcall(require, "colorizer")
+if not colorizer_ok then
+    return
+end
+colorizer.setup()

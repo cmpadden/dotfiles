@@ -50,6 +50,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'SirVer/ultisnips'  " https://github.com/sirver/UltiSnips
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+Plug 'jose-elias-alvarez/null-ls.nvim'  " https://github.com/jose-elias-alvarez/null-ls.nvim
 
 " Initialize plugin system
 call plug#end()
@@ -280,11 +281,15 @@ colorscheme tokyonight
 " * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 " * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
 " * https://github.com/scalameta/nvim-metals/discussions/39
+" * https://github.com/LunarVim/Neovim-from-scratch
 "
 " Dependencies
 " * brew install pyright
 " * brew install rust-analyzer
 " * brew install lua-language-server
+" * brew install stylua
+" * brew install pydocstyle
+" * brew install reorder-python-imports
 " * npm i -g typescript typescript-language-server
 " * npm i -g vls
 " * npm i -g vscode-langservers-extracted
