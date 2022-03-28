@@ -54,7 +54,7 @@ apply_colors() {
 if [ "$TERM" == "screen-256color" ]; then
   # must be single-quotes for expressions to expand
   PS1='$(apply_colors "$(prompt_venv)" "255" "0")'
-  PS1+='$(apply_colors "$(prompt_git_branch)" "250" "15")'
+  PS1+='$(apply_colors "$(prompt_git_branch)" "250" "0")'
   PS1+='$(apply_colors "$(pwd)" "255" "0")'
   PS1+='\n> '
 fi
