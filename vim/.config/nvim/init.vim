@@ -16,7 +16,6 @@ call plug#begin(stdpath('data') . '/plugged')
 " NOTE: use `gx` to open a URL in the web browser
 
 Plug 'editorconfig/editorconfig-vim'                                     " https://github.com/editorconfig/editorconfig-vim
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
 Plug 'ggandor/lightspeed.nvim'                                           " https://github.com/ggandor/lightspeed.nvim
 Plug 'heavenshell/vim-jsdoc', { 'do': 'make install' }                   " https://github.com/heavenshell/vim-jsdoc
 Plug 'honza/vim-snippets'                                                " https://github.com/honza/vim-snippets
@@ -40,6 +39,11 @@ Plug 'tpope/vim-rhubarb'                                                 " https
 Plug 'tpope/vim-surround'                                                " https://github.com/tpope/vim-surround
 Plug 'vim-airline/vim-airline'                                           " https://github.com/vim-airline/vim-airline
 Plug 'vim-airline/vim-airline-themes'                                    " https://github.com/vim-airline/vim-airline-themes
+
+" color schemes
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' } " https://github.com/folke/tokyonight.nvim
+Plug 'bluz71/vim-moonfly-colors'
+Plug 'bluz71/vim-nightfly-guicolors'               " https://github.com/bluz71/vim-nightfly-guicolors
 
 " LSP and Completion
 Plug 'neovim/nvim-lspconfig'
@@ -262,6 +266,8 @@ set termguicolors
 
 let g:tokyonight_style = "night"
 colorscheme tokyonight
+" colorscheme moonfly
+" colorscheme nightfly
 
 " no background on gutter
 " highlight clear SignColumn
@@ -281,7 +287,9 @@ colorscheme tokyonight
 " * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 " * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
 " * https://github.com/scalameta/nvim-metals/discussions/39
+" * https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 " * https://github.com/LunarVim/Neovim-from-scratch
+" * https://github.com/ecosse3/nvim
 "
 " Dependencies
 " * brew install pyright
