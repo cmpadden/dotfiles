@@ -66,7 +66,12 @@ vim.api.nvim_set_keymap("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<C
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
+    -- https://github.com/LunarVim/Neovim-from-scratch/blob/7a082a3306b27d59257ce9bc826ab4dc64f69854/lua/user/lsp/handlers.lua#L88
+    if client.name == "tsserver" then
+        client.resolved_capabilities.document_formatting = false
+    end
+
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 

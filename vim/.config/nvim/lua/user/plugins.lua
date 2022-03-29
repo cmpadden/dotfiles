@@ -23,6 +23,9 @@ null_ls.setup({
         formatting.reorder_python_imports,
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
     },
+    on_attach = function(_, bufnr)
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", {})
+    end,
 })
 
 -------------------------------------------------------------------------------------------------------------------------
