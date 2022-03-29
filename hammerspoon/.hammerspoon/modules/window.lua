@@ -8,67 +8,74 @@
 
 hs.window.animationDuration = 0
 
+CENTER_60 = hs.geometry({ x = 0.3, y = 0.0, w = 0.4, h = 1.0 })
+CENTER_66 = hs.geometry.rect({ x = 0.1666, y = 0, w = 0.6666, h = 1 })
+LEFT_30 = hs.geometry({ x = 0.0, y = 0.0, w = 0.3, h = 1.0 })
+LEFT_70 = hs.geometry({ x = 0.0, y = 0.0, w = 0.7, h = 1.0 })
+RIGHT_30 = hs.geometry({ x = 0.70, y = 0.0, w = 0.3, h = 1.0 })
+RIGHT_70 = hs.geometry({ x = 0.3, y = 0.0, w = 0.7, h = 1.0 })
+
 -- |[ ][    ]|
 local LAYOUT_PRIMARY = {
-    { "Calendar",  nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Chromium",  nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Firefox",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Discord",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Logic Pro", nil, nil, hs.geometry{x=0.3, y=0.0, w=0.7, h=1.0}, nil, nil },
-    { "Mail",      nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Messages",  nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Notion",    nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Safari",    nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Slack",     nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Spotify",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Terminal",  nil, nil, hs.geometry{x=0.3, y=0.0, w=0.7, h=1.0}, nil, nil },
-    { "zoom.us",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
+    { "Calendar",  nil, nil, LEFT_30, nil, nil },
+    { "Chromium",  nil, nil, LEFT_30, nil, nil },
+    { "Firefox",   nil, nil, LEFT_30, nil, nil },
+    { "Discord",   nil, nil, LEFT_30, nil, nil },
+    { "Logic Pro", nil, nil, RIGHT_70, nil, nil },
+    { "Mail",      nil, nil, LEFT_30, nil, nil },
+    { "Messages",  nil, nil, LEFT_30, nil, nil },
+    { "Notion",    nil, nil, LEFT_30, nil, nil },
+    { "Safari",    nil, nil, LEFT_30, nil, nil },
+    { "Slack",     nil, nil, LEFT_30, nil, nil },
+    { "Spotify",   nil, nil, LEFT_30, nil, nil },
+    { "Terminal",  nil, nil, RIGHT_70, nil, nil },
+    { "kitty",     nil, nil, RIGHT_70, nil, nil },
+    { "zoom.us",   nil, nil, LEFT_30, nil, nil },
 }
 
 -- |[][  ][]|
 local LAYOUT_SECONDARY = {
     -- left
-    { "Safari",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Chromium", nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Firefox",  nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Notion",   nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Spotify",  nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Calendar", nil, nil, hs.geometry{x=0.0, y=0.0, w=0.3, h=1.0}, nil, nil },
+    { "Safari",    nil, nil, LEFT_30, nil, nil },
+    { "Chromium",  nil, nil, LEFT_30, nil, nil },
+    { "Firefox",   nil, nil, LEFT_30, nil, nil },
+    { "Notion",    nil, nil, LEFT_30, nil, nil },
+    { "Spotify",   nil, nil, LEFT_30, nil, nil },
+    { "Calendar",  nil, nil, LEFT_30, nil, nil },
 
     -- center
-    { "Terminal",  nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
-    { "Logic Pro", nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
-    { "zoom.us",   nil, nil, hs.geometry{x=0.3, y=0.0, w=0.4, h=1.0}, nil, nil },
+    { "Terminal",  nil, nil, CENTER_60, nil, nil },
+    { "kitty",     nil, nil, CENTER_60, nil, nil },
+    { "Logic Pro", nil, nil, CENTER_60, nil, nil },
+    { "zoom.us",   nil, nil, CENTER_60, nil, nil },
 
     -- right
-    { "Discord",   nil, nil, hs.geometry{x=0.70, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Mail",      nil, nil, hs.geometry{x=0.70, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Messages",  nil, nil, hs.geometry{x=0.70, y=0.0, w=0.3, h=1.0}, nil, nil },
-    { "Slack",     nil, nil, hs.geometry{x=0.70, y=0.0, w=0.3, h=1.0}, nil, nil },
+    { "Discord",   nil, nil, RIGHT_30, nil, nil },
+    { "Mail",      nil, nil, RIGHT_30, nil, nil },
+    { "Messages",  nil, nil, RIGHT_30, nil, nil },
+    { "Slack",     nil, nil, RIGHT_30, nil, nil },
 }
-
 
 -- |  [   ]  |
 local LAYOUT_CENTERED = {
-    { "Calendar",  nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Chromium",  nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Firefox",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Discord",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Logic Pro", nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Mail",      nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Messages",  nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Notion",    nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Safari",    nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Slack",     nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Spotify",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "Terminal",  nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
-    { "zoom.us",   nil, nil, hs.geometry.rect{x=0.1666, y=0, w=0.6666, h=1}, nil, nil },
+    { "Calendar",  nil, nil, CENTER_66, nil, nil },
+    { "Chromium",  nil, nil, CENTER_66, nil, nil },
+    { "Firefox",   nil, nil, CENTER_66, nil, nil },
+    { "Discord",   nil, nil, CENTER_66, nil, nil },
+    { "Logic Pro", nil, nil, CENTER_66, nil, nil },
+    { "Mail",      nil, nil, CENTER_66, nil, nil },
+    { "Messages",  nil, nil, CENTER_66, nil, nil },
+    { "Notion",    nil, nil, CENTER_66, nil, nil },
+    { "Safari",    nil, nil, CENTER_66, nil, nil },
+    { "Slack",     nil, nil, CENTER_66, nil, nil },
+    { "Spotify",   nil, nil, CENTER_66, nil, nil },
+    { "Terminal",  nil, nil, CENTER_66, nil, nil },
+    { "kitty",     nil, nil, CENTER_66, nil, nil },
+    { "zoom.us",   nil, nil, CENTER_66, nil, nil },
 }
-
 
 -- multi-display layout; not currently using this
 local function twoDisplayLayout()
-
     local display_primary = hs.screen.allScreens()[1]:name()
     local display_secondary = hs.screen.allScreens()[1]:name()
 
@@ -124,4 +131,3 @@ end)
 hs.hotkey.bind({ "cmd", "ctrl" }, "3", function()
     hs.layout.apply(LAYOUT_SECONDARY)
 end)
-
