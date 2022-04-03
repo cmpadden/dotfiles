@@ -14,9 +14,8 @@ endif
 call plug#begin(stdpath('data') . '/plugged')
 
 " NOTE: use `gx` to open a URL in the web browser
-Plug 'chrisbra/Colorizer'                                                " https://github.com/chrisbra/Colorizer
+
 Plug 'editorconfig/editorconfig-vim'                                     " https://github.com/editorconfig/editorconfig-vim
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
 Plug 'ggandor/lightspeed.nvim'                                           " https://github.com/ggandor/lightspeed.nvim
 Plug 'heavenshell/vim-jsdoc', { 'do': 'make install' }                   " https://github.com/heavenshell/vim-jsdoc
 Plug 'honza/vim-snippets'                                                " https://github.com/honza/vim-snippets
@@ -27,7 +26,9 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }        " https
 Plug 'junegunn/fzf.vim'                                                  " https://github.com/junegunn/fzf.vim
 Plug 'junegunn/vim-easy-align'                                           " https://github.com/junegunn/vim-easy-align
 Plug 'lervag/vimtex'                                                     " https://github.com/lervag/vimtex
-Plug 'neoclide/coc.nvim', {'branch': 'release'}                          " https://github.com/neoclide/coc.nvim
+Plug 'lewis6991/gitsigns.nvim'                                           " https://github.com/lewis6991/gitsigns.nvim
+Plug 'norcalli/nvim-colorizer.lua'                                       " https://github.com/norcalli/nvim-colorizer.lua
+Plug 'nvim-lua/plenary.nvim'                                             " https://github.com/nvim-lua/plenary.nvim
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'nvim-treesitter/playground'                                        " https://github.com/nvim-treesitter/playground
 Plug 'tpope/vim-commentary'                                              " https://github.com/tpope/vim-commentary
@@ -39,23 +40,21 @@ Plug 'tpope/vim-surround'                                                " https
 Plug 'vim-airline/vim-airline'                                           " https://github.com/vim-airline/vim-airline
 Plug 'vim-airline/vim-airline-themes'                                    " https://github.com/vim-airline/vim-airline-themes
 
-let g:coc_global_extensions = [
-      \ 'coc-git',
-      \ 'coc-html',
-      \ 'coc-json',
-      \ 'coc-metals',
-      \ 'coc-prettier',
-      \ 'coc-pyright',
-      \ 'coc-snippets',
-      \ 'coc-tsserver',
-      \ 'coc-vetur',
-      \ ]
+" color schemes
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
+Plug 'bluz71/vim-moonfly-colors'                                         " https://github.com/bluz71/vim-moonfly-colors
+Plug 'bluz71/vim-nightfly-guicolors'                                     " https://github.com/bluz71/vim-nightfly-guicolors
 
-" Plug 'w0rp/ale'
-" Plug 'nvim-lua/plenary.nvim'
-" Plug 'nvim-telescope/telescope.nvim'
-" Plug 'sheerun/vim-polyglot'
-" Plug 'SirVer/ultisnips'
+" LSP and Completion
+Plug 'neovim/nvim-lspconfig'                                             " https://github.com/neovim/nvim-lspconfig
+Plug 'hrsh7th/nvim-cmp'                                                  " https://github.com/hrsh7th/nvim-cmp
+Plug 'hrsh7th/cmp-nvim-lsp'                                              " https://github.com/hrsh7th/cmp-nvim-lsp
+Plug 'hrsh7th/cmp-buffer'                                                " https://github.com/hrsh7th/cmp-buffer
+Plug 'hrsh7th/cmp-path'                                                  " https://github.com/hrsh7th/cmp-path
+Plug 'hrsh7th/cmp-cmdline'                                               " https://github.com/hrsh7th/cmp-cmdline
+Plug 'SirVer/ultisnips'                                                  " https://github.com/sirver/UltiSnips
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https://github.com/quangnguyen30192/cmp-nvim-ultisnips
+Plug 'jose-elias-alvarez/null-ls.nvim'                                   " https://github.com/jose-elias-alvarez/null-ls.nvim
 
 " Initialize plugin system
 call plug#end()
@@ -110,86 +109,6 @@ augroup pythonMappings
     autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
 augroup END
 
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-
-nmap ]g <Plug>(coc-git-nextchunk)
-nmap [g <Plug>(coc-git-prevchunk)
-
-nmap ]d <Plug>(coc-git-nextconflict)
-nmap [d <Plug>(coc-git-prevconflict)
-
-nmap gs <Plug>(coc-git-chunkinfo)
-nmap gu <Plug>(coc-git-chunkundo)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OrderImports :call CocAction('runCommand', 'editor.action.organizeImport')
-
-nmap <leader>rn <Plug>(coc-rename)
-
-" Reference: https://scalameta.org/metals/docs/editors/vim.html
-nnoremap <silent> <c-c>a :<C-u>CocList diagnostics<cr>
-nnoremap <silent> <c-c>e :<C-u>CocList extensions<cr>
-nnoremap <silent> <c-c>c :<C-u>CocList commands<cr>
-nnoremap <silent> <c-c>o :<C-u>CocList outline<cr>
-nnoremap <silent> <c-c>s :<C-u>CocList -I symbols<cr>
-nnoremap <silent> <c-c>j :<C-u>CocNext<CR>
-nnoremap <silent> <c-c>k :<C-u>CocPrev<CR>
-nnoremap <silent> <c-c>p :<C-u>CocListResume<CR>
-nnoremap <silent> <c-c>f :call CocAction('format')<CR>
-
-" Toggle panel with Tree Views
-nnoremap <silent> <c-c>t :<C-u>CocCommand metals.tvp<CR>
-
-" Toggle Tree View 'metalsBuild'
-nnoremap <silent> <c-c>tb :<C-u>CocCommand metals.tvp metalsBuild<CR>
-
-" Toggle Tree View 'metalsCompile'
-nnoremap <silent> <c-c>tc :<C-u>CocCommand metals.tvp metalsCompile<CR>
-
-" Reveal current current class (trait or object) in Tree View 'metalsBuild'
-nnoremap <silent> <c-c>tf :<C-u>CocCommand metals.revealInTreeView metalsBuild<CR>
-
-nmap <Leader>ws <Plug>(coc-metals-expand-decoration)
-
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Use `wn` and `wp` instead of <tab> <s-tab>
-nmap <Leader>wn <Plug>VimwikiNextLink
-nmap <Leader>wp <Plug>VimwikiPrevLink
-
 " Notes
 nnoremap <silent> <leader>nn :NV<CR>
 
@@ -232,6 +151,13 @@ let g:netrw_fastbrowse = 0
 
 " markdown-preview
 " let g:mkdp_auto_start = 0 " open the preview window after entering the markdown buffer
+
+" UltiSnips
+let g:UltiSnipsEditSplit = 'vertical'
+let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
+let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
+let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
+let g:snips_author = 'Colton'
 
 " }}}
 
@@ -309,7 +235,7 @@ augroup scalaFiletypes
 augroup END
 
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 augroup foldmethod_markers
     autocmd!
@@ -340,6 +266,8 @@ set termguicolors
 
 let g:tokyonight_style = "night"
 colorscheme tokyonight
+" colorscheme moonfly
+" colorscheme nightfly
 
 " no background on gutter
 " highlight clear SignColumn
@@ -348,3 +276,34 @@ colorscheme tokyonight
 " highlight ColorColumn ctermbg=223
 
 " }}}
+
+" Lua Configuration {{{
+
+" References
+" * https://github.com/nanotee/nvim-lua-guide
+" * https://github.com/hrsh7th/nvim-cmp/
+" * https://github.com/neovim/nvim-lspconfig
+" * https://github.com/neovim/nvim-lspconfig#suggested-configuration
+" * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+" * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
+" * https://github.com/scalameta/nvim-metals/discussions/39
+" * https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
+" * https://github.com/LunarVim/Neovim-from-scratch
+" * https://github.com/ecosse3/nvim
+"
+" Dependencies
+" * brew install pyright
+" * brew install rust-analyzer
+" * brew install lua-language-server
+" * brew install stylua
+" * brew install pydocstyle
+" * brew install reorder-python-imports
+" * brew install shellcheck
+" * npm i -g typescript typescript-language-server
+" * npm i -g vls
+" * npm i -g vscode-langservers-extracted
+" * npm i -g @tailwindcss/language-server
+" * npm i -g bash-language-server
+
+lua require('user.plugins')
+lua require('user.lsp')

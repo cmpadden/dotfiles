@@ -4,17 +4,17 @@
 
 local helpers = require("modules.helpers")
 
-local function application_callback(appName, eventType, app)
-    if eventType == hs.application.watcher.launched then
-        hs.alert.show("Application Launched: " .. appName)
-        while app:mainWindow() == nil do
-            -- app:mainWindow() will be `nil` until fully loaded
-        end
-        app:mainWindow():moveToUnit(hs.layout.maximized)
-    end
-end
-APPLICATION_WATCHER = hs.application.watcher.new(application_callback)
-APPLICATION_WATCHER:start()
+-- local function application_callback(appName, eventType, app)
+--     if eventType == hs.application.watcher.launched then
+--         hs.alert.show("Application Launched: " .. appName)
+--         while app:mainWindow() == nil do
+--             -- app:mainWindow() will be `nil` until fully loaded
+--         end
+--         app:mainWindow():moveToUnit(hs.layout.maximized)
+--     end
+-- end
+-- APPLICATION_WATCHER = hs.application.watcher.new(application_callback)
+-- APPLICATION_WATCHER:start()
 
 local function callback_pathwatcher(files, flagTables)
     local mods = {}

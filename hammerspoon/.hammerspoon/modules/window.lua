@@ -1,19 +1,28 @@
---------------------------------------------------------------------------------
---                             Window Management                              --
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+--                                                  Window Management                                                  --
+-------------------------------------------------------------------------------------------------------------------------
 
+-- References
 -- https://www.hammerspoon.org/go/#winlayout
 -- https://www.hammerspoon.org/Spoons/WindowHalfsAndThirds.html
 -- https://www.hammerspoon.org/Spoons/WindowScreenLeftAndRight.html
 
-hs.window.animationDuration = 0
+local obj = {}
+obj.__index = obj
+
+obj.name = "Window Management"
+obj.version = "1.0.0"
+
+-------------------------------------------------------------------------------------------------------------------------
+--                                                       Helpers                                                       --
+-------------------------------------------------------------------------------------------------------------------------
 
 CENTER_60 = hs.geometry({ x = 0.3, y = 0.0, w = 0.4, h = 1.0 })
-CENTER_66 = hs.geometry.rect({ x = 0.1666, y = 0, w = 0.6666, h = 1 })
-LEFT_30 = hs.geometry({ x = 0.0, y = 0.0, w = 0.3, h = 1.0 })
-LEFT_70 = hs.geometry({ x = 0.0, y = 0.0, w = 0.7, h = 1.0 })
-RIGHT_30 = hs.geometry({ x = 0.70, y = 0.0, w = 0.3, h = 1.0 })
-RIGHT_70 = hs.geometry({ x = 0.3, y = 0.0, w = 0.7, h = 1.0 })
+CENTER_66 = hs.geometry({ x = 0.1666, y = 0, w = 0.6666, h = 1 })
+LEFT_30   = hs.geometry({ x = 0.0, y = 0.0, w = 0.3, h = 1.0 })
+LEFT_70   = hs.geometry({ x = 0.0, y = 0.0, w = 0.7, h = 1.0 })
+RIGHT_30  = hs.geometry({ x = 0.70, y = 0.0, w = 0.3, h = 1.0 })
+RIGHT_70  = hs.geometry({ x = 0.3, y = 0.0, w = 0.7, h = 1.0 })
 
 -- |[ ][    ]|
 local LAYOUT_PRIMARY = {
@@ -102,32 +111,56 @@ local function twoDisplayLayout()
     hs.layout.apply(layout)
 end
 
-spoon.SpoonInstall:andUse("WindowScreenLeftAndRight", {
-    hotkeys = {
-        screen_left = { { "control", "cmd" }, "Left" },
-        screen_right = { { "control", "cmd" }, "Right" },
-    },
-})
+-- enumeration of possible window layouts
+local CENTERED, PRIMARY, SECONDARY = 1, 2, 3
 
-spoon.SpoonInstall:andUse("WindowHalfsAndThirds", {
-    hotkeys = {
-        third_left = { { "cmd" }, "Left" },
-        left_half = { { "cmd", "shift" }, "Left" },
-        third_right = { { "cmd" }, "Right" },
-        right_half = { { "cmd", "shift" }, "Right" },
-        max_toggle = { { "cmd", "shift" }, "Up" },
-        center = { { "cmd" }, "Up" },
-    },
-})
+-------------------------------------------------------------------------------------------------------------------------
+--                                                       Module                                                        --
+-------------------------------------------------------------------------------------------------------------------------
 
-hs.hotkey.bind({ "cmd", "ctrl" }, "1", function()
-    hs.layout.apply(LAYOUT_PRIMARY)
-end)
+local function application_callback(app_name, event_type, app)
+    if event_type == hs.application.watcher.launched then
+        hs.alert("Launched " .. app_name)
 
-hs.hotkey.bind({ "cmd", "ctrl" }, "2", function()
-    hs.layout.apply(LAYOUT_CENTERED)
-end)
+        while app:mainWindow() == nil do
+            -- app:mainWindow() will be `nil` until fully loaded
+        end
 
-hs.hotkey.bind({ "cmd", "ctrl" }, "3", function()
-    hs.layout.apply(LAYOUT_SECONDARY)
-end)
+        if obj.layout == CENTERED then
+            app:mainWindow():moveToUnit(CENTER_66)
+        elseif obj.layout == PRIMARY then
+            app:mainWindow():moveToUnit(RIGHT_70)
+        elseif obj.layout == SECONDARY then
+            app:mainWindow():moveToUnit(CENTER_60)
+        end
+    end
+end
+
+-- Initialize window layout state, and setup application watcher
+function obj:init()
+    -- set default window layout
+    self.layout = CENTERED
+
+    -- initialize application watcher to automatically apply layout to new windows
+    self.application_watcher = hs.application.watcher.new(application_callback)
+    self.application_watcher:start()
+    hs.window.animationDuration = 0
+
+
+    hs.hotkey.bind({ "cmd", "ctrl" }, "1", function()
+        self.layout = PRIMARY
+        hs.layout.apply(LAYOUT_PRIMARY)
+    end)
+
+    hs.hotkey.bind({ "cmd", "ctrl" }, "2", function()
+        self.layout = CENTERED
+        hs.layout.apply(LAYOUT_CENTERED)
+    end)
+
+    hs.hotkey.bind({ "cmd", "ctrl" }, "3", function()
+        self.layout = SECONDARY
+        hs.layout.apply(LAYOUT_SECONDARY)
+    end)
+end
+
+return obj
