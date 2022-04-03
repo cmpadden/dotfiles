@@ -2,16 +2,19 @@
 --                                  Watchers                                  --
 --------------------------------------------------------------------------------
 
--- automatically maximize launched application main window
-local function cbApplication(appName, eventType, appObject)
+local helpers = require("modules.helpers")
+
+local function application_callback(appName, eventType, app)
     if eventType == hs.application.watcher.launched then
         hs.alert.show("Application Launched: " .. appName)
-        appObject:mainWindow():moveToUnit(hs.layout.maximized)
-        -- elseif (eventType == hs.application.watcher.activated) then
-        --     hs.alert.show('Application Activated: ' .. appName)
+        while app:mainWindow() == nil do
+            -- app:mainWindow() will be `nil` until fully loaded
+        end
+        app:mainWindow():moveToUnit(hs.layout.maximized)
     end
 end
-local _ = hs.application.watcher.new(cbApplication):start()
+APPLICATION_WATCHER = hs.application.watcher.new(application_callback)
+APPLICATION_WATCHER:start()
 
 local function callback_pathwatcher(files, flagTables)
     local mods = {}
@@ -27,25 +30,26 @@ local function callback_pathwatcher(files, flagTables)
     end
     helpers:show("Downloads Updated", mods)
 end
-local _ = hs.pathwatcher.new(os.getenv("HOME") .. "/Downloads/", callback_pathwatcher):start()
-
+DOWNLOAD_WATCHER = hs.pathwatcher.new(os.getenv("HOME") .. "/Downloads/", callback_pathwatcher)
+DOWNLOAD_WATCHER:start()
 local function caffeine_callback(type)
-    -- if type == hs.caffeinate.watcher.screensDidLock then
-    --     hs.alert.showWithImage('LOCKED', LOGO)
-    -- end
-    if type == hs.caffeinate.watcher.screensDidUnlock then
-        alertSystemInfo()
+    if type == hs.caffeinate.watcher.screensDidLock then
+        hs.alert.show("Screen Lock Event")
+    elseif type == hs.caffeinate.watcher.screensDidUnlock then
+        hs.alert.show("Screen Unlock Event")
     end
 end
 hs.caffeinate.watcher.new(caffeine_callback):start()
 
--- hs.screen.watcher.new(function()
---     hs.alert.show("Screen Watcher Event")
---     if num_of_screens ~= #hs.screen.allScreens() then
---       autolayout.autoLayout()
---       num_of_screens = #hs.screen.allScreens()
---     end
--- end):start()
+local function screen_callback()
+    hs.alert.show("Screen Watcher Event")
+    -- if num_of_screens ~= #hs.screen.allScreens() then
+    -- autolayout.autoLayout()
+    -- num_of_screens = #hs.screen.allScreens()
+    -- end
+end
+SCREEN_WATCHER = hs.screen.watcher.new(screen_callback)
+SCREEN_WATCHER:start()
 
 --local function cbBattery()
 --     local alert = string.format([[
@@ -67,4 +71,3 @@ hs.caffeinate.watcher.new(caffeine_callback):start()
 --    hs.alert.show(alert)
 --end
 --local _ = hs.battery.watcher.new(cbBattery):start()
-

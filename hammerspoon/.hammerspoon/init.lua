@@ -2,9 +2,6 @@
 
 -- https://www.hammerspoon.org/
 
--- [Lua Diagnostics. undefined-global] [W] Undefined global `hs`
-hs = hs
-
 -- custom styling for alerts
 hs.alert.defaultStyle.textColor = { hex = "#000000", alpha = 1 }
 hs.alert.defaultStyle.textFont = "Courier"
