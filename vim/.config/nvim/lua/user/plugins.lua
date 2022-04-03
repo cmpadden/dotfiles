@@ -15,12 +15,14 @@ local formatting = null_ls.builtins.formatting
 null_ls.setup({
     sources = {
         code_actions.shellcheck,
+        diagnostics.shellcheck,
         completion.spell,
         diagnostics.flake8,
         diagnostics.pydocstyle,
         formatting.autopep8,
         formatting.prettier,
         formatting.reorder_python_imports,
+        formatting.shfmt.with({ extra_args = { "-i", "4" } }),
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
     },
     on_attach = function(_, bufnr)

@@ -41,20 +41,20 @@ Plug 'vim-airline/vim-airline'                                           " https
 Plug 'vim-airline/vim-airline-themes'                                    " https://github.com/vim-airline/vim-airline-themes
 
 " color schemes
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' } " https://github.com/folke/tokyonight.nvim
-Plug 'bluz71/vim-moonfly-colors'
-Plug 'bluz71/vim-nightfly-guicolors'               " https://github.com/bluz71/vim-nightfly-guicolors
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
+Plug 'bluz71/vim-moonfly-colors'                                         " https://github.com/bluz71/vim-moonfly-colors
+Plug 'bluz71/vim-nightfly-guicolors'                                     " https://github.com/bluz71/vim-nightfly-guicolors
 
 " LSP and Completion
-Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'SirVer/ultisnips'  " https://github.com/sirver/UltiSnips
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-Plug 'jose-elias-alvarez/null-ls.nvim'  " https://github.com/jose-elias-alvarez/null-ls.nvim
+Plug 'neovim/nvim-lspconfig'                                             " https://github.com/neovim/nvim-lspconfig
+Plug 'hrsh7th/nvim-cmp'                                                  " https://github.com/hrsh7th/nvim-cmp
+Plug 'hrsh7th/cmp-nvim-lsp'                                              " https://github.com/hrsh7th/cmp-nvim-lsp
+Plug 'hrsh7th/cmp-buffer'                                                " https://github.com/hrsh7th/cmp-buffer
+Plug 'hrsh7th/cmp-path'                                                  " https://github.com/hrsh7th/cmp-path
+Plug 'hrsh7th/cmp-cmdline'                                               " https://github.com/hrsh7th/cmp-cmdline
+Plug 'SirVer/ultisnips'                                                  " https://github.com/sirver/UltiSnips
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https://github.com/quangnguyen30192/cmp-nvim-ultisnips
+Plug 'jose-elias-alvarez/null-ls.nvim'                                   " https://github.com/jose-elias-alvarez/null-ls.nvim
 
 " Initialize plugin system
 call plug#end()
@@ -298,6 +298,7 @@ colorscheme tokyonight
 " * brew install stylua
 " * brew install pydocstyle
 " * brew install reorder-python-imports
+" * brew install shellcheck
 " * npm i -g typescript typescript-language-server
 " * npm i -g vls
 " * npm i -g vscode-langservers-extracted
