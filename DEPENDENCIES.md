@@ -36,4 +36,3 @@ https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 | https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#shfmt                  | -                                             |
 | https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#sqlfluff-1             | python3 -m pip install sqlfluff               |
 | https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#stylua                 | brew install stylua                           |
-

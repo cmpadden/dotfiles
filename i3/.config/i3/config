@@ -46,7 +46,7 @@ bindsym Mod4+q kill
 
 # start dmenu (a program launcher)
 bindsym Mod4+d exec dmenu_run
-bindsym Mod4+Return exec --no-startup-id rofi -show drun -sidebar-mode 
+bindsym Mod4+Return exec --no-startup-id rofi -show drun -sidebar-mode
 
 # change focus
 bindsym Mod4+$left focus left
