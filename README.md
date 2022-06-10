@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/cmpadden/dotfiles/master/dotfiles.svg" alt="Logo project" height="80" />
+    <img src="https://user-images.githubusercontent.com/5807118/173071635-c3f78d9a-0927-4b25-9e22-3978c00f9845.svg" alt="Logo project" height="80" />
     <br>
     <br>
     <p>
