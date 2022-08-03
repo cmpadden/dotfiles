@@ -24,6 +24,7 @@ Plug 'joosepalviste/nvim-ts-context-commentstring'                       " https
 Plug 'jpalardy/vim-slime'                                                " https://github.com/jpalardy/vim-slime
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }        " https://github.com/junegunn/fzf
 Plug 'junegunn/fzf.vim'                                                  " https://github.com/junegunn/fzf.vim
+Plug 'junegunn/goyo.vim'                                                 " https://github.com/junegunn/goyo.vim
 Plug 'junegunn/vim-easy-align'                                           " https://github.com/junegunn/vim-easy-align
 Plug 'lervag/vimtex'                                                     " https://github.com/lervag/vimtex
 Plug 'lewis6991/gitsigns.nvim'                                           " https://github.com/lewis6991/gitsigns.nvim
@@ -31,6 +32,7 @@ Plug 'norcalli/nvim-colorizer.lua'                                       " https
 Plug 'nvim-lua/plenary.nvim'                                             " https://github.com/nvim-lua/plenary.nvim
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " https://github.com/nvim-treesitter/nvim-treesitter
 Plug 'nvim-treesitter/playground'                                        " https://github.com/nvim-treesitter/playground
+Plug 'preservim/vim-markdown'                                            " https://github.com/preservim/vim-markdown
 Plug 'tpope/vim-commentary'                                              " https://github.com/tpope/vim-commentary
 Plug 'tpope/vim-dadbod'                                                  " https://github.com/tpope/vim-dadbod
 Plug 'tpope/vim-fugitive'                                                " https://github.com/tpope/vim-fugitive
@@ -43,7 +45,6 @@ Plug 'vim-airline/vim-airline-themes'                                    " https
 " color schemes
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
 Plug 'bluz71/vim-moonfly-colors'                                         " https://github.com/bluz71/vim-moonfly-colors
-Plug 'bluz71/vim-nightfly-guicolors'                                     " https://github.com/bluz71/vim-nightfly-guicolors
 
 " LSP and Completion
 Plug 'neovim/nvim-lspconfig'                                             " https://github.com/neovim/nvim-lspconfig
@@ -122,11 +123,15 @@ autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 
 lua << EOF
 require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "python", "lua", "hcl", "typescript" },
   context_commentstring = {
     enable = true
   }
 }
 EOF
+
+" use pythonic folding for vim-markdown
+let g:vim_markdown_folding_style_pythonic = 1
 
 " Goyo
 let g:goyo_height = '100%'
@@ -135,8 +140,8 @@ let g:goyo_height = '100%'
 let g:airline#extensions#coc#enabled = 1
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 let g:airline_theme='minimalist'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#bufferline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#bufferline#enabled = 1
 
 " Slime
 let g:slime_target = 'tmux'
@@ -179,12 +184,12 @@ set shiftwidth=4
 set smarttab
 set softtabstop=0
 
-set textwidth=120
+set textwidth=88
 set colorcolumn=80
 
-
 " increase height to improve message visiliity
-set cmdheight=2
+" set cmdheight=2
+set cmdheight=1
 
 " hide scrollbars in GUI
 if has('gui')
@@ -201,6 +206,16 @@ set nowritebackup
 " number of milliseconds for swap file to be written
 " decreasing this improves diagnostic messages in coc-nvim
 set updatetime=300
+
+" copy to system clipboard
+vnoremap  <leader>y  "+y
+nnoremap  <leader>y  "+y
+
+" paste from system clipboard
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
 
 " }}}
 
@@ -267,7 +282,6 @@ set termguicolors
 let g:tokyonight_style = "night"
 colorscheme tokyonight
 " colorscheme moonfly
-" colorscheme nightfly
 
 " no background on gutter
 " highlight clear SignColumn
@@ -307,3 +321,13 @@ colorscheme tokyonight
 
 lua require('user.plugins')
 lua require('user.lsp')
+
+" }}}
+
+" Additional Configurations {{{
+
+if filereadable(expand("$HOME") . "/.config/nvim/work.vim")
+    runtime work.vim
+endif
+
+" }}}

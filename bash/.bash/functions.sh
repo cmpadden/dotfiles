@@ -33,16 +33,24 @@ define() {
         echo "givedef: too many arguments" >&2
         return 1
     else
-        curl "dict://dict.org/d:$1"
+        curl "dict://dict.org/d:$1" | less
     fi
 }
 
 decaesar() {
-    # attempt all variants of caesar cipher
-    # https://chris-lamb.co.uk/posts/decrypting-caesar-cipher-using-shell
-    for I in $(seq 25); do
-        echo "$1" | tr "[:lower:]" "[:upper:]" | tr $(printf "%${I}s" | tr ' ' '.')\A-Z A-ZA-Z
-    done
+    # all caesar cipher variations
+    python3 <<EOF
+import string
+for i in range(26):
+    print(
+        "".join(
+            [
+                string.ascii_uppercase[(ord(c) + i) % 26] if c != " " else " "
+                for c in "$1".upper()
+            ]
+        )
+    )
+EOF
 }
 
 htod() {
@@ -68,7 +76,6 @@ repeatn() {
 java_decompile() {
     # java decompile using binary included with IntelliJ
 
-    # Ensure 2 arguments are passed
     if [ ! "$#" -eq 2 ]; then
         echo "Usage: java_decompile <source file> <destination directory>"
         return 1
@@ -84,7 +91,8 @@ java_decompile() {
         return 1
     fi
 
-    java -cp /Applications/IntelliJ\ IDEA\ CE.app/Contents/plugins/java-decompiler/lib/java-decompiler.jar \
+    java -cp \
+        /Applications/IntelliJ\ IDEA\ CE.app/Contents/plugins/java-decompiler/lib/java-decompiler.jar \
         org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler "$1" "$2"
 }
 
@@ -136,7 +144,7 @@ EOF
 fd() {
     # FZF change directories
     local dir
-    dir=$(find ${1:-.} -type d 2>/dev/null | fzf +m) && cd "$dir" || exit
+    dir=$(find "${1:-.}" -type d 2>/dev/null | fzf +m) && cd "$dir" || exit
 }
 
 fkill() {
@@ -149,7 +157,7 @@ fkill() {
     fi
 
     if [ "x$pid" != "x" ]; then
-        echo $pid | xargs kill -${1:-9}
+        echo "$pid" | xargs kill "-${1:-9}"
     fi
 }
 
@@ -158,7 +166,7 @@ fgb() {
     local branches branch
     branches=$(git branch --all | grep -v HEAD) &&
         branch=$(echo "$branches" | fzf-tmux -d $((2 + $(wc -l <<<"$branches"))) +m) &&
-        git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+        git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
 }
 
 fpass() {
@@ -173,7 +181,7 @@ fbrew() {
     # FZF homebrew
     local prog
     prog=$(brew search | fzf +m)
-    echo $prog
+    echo "$prog"
     if [ -n "$prog" ]; then
         brew install "$prog"
     fi
@@ -206,7 +214,7 @@ color_square() {
         echo "Provide hex color code"
         return 1
     fi
-    convert -size 100x100 xc:"$1" "100x00_${1}.png"
+    convert -size 300x300 xc:"$1" "300x00_${1}.png"
 }
 
 get_background_image() {
