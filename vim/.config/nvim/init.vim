@@ -46,8 +46,14 @@ Plug 'vim-airline/vim-airline-themes'                                    " https
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }                       " https://github.com/folke/tokyonight.nvim
 Plug 'bluz71/vim-moonfly-colors'                                         " https://github.com/bluz71/vim-moonfly-colors
 
-" LSP and Completion
+" LSP
+Plug 'williamboman/mason.nvim'                                           " https://github.com/williamboman/mason.nvim
+Plug 'williamboman/mason-lspconfig.nvim'                                 " https://github.com/williamboman/mason-lspconfig.nvim
+Plug 'WhoIsSethDaniel/mason-tool-installer.nvim'                         " https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
 Plug 'neovim/nvim-lspconfig'                                             " https://github.com/neovim/nvim-lspconfig
+Plug 'jose-elias-alvarez/null-ls.nvim'                                   " https://github.com/jose-elias-alvarez/null-ls.nvim
+
+" Completion
 Plug 'hrsh7th/nvim-cmp'                                                  " https://github.com/hrsh7th/nvim-cmp
 Plug 'hrsh7th/cmp-nvim-lsp'                                              " https://github.com/hrsh7th/cmp-nvim-lsp
 Plug 'hrsh7th/cmp-buffer'                                                " https://github.com/hrsh7th/cmp-buffer
@@ -55,7 +61,6 @@ Plug 'hrsh7th/cmp-path'                                                  " https
 Plug 'hrsh7th/cmp-cmdline'                                               " https://github.com/hrsh7th/cmp-cmdline
 Plug 'SirVer/ultisnips'                                                  " https://github.com/sirver/UltiSnips
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https://github.com/quangnguyen30192/cmp-nvim-ultisnips
-Plug 'jose-elias-alvarez/null-ls.nvim'                                   " https://github.com/jose-elias-alvarez/null-ls.nvim
 
 " Initialize plugin system
 call plug#end()
@@ -122,11 +127,46 @@ autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
 " Global Variables (Plugin Configurations) {{{
 
 lua << EOF
+require("mason").setup()
+
+-- https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        "bashls",       -- Bash
+        "pyright",      -- Python
+        "sumneko_lua",  -- Lua
+        "tailwindcss",  -- Tailwind
+        "tsserver",     -- Typescript
+    }
+})
+
+-- https://github.com/williamboman/mason.nvim/issues/103#issuecomment-1190423009
+require('mason-tool-installer').setup {
+    ensure_installed = {
+        'black',
+        'flake8',
+        'isort',
+        'prettier',
+        'pydocstyle',
+        'shellcheck',
+        'shfmt',
+        'sqlfluff',
+        'stylua',
+        'vale',
+    },
+    run_on_start = false,
+}
+
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "lua", "hcl", "typescript" },
-  context_commentstring = {
-    enable = true
-  }
+    ensure_installed = {
+        "hcl",
+        "lua",
+        "python",
+        "typescript",
+    },
+    context_commentstring = {
+      enable = true
+    }
 }
 EOF
 
@@ -167,6 +207,11 @@ let g:snips_author = 'Colton'
 " }}}
 
 " General Settings {{{
+
+" If you plan to use per-project virtualenvs often, you should assign one virtualenv for
+" Neovim and hard-code the interpreter path via |g:python3_host_prog| so that the
+" "pynvim" package is not required for each virtualenv.
+let g:python3_host_prog = '/usr/bin/python3'
 
 " https://neovim.io/doc/user/vim_diff.html
 " set hidden
@@ -279,8 +324,7 @@ set signcolumn=yes
 " support true colors
 set termguicolors
 
-let g:tokyonight_style = "night"
-colorscheme tokyonight
+colorscheme tokyonight-night
 " colorscheme moonfly
 
 " no background on gutter
@@ -305,19 +349,6 @@ colorscheme tokyonight
 " * https://github.com/LunarVim/Neovim-from-scratch
 " * https://github.com/ecosse3/nvim
 "
-" Dependencies
-" * brew install pyright
-" * brew install rust-analyzer
-" * brew install lua-language-server
-" * brew install stylua
-" * brew install pydocstyle
-" * brew install reorder-python-imports
-" * brew install shellcheck
-" * npm i -g typescript typescript-language-server
-" * npm i -g vls
-" * npm i -g vscode-langservers-extracted
-" * npm i -g @tailwindcss/language-server
-" * npm i -g bash-language-server
 
 lua require('user.plugins')
 lua require('user.lsp')

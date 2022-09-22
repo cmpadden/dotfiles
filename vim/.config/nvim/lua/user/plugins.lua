@@ -18,6 +18,7 @@ null_ls.setup({
         diagnostics.shellcheck,
         diagnostics.sqlfluff,
         completion.spell,
+        diagnostics.vale,
         diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
         -- diagnostics.pydocstyle,
         formatting.black,
