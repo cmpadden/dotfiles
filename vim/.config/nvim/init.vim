@@ -1,4 +1,6 @@
-" Plugins {{{
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                       Plugins                                        "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
@@ -65,67 +67,6 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https
 " Initialize plugin system
 call plug#end()
 
-" }}}
-
-" Mappings  {{{
-
-let mapleader = "\<Space>"
-
-nmap <leader>ve :e $MYVIMRC<CR>
-nmap <leader>vr :source $MYVIMRC<CR>
-
-" override `ag` command to exclude filenames in search
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
-
-" fzf
-nnoremap <c-f>b :Buffers<CR>
-nnoremap <c-f>c :BCommits<CR>
-nnoremap <c-f>g :Ag<CR>
-nnoremap <c-f>h :Helptags<CR>
-nnoremap <c-f>l :Lines<CR>
-nnoremap <c-f>n :GFiles<CR>
-nnoremap <c-f>f :Files<CR>
-nnoremap <c-f>s :Snippets<CR>
-
-" easy-align
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
-
-" buffer navigation
-nnoremap <Tab> :bnext<CR>
-nnoremap <S-Tab> :bprevious<CR>
-
-" command navigation
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
-
-" visually selected search
-vnoremap // y/\V<C-R>"<CR>
-
-" repeated indentation
-vnoremap < <gv
-vnoremap > >gv
-
-" run SQL on last using this currently hard-coded DB
-vnoremap <C-r> :DB g:d<CR>
-
-" run Python code
-augroup pythonMappings
-    autocmd!
-    autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
-augroup END
-
-" Notes
-nnoremap <silent> <leader>nn :NV<CR>
-
-" set workspace for python files
-" https://github.com/neoclide/coc.nvim/wiki/Using-workspaceFolders#resolve-workspace-folder
-autocmd FileType python let b:coc_root_patterns = ['.envrc', '.git']
-
-" }}}
-
-" Global Variables (Plugin Configurations) {{{
-
 lua << EOF
 require("mason").setup()
 
@@ -170,111 +111,9 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
-" use pythonic folding for vim-markdown
-let g:vim_markdown_folding_style_pythonic = 1
-
-" Goyo
-let g:goyo_height = '100%'
-
-" Airline
-let g:airline#extensions#coc#enabled = 1
-let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-let g:airline_theme='minimalist'
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#bufferline#enabled = 1
-
-" Slime
-let g:slime_target = 'tmux'
-let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
-let g:slime_dont_ask_default = 1
-
-" EditorConfig
-let g:EditorConfig_exclude_patterns = ['fugitive://.\*', 'scp://.\*']
-
-" disable persistant directory listings
-let g:netrw_fastbrowse = 0
-
-" markdown-preview
-" let g:mkdp_auto_start = 0 " open the preview window after entering the markdown buffer
-
-" UltiSnips
-let g:UltiSnipsEditSplit = 'vertical'
-let g:UltiSnipsJumpBackwardTrigger = '<c-p>'
-let g:UltiSnipsJumpForwardTrigger  = '<c-n>'
-let g:UltiSnipsSnippetDirectories=['custom_snippets', 'UltiSnips']
-let g:snips_author = 'Colton'
-
-" }}}
-
-" General Settings {{{
-
-" If you plan to use per-project virtualenvs often, you should assign one virtualenv for
-" Neovim and hard-code the interpreter path via |g:python3_host_prog| so that the
-" "pynvim" package is not required for each virtualenv.
-let g:python3_host_prog = '/usr/bin/python3'
-
-" https://neovim.io/doc/user/vim_diff.html
-" set hidden
-" set incsearch
-" set backspace=2
-
-set list listchars=tab:>-,trail:.,extends:>
-set noswapfile
-set nowrap
-set ignorecase
-set smartcase
-
-set expandtab
-set shiftwidth=4
-set smarttab
-set softtabstop=0
-
-set textwidth=88
-set colorcolumn=80
-
-" increase height to improve message visiliity
-" set cmdheight=2
-set cmdheight=1
-
-" hide scrollbars in GUI
-if has('gui')
-    set guioptions-=r
-    set guioptions-=L
-endif
-
-set dictionary=/usr/share/dict/words
-
-" language servers can have issues with backup files
-set nobackup
-set nowritebackup
-
-" number of milliseconds for swap file to be written
-" decreasing this improves diagnostic messages in coc-nvim
-set updatetime=300
-
-" copy to system clipboard
-vnoremap  <leader>y  "+y
-nnoremap  <leader>y  "+y
-
-" paste from system clipboard
-nnoremap <leader>p "+p
-nnoremap <leader>P "+P
-vnoremap <leader>p "+p
-vnoremap <leader>P "+P
-
-" }}}
-
-" Commands {{{
-
-command! Hex :%!xxd
-command! Dehex :%!xxd -r
-
-" alias :W to :w for sanity reasons
-command! W w
-
-" }}}
-
-" Auto Commands {{{
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                    Auto Commands                                     "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " after opening `help` files, move them to the right
 augroup helpFileType
@@ -303,39 +142,15 @@ augroup foldmethod_markers
     autocmd FileType python setlocal foldmethod=marker
 augroup END
 
-" }}}
+" run Python code
+augroup pythonMappings
+    autocmd!
+    autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
+augroup END
 
-" Functions {{{
-
-function! ToggleSignColumn()
-    if &signcolumn ==# 'no'
-        let &signcolumn = 'yes'
-    else
-        let &signcolumn = 'no'
-    endif
-endfunction
-
-" }}}
-
-" Formatting and Colors {{{
-
-set signcolumn=yes
-
-" support true colors
-set termguicolors
-
-colorscheme tokyonight-night
-" colorscheme moonfly
-
-" no background on gutter
-" highlight clear SignColumn
-
-" https://codeyarns.com/2011/07/29/vim-set-color-of-colorcolumn/
-" highlight ColorColumn ctermbg=223
-
-" }}}
-
-" Lua Configuration {{{
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                         Lua                                          "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " References
 " * https://github.com/nanotee/nvim-lua-guide
@@ -348,17 +163,18 @@ colorscheme tokyonight-night
 " * https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 " * https://github.com/LunarVim/Neovim-from-scratch
 " * https://github.com/ecosse3/nvim
-"
 
+lua require('user.globals')
+lua require('user.options')
+lua require('user.keymap')
 lua require('user.plugins')
 lua require('user.lsp')
+lua require('user.commands')
 
-" }}}
-
-" Additional Configurations {{{
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                         Work                                         "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if filereadable(expand("$HOME") . "/.config/nvim/work.vim")
     runtime work.vim
 endif
-
-" }}}
