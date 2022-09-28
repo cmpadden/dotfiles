@@ -64,52 +64,12 @@ Plug 'hrsh7th/cmp-cmdline'                                               " https
 Plug 'SirVer/ultisnips'                                                  " https://github.com/sirver/UltiSnips
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https://github.com/quangnguyen30192/cmp-nvim-ultisnips
 
+
+" Personal
+Plug 'cmpadden/pomodoro.nvim'
+
 " Initialize plugin system
 call plug#end()
-
-lua << EOF
-require("mason").setup()
-
--- https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers
-require("mason-lspconfig").setup({
-    ensure_installed = {
-        "bashls",       -- Bash
-        "pyright",      -- Python
-        "sumneko_lua",  -- Lua
-        "tailwindcss",  -- Tailwind
-        "tsserver",     -- Typescript
-    }
-})
-
--- https://github.com/williamboman/mason.nvim/issues/103#issuecomment-1190423009
-require('mason-tool-installer').setup {
-    ensure_installed = {
-        'black',
-        'flake8',
-        'isort',
-        'prettier',
-        'pydocstyle',
-        'shellcheck',
-        'shfmt',
-        'sqlfluff',
-        'stylua',
-        'vale',
-    },
-    run_on_start = false,
-}
-
-require'nvim-treesitter.configs'.setup {
-    ensure_installed = {
-        "hcl",
-        "lua",
-        "python",
-        "typescript",
-    },
-    context_commentstring = {
-      enable = true
-    }
-}
-EOF
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                    Auto Commands                                     "
@@ -152,23 +112,10 @@ augroup END
 "                                         Lua                                          "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" References
-" * https://github.com/nanotee/nvim-lua-guide
-" * https://github.com/hrsh7th/nvim-cmp/
-" * https://github.com/neovim/nvim-lspconfig
-" * https://github.com/neovim/nvim-lspconfig#suggested-configuration
-" * https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-" * https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion#nvim-cmp
-" * https://github.com/scalameta/nvim-metals/discussions/39
-" * https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-" * https://github.com/LunarVim/Neovim-from-scratch
-" * https://github.com/ecosse3/nvim
-
 lua require('user.globals')
 lua require('user.options')
 lua require('user.keymap')
 lua require('user.plugins')
-lua require('user.lsp')
 lua require('user.commands')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
