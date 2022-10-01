@@ -64,49 +64,11 @@ Plug 'hrsh7th/cmp-cmdline'                                               " https
 Plug 'SirVer/ultisnips'                                                  " https://github.com/sirver/UltiSnips
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'                               " https://github.com/quangnguyen30192/cmp-nvim-ultisnips
 
-
 " Personal
 Plug 'cmpadden/pomodoro.nvim'
 
 " Initialize plugin system
 call plug#end()
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                    Auto Commands                                     "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" after opening `help` files, move them to the right
-augroup helpFileType
-    autocmd!
-    autocmd FileType help wincmd L
-augroup END
-
-" enable spell checking for certain file types
-augroup spellChecking
-    autocmd!
-    autocmd FileType vimwiki setlocal spell
-    autocmd FileType markdown setlocal spell
-augroup END
-
-" Help Vim recognize *.sbt and *.sc as Scala files
-augroup scalaFiletypes
-    autocmd BufRead,BufNewFile *.sbt,*.sc set filetype=scala
-augroup END
-
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-augroup foldmethod_markers
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-    autocmd FileType python setlocal foldmethod=marker
-augroup END
-
-" run Python code
-augroup pythonMappings
-    autocmd!
-    autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
-augroup END
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                         Lua                                          "
@@ -117,6 +79,7 @@ lua require('user.options')
 lua require('user.keymap')
 lua require('user.plugins')
 lua require('user.commands')
+lua require('user.augroups')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                         Work                                         "
