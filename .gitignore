@@ -5,7 +5,7 @@
 vim/.vim/*.vim
 vim/.vim/.netrwhist
 vim/.vim/autoload/
-vim/.vim/plugged/
+vim/.config/nvim/plugin/packer_compiled.lua
 vim/.vim/spell/
 vim/.vim/view
 
