@@ -212,7 +212,7 @@ null_ls.setup({
         completion.spell,
         diagnostics.vale,
         diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
-        -- diagnostics.pydocstyle,
+        diagnostics.pydocstyle,
         formatting.black,
         formatting.sqlfluff,
         formatting.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
