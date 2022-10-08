@@ -1,5 +1,7 @@
 vim.g.mapleader = " " -- <space>
 
+vim.g.maplocalleader = ","
+
 -- edit and reload init.vim
 vim.keymap.set('n', '<leader>ve', ':e ' .. os.getenv("MYVIMRC") .. '<CR>')
 vim.keymap.set('n', '<leader>vr', ':source ' .. os.getenv("MYVIMRC") .. '<CR>')
