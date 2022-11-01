@@ -10,11 +10,6 @@ vim.g.vim_markdown_folding_style_pythonic = 1
 
 vim.g.goyo_height = "100%"
 
--- Airline
-
-vim.g["airline#parts#ffenc#skip_expected_string"] = "utf-8[unix]"
-vim.g.airline_theme = "minimalist"
-
 -- Slime
 
 vim.g.slime_target = "tmux"

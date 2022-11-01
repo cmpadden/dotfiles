@@ -27,3 +27,12 @@ vim.opt.writebackup = false
 vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true -- support true colors
 vim.cmd("colorscheme tokyonight-night")
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevelstart = 99
+
+-- new in 0.8.0!
+vim.opt.ls = 0
+vim.opt.ch = 0
+-- set winbar=%f
