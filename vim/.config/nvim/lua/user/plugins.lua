@@ -230,7 +230,6 @@ null_ls.setup({
         formatting.prettier,
         formatting.isort,
         formatting.shfmt.with({ extra_args = { "-i", "4" } }),
-        formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
     },
     on_attach = function(_, bufnr)
         vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", {})
