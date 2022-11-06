@@ -49,8 +49,6 @@ require('packer').startup(function(use)
     use 'tpope/vim-obsession'                          -- https://github.com/tpope/vim-obsession
     use 'tpope/vim-rhubarb'                            -- https://github.com/tpope/vim-rhubarb
     use 'tpope/vim-surround'                           -- https://github.com/tpope/vim-surround
-    use 'vim-airline/vim-airline'                      -- https://github.com/vim-airline/vim-airline
-    use 'vim-airline/vim-airline-themes'               -- https://github.com/vim-airline/vim-airline-themes
     use 'Olical/conjure'
 
     -- color schemes
