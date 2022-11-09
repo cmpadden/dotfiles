@@ -8,6 +8,7 @@ vim/.vim/autoload/
 vim/.config/nvim/plugin/packer_compiled.lua
 vim/.vim/spell/
 vim/.vim/view
+vim/.config/nvim/work.vim
 
 qutebrowser/.qutebrowser/bookmarks/urls
 qutebrowser/.qutebrowser/quickmarks

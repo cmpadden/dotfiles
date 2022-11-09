@@ -91,3 +91,9 @@ require('user.keymap')
 require('user.plugins')
 require('user.commands')
 require('user.augroups')
+
+vim.cmd([[
+  if filereadable(expand("$HOME") . "/.config/nvim/work.vim")
+    runtime work.vim
+  endif
+]])
