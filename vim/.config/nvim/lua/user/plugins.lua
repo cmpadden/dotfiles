@@ -22,7 +22,7 @@ require("mason-tool-installer").setup({
         "flake8",
         "isort",
         "prettier",
-        "pydocstyle",
+        -- "pydocstyle",
         "shellcheck",
         "shfmt",
         "sqlfluff",
@@ -56,21 +56,42 @@ require("nvim-treesitter.configs").setup({
     },
     indent = {
         enable = true,
-    }
+    },
 })
+
+-----------------------------------------------------------------------------------------
+--                                       luasnip                                       --
+-----------------------------------------------------------------------------------------
+
+require("luasnip.loaders.from_snipmate").lazy_load()
+
+vim.cmd([[
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
+inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
+
+snoremap <silent> <Tab> <cmd>lua require('luasnip').jump(1)<Cr>
+snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
+]])
+
+vim.api.nvim_create_user_command(
+    "EditSnippets",
+    'lua require("luasnip.loaders").edit_snippet_files()',
+    { desc = "Edit LuaSnip snippets" }
+)
 
 -----------------------------------------------------------------------------------------
 --                                         LSP                                         --
 -----------------------------------------------------------------------------------------
 
 local cmp = require("cmp")
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 local lspconfig = require("lspconfig")
 
 cmp.setup({
     snippet = {
         expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+            -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+            require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
         end,
     },
     mapping = {
@@ -93,6 +114,7 @@ cmp.setup({
         { name = "nvim_lsp" },
         { name = "ultisnips" },
         { name = "buffer" },
+        { name = "luasnip" },
     }),
 })
 
@@ -160,7 +182,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
 end
 
 local servers = {
@@ -223,7 +245,7 @@ null_ls.setup({
         completion.spell,
         diagnostics.vale,
         diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
-        diagnostics.pydocstyle,
+        -- diagnostics.pydocstyle,
         formatting.black,
         formatting.sqlfluff,
         formatting.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
@@ -233,7 +255,7 @@ null_ls.setup({
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
     },
     on_attach = function(_, bufnr)
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", {})
     end,
 })
 
@@ -286,6 +308,17 @@ if not colorizer_ok then
     return
 end
 colorizer.setup()
+
+-----------------------------------------------------------------------------------------
+--                                         fzf                                         --
+-----------------------------------------------------------------------------------------
+
+require("fzf-lua").setup({
+    winopts = {
+        height = 0.50,
+        width = 0.75,
+    },
+})
 
 -----------------------------------------------------------------------------------------
 --                                      Personal                                       --

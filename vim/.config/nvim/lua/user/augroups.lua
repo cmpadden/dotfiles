@@ -37,7 +37,6 @@ vim.cmd([[
   augroup foldmethod_markers
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
-    autocmd FileType python setlocal foldmethod=marker
   augroup END
 ]])
 
