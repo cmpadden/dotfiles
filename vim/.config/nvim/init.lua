@@ -22,7 +22,6 @@ require('packer').startup(function(use)
 
     use 'editorconfig/editorconfig-vim'                -- https://github.com/editorconfig/editorconfig-vim
     use 'ggandor/lightspeed.nvim'                      -- https://github.com/ggandor/lightspeed.nvim
-    use 'honza/vim-snippets'                           -- https://github.com/honza/vim-snippets
     use { 'iamcco/markdown-preview.nvim',
           run = 'cd app && yarn install',
           cmd = 'MarkdownPreview' }                    -- https://github.com/iamcco/markdown-preview.nvim
@@ -32,7 +31,7 @@ require('packer').startup(function(use)
     use { 'junegunn/fzf',
           dir = '~/.fzf',
           run = './install --bin' }                    -- https://github.com/junegunn/fzf
-    use 'junegunn/fzf.vim'                             -- https://github.com/junegunn/fzf.vim
+    use 'ibhagwan/fzf-lua'                             -- https://github.com/ibhagwan/fzf-lua
     use 'junegunn/goyo.vim'                            -- https://github.com/junegunn/goyo.vim
     use 'junegunn/vim-easy-align'                      -- https://github.com/junegunn/vim-easy-align
     use 'lervag/vimtex'                                -- https://github.com/lervag/vimtex
@@ -49,7 +48,7 @@ require('packer').startup(function(use)
     use 'tpope/vim-obsession'                          -- https://github.com/tpope/vim-obsession
     use 'tpope/vim-rhubarb'                            -- https://github.com/tpope/vim-rhubarb
     use 'tpope/vim-surround'                           -- https://github.com/tpope/vim-surround
-    use 'Olical/conjure'
+    -- use 'Olical/conjure'
 
     -- color schemes
     use { 'folke/tokyonight.nvim',
@@ -69,8 +68,10 @@ require('packer').startup(function(use)
     use 'hrsh7th/cmp-buffer'                           -- https://github.com/hrsh7th/cmp-buffer
     use 'hrsh7th/cmp-path'                             -- https://github.com/hrsh7th/cmp-path
     use 'hrsh7th/cmp-cmdline'                          -- https://github.com/hrsh7th/cmp-cmdline
-    use 'SirVer/ultisnips'                             -- https://github.com/sirver/UltiSnips
-    use 'quangnguyen30192/cmp-nvim-ultisnips'          -- https://github.com/quangnguyen30192/cmp-nvim-ultisnips
+
+    -- snippets
+    use 'L3MON4D3/LuaSnip'
+    use 'saadparwaiz1/cmp_luasnip'
 
     -- personal
     use 'cmpadden/pomodoro.nvim'
