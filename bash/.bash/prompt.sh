@@ -50,11 +50,16 @@ apply_colors() {
 #                                     PS1                                     #
 ###############################################################################
 
+# color codes
+cc_background="231"
+cc_foreground="232"
+cc_secondary="235"
+
 # Apply custom colors when using a multiplexor, but not the default shell
 if [ "$TERM" == "screen-256color" ]; then
   # must be single-quotes for expressions to expand
-  PS1='$(apply_colors "$(prompt_venv)" "255" "0")'
-  PS1+='$(apply_colors "$(prompt_git_branch)" "250" "0")'
-  PS1+='$(apply_colors "$(pwd)" "255" "0")'
+  PS1='$(apply_colors "$(prompt_venv)" "$cc_background" "$cc_foreground")'
+  PS1+='$(apply_colors "$(prompt_git_branch)" "$cc_secondary" "$cc_background")'
+  PS1+='$(apply_colors "$(pwd)" "$cc_background" "$cc_foreground")'
   PS1+='\n> '
 fi
