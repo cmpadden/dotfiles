@@ -22,7 +22,7 @@ require("mason-tool-installer").setup({
         "flake8",
         "isort",
         "prettier",
-        -- "pydocstyle",
+        "ruff",
         "shellcheck",
         "shfmt",
         "sqlfluff",
@@ -239,20 +239,31 @@ local formatting = null_ls.builtins.formatting
 
 null_ls.setup({
     sources = {
+        -- python
+        -- diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
+        -- diagnostics.pydocstyle,
+        diagnostics.ruff,
+        formatting.black,
+        formatting.isort,
+
+        -- snowflake
+        diagnostics.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
+        formatting.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
+
+        -- shell
         code_actions.shellcheck,
         diagnostics.shellcheck,
-        diagnostics.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
+        formatting.shfmt.with({ extra_args = { "-i", "4" } }),
+
+        -- prose
         completion.spell,
         diagnostics.vale,
-        diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
-        -- diagnostics.pydocstyle,
-        formatting.black,
-        formatting.sqlfluff,
-        formatting.sqlfluff.with({ extra_args = { "--dialect", "snowflake" } }),
-        formatting.prettier,
-        formatting.isort,
-        formatting.shfmt.with({ extra_args = { "-i", "4" } }),
+
+        -- lua
         formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
+
+        -- javascript
+        formatting.prettier,
     },
     on_attach = function(_, bufnr)
         vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", {})
@@ -316,7 +327,7 @@ colorizer.setup()
 require("fzf-lua").setup({
     winopts = {
         height = 0.50,
-        width = 0.75,
+        width = 0.85,
     },
 })
 
