@@ -28,11 +28,3 @@ vim.g.netrw_fastbrowse = 0
 -- open the preview window after entering the markdown buffer
 
 vim.g.mkdp_auto_start = 0
-
--- UltiSnips
-
-vim.g.UltiSnipsEditSplit = "vertical"
-vim.g.UltiSnipsJumpBackwardTrigger = "<c-p>"
-vim.g.UltiSnipsJumpForwardTrigger = "<c-n>"
-vim.g.UltiSnipsSnippetDirectories = { "custom_snippets", "UltiSnips" }
-vim.g.snips_author = "Colton"
