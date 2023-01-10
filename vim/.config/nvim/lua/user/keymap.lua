@@ -1,7 +1,3 @@
--- edit and reload init.vim
-vim.keymap.set("n", "<leader>ve", ":e " .. os.getenv("MYVIMRC") .. "<CR>")
-vim.keymap.set("n", "<leader>vr", ":source " .. os.getenv("MYVIMRC") .. "<CR>")
-
 -- buffer navigation
 vim.keymap.set("n", "<Tab>", ":bnext<CR>")
 vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>")

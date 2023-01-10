@@ -5,6 +5,8 @@
 vim.g.mapleader = " " -- <space>
 vim.g.maplocalleader = ","
 
+-- NOTE: use `gx` to open a URL in the web browser
+
 require("user.lazy")
 require("user.globals")
 require("user.options")
