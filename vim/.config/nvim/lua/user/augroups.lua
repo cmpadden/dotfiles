@@ -2,20 +2,13 @@
 --                                    Auto Commands                                     --
 ------------------------------------------------------------------------------------------
 
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-  augroup end
-]])
-
 -- after opening `help` files, move them to the right
-vim.cmd([[
-  augroup helpFileType
-    autocmd!
-    autocmd FileType help wincmd L
-  augroup END
-]])
+-- vim.cmd([[
+--   augroup helpFileType
+--     autocmd!
+--     autocmd FileType help wincmd L
+--   augroup END
+-- ]])
 
 -- enable spell checking for certain file types
 vim.cmd([[
@@ -37,7 +30,6 @@ vim.cmd([[
   augroup foldmethod_markers
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
-    autocmd FileType python setlocal foldmethod=marker
   augroup END
 ]])
 

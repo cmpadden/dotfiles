@@ -17,12 +17,6 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command(
-  'Ag',
-  "call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)",
-  {bang = true, desc = 'Override `Ag` command to exclude filenames in search'}
-)
-
-vim.api.nvim_create_user_command(
   'ToggleSignColumn',
   function(input)
     if vim.o.signcolumn == 'yes' then
@@ -32,4 +26,10 @@ vim.api.nvim_create_user_command(
     end
   end,
   {desc = 'Toggle the `&signcolumn`'}
+)
+
+vim.api.nvim_create_user_command(
+  'Notes',
+  ":e ~/notes.md.asc",
+  {bang = false, desc = 'Edit notes.md'}
 )

@@ -4,19 +4,36 @@
 alias drmf='docker rmi -f $(docker images -q)'
 alias drmp='docker kill $(docker ps -q)'
 
-# git
+########################################################################################
+#                                         Git                                          #
+########################################################################################
+
+alias g="git"
+
+alias gs="git add"
+alias gc="git checkout"
 alias gs="git status ."
 alias gd="git diff"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
-alias git_delete_merged="git branch --merged | grep -v 'master' | xargs git branch -d"
+alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
 
-# python
+alias gcm="git checkout main"
+alias gpm="git pull origin main"
+alias gcb="git checkout -b"
+
+########################################################################################
+#                                        Python                                        #
+########################################################################################
+
 alias venvc='python3 -m virtualenv venv'
 alias ipy="python -m IPython --matplotlib"
-alias mkpyenv="echo \"layout python3\" > .envrc && direnv allow"
+alias mkpyenv="echo \"layout pyenv 3.9.13 \" > .envrc && direnv allow"
 alias pydoc='python -m pydoc'
 
-# Node
+########################################################################################
+#                                      JavaScript                                      #
+########################################################################################
+
 alias npm="pnpm"
 
 # google cloud platform
@@ -25,7 +42,7 @@ alias gcp_project="gcloud info --format='value(config.project)'"
 # vim
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
-    alias n="nvim"
+    alias v="nvim"
 fi
 
 # rsync
@@ -62,6 +79,9 @@ fi
 
 # notes
 if [ -f "$HOME/notes.md.asc" ]; then
-    alias notes="tmux split-window -h 'nvim notes.md.asc'"
+    alias notes="nvim \$HOME/notes.md.asc"
+    alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
     alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
 fi
+
+alias d="date +%Y%m%d"

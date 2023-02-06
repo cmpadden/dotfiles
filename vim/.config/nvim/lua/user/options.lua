@@ -23,11 +23,6 @@ vim.opt.dictionary = "/usr/share/dict/words"
 vim.opt.backup = false
 vim.opt.writebackup = false
 
--- colorscheme
-vim.opt.signcolumn = "yes"
-vim.opt.termguicolors = true -- support true colors
-vim.cmd("colorscheme tokyonight-night")
-
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevelstart = 99

@@ -221,7 +221,7 @@ get_background_image() {
     osascript -e 'tell app "finder" to get posix path of (get desktop picture as alias)'
 }
 
-cheat() {
+tldr() {
     # community driven documentation
     curl cheat.sh/"$1"
 }
