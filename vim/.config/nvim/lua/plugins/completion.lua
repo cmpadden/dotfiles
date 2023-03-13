@@ -9,10 +9,11 @@ return {
         "hrsh7th/nvim-cmp",
         -- event = "InsertEnter",
         dependencies = {
-            "hrsh7th/cmp-nvim-lsp", -- https://github.com/hrsh7th/cmp-nvim-lsp
             "hrsh7th/cmp-buffer", -- https://github.com/hrsh7th/cmp-buffer
-            "hrsh7th/cmp-path", -- https://github.com/hrsh7th/cmp-path
+            "hrsh7th/cmp-cmdline", -- https://github.com/hrsh7th/cmp-cmdline
             "hrsh7th/cmp-emoji", -- https://github.com/hrsh7th/cmp-emoji
+            "hrsh7th/cmp-nvim-lsp", -- https://github.com/hrsh7th/cmp-nvim-lsp
+            "hrsh7th/cmp-path", -- https://github.com/hrsh7th/cmp-path
             "saadparwaiz1/cmp_luasnip", -- https://github.com/saadparwaiz1/cmp_luasnip
         },
         config = function()
@@ -147,7 +148,6 @@ return {
                 "jsonls",
                 "pyright",
                 "rust_analyzer",
-                "sumneko_lua",
                 "tailwindcss",
                 "tsserver",
                 "vuels",
