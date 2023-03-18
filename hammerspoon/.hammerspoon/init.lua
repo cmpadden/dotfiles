@@ -3,15 +3,15 @@
 -- https://www.hammerspoon.org/
 
 -- custom styling for alerts
-hs.alert.defaultStyle.textColor = { hex = "#000000", alpha = 1 }
-hs.alert.defaultStyle.textFont = "Courier"
-hs.alert.defaultStyle.textSize = 12
-hs.alert.defaultStyle.fillColor = { hex = "#FFFFFF", alpha = 0.95 }
-hs.alert.defaultStyle.strokeColor = { hex = "#000000", alpha = 0.95 }
-hs.alert.defaultStyle.strokeWidth = 2
-hs.alert.defaultStyle.padding = 12
-hs.alert.defaultStyle.radius = 1
-hs.alert.defaultStyle.fadeInDuration = 0
+hs.alert.defaultStyle.textColor       = { hex = "#000000", alpha = 1 }
+hs.alert.defaultStyle.textFont        = "Courier"
+hs.alert.defaultStyle.textSize        = 12
+hs.alert.defaultStyle.fillColor       = { hex = "#FFFFFF", alpha = 0.95 }
+hs.alert.defaultStyle.strokeColor     = { hex = "#000000", alpha = 0.95 }
+hs.alert.defaultStyle.strokeWidth     = 2
+hs.alert.defaultStyle.padding         = 12
+hs.alert.defaultStyle.radius          = 1
+hs.alert.defaultStyle.fadeInDuration  = 0
 hs.alert.defaultStyle.fadeOutDuration = 2
 
 -- https://www.hammerspoon.org/docs/hs.ipc.html#cliInstall
@@ -34,10 +34,10 @@ WINDOW_MANAGER:init()
 
 -- Custom Spoons
 
-hs.loadSpoon("Pass")
-spoon.Pass:bindHotkeys({
-    toggle_pass = { { "cmd", "ctrl" }, "p" },
-    toggle_otp = { { "cmd", "ctrl" }, "o" },
-})
+-- hs.loadSpoon("Pass")
+-- spoon.Pass:bindHotkeys({
+--     toggle_pass = { { "cmd", "ctrl" }, "p" },
+--     toggle_otp = { { "cmd", "ctrl" }, "o" },
+-- })
 
 hs.alert.show("Configuration Loaded")

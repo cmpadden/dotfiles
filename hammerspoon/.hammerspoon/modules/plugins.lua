@@ -18,17 +18,17 @@ spoon.SpoonInstall:andUse("ReloadConfiguration", {
 --   }
 -- })
 
--- https://www.hammerspoon.org/Spoons/PopupTranslateSelection.html
-spoon.SpoonInstall:andUse("PopupTranslateSelection", {
-    hotkeys = {
-        translate = { HYPER, "t" },
-        translate_fr_en = { HYPER_SHIFT, "e" },
-        translate_en_fr = { HYPER_SHIFT, "f" },
-    },
-    config = {
-        popup_size = hs.geometry.size(400, 600),
-    },
-})
+-- -- https://www.hammerspoon.org/Spoons/PopupTranslateSelection.html
+-- spoon.SpoonInstall:andUse("PopupTranslateSelection", {
+--     hotkeys = {
+--         translate = { HYPER, "t" },
+--         translate_fr_en = { HYPER_SHIFT, "e" },
+--         translate_en_fr = { HYPER_SHIFT, "f" },
+--     },
+--     config = {
+--         popup_size = hs.geometry.size(400, 600),
+--     },
+-- })
 
 -- https://www.hammerspoon.org/Spoons/LookupSelection.html
 spoon.SpoonInstall:andUse("LookupSelection", {
@@ -40,14 +40,11 @@ spoon.SpoonInstall:andUse("LookupSelection", {
 -- https://www.hammerspoon.org/Spoons/AppLauncher.html
 spoon.SpoonInstall:andUse("AppLauncher", {
     hotkeys = {
-        c = "Calendar",
+        i = "Google Chrome",
         k = "kitty",
-        l = "Slack",
         m = "Mail",
         n = "Notion",
-        p = "Spotify",
-        s = "Safari",
-        z = "zoom.us",
+        s = "Slack",
     },
     config = {
         modifiers = HYPER,
@@ -82,17 +79,3 @@ spoon.SpoonInstall:andUse("Seal", {
     end,
     start = true,
 })
-
--- https://www.hammerspoon.org/Spoons/WindowGrid.html
-spoon.SpoonInstall:andUse("WindowGrid", {
-    hotkeys = {
-        show_grid = { HYPER, "g" },
-    },
-})
-
--- https://github.com/dbalatero/VimMode.spoon
--- local VimMode = hs.loadSpoon('VimMode')
--- local vim = VimMode:new()
--- vim
---   :disableForApp('zoom.us')
---   :enterWithSequence('jk')

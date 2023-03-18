@@ -32,24 +32,27 @@ local function callback_pathwatcher(files, flagTables)
 end
 DOWNLOAD_WATCHER = hs.pathwatcher.new(os.getenv("HOME") .. "/Downloads/", callback_pathwatcher)
 DOWNLOAD_WATCHER:start()
-local function caffeine_callback(type)
-    if type == hs.caffeinate.watcher.screensDidLock then
-        hs.alert.show("Screen Lock Event")
-    elseif type == hs.caffeinate.watcher.screensDidUnlock then
-        hs.alert.show("Screen Unlock Event")
-    end
-end
-hs.caffeinate.watcher.new(caffeine_callback):start()
 
-local function screen_callback()
-    hs.alert.show("Screen Watcher Event")
-    -- if num_of_screens ~= #hs.screen.allScreens() then
-    -- autolayout.autoLayout()
-    -- num_of_screens = #hs.screen.allScreens()
-    -- end
-end
-SCREEN_WATCHER = hs.screen.watcher.new(screen_callback)
-SCREEN_WATCHER:start()
+-- local function caffeine_callback(type)
+--     if type == hs.caffeinate.watcher.screensDidLock then
+--         hs.alert.show("Screen Lock Event")
+--     elseif type == hs.caffeinate.watcher.screensDidUnlock then
+--         hs.alert.show("Screen Unlock Event")
+--     end
+-- end
+-- hs.caffeinate.watcher.new(caffeine_callback):start()
+
+
+-- -- TODO - move to window management module, and automatically place windows on creation
+-- local function screen_callback()
+--     hs.alert.show("Screen Watcher Event")
+--     -- if num_of_screens ~= #hs.screen.allScreens() then
+--     -- autolayout.autoLayout()
+--     -- num_of_screens = #hs.screen.allScreens()
+--     -- end
+-- end
+-- SCREEN_WATCHER = hs.screen.watcher.new(screen_callback)
+-- SCREEN_WATCHER:start()
 
 --local function cbBattery()
 --     local alert = string.format([[
