@@ -68,7 +68,7 @@ return {
             vim.keymap.set("n", "<c-f>c", "<cmd>lua require('fzf-lua').git_bcommits()<CR>")
             vim.keymap.set("n", "<c-f>b", "<cmd>lua require('fzf-lua').buffers()<CR>")
         end,
-        config = {
+        opts = {
             winopts = {
                 height = 0.50,
                 width = 0.85,
@@ -94,7 +94,7 @@ return {
     },
 
     -- https://github.com/lervag/vimtex
-    { "lervag/vimtex" },
+    -- { "lervag/vimtex" },
 
     -- https://github.com/lewis6991/gitsigns.nvim
     {
@@ -196,6 +196,51 @@ return {
         config = function()
             -- use pythonic folding for vim-markdown
             vim.g.vim_markdown_folding_style_pythonic = 1
+        end,
+    },
+
+    -- https://github.com/zbirenbaum/copilot.lua
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                panel = {
+                    enabled = true,
+                    auto_refresh = false,
+                    layout = {
+                        position = "right",
+                        ratio = 0.5,
+                    },
+                    keymap = {
+                        jump_prev = "[[",
+                        jump_next = "]]",
+                        accept = "<CR>",
+                        refresh = "gr",
+                        open = "<C-p>",
+                    },
+                },
+                suggestion = {
+                    enabled = false,
+                    auto_trigger = false,
+                    keymap = {
+                        accept = "<M-l>",
+                        accept_word = false,
+                        accept_line = "<C-l>",
+                        next = "<C-]>",
+                        prev = "<C-[>",
+                        dismiss = "<C-CR>",
+                    },
+                },
+            })
+
+            -- vim.keymap.set("n", "<leader>ca", '<cmd>lua require("copilot.panel").accept()<CR>')
+            -- vim.keymap.set("n", "<leader>cn", '<cmd>lua require("copilot.panel").jump_next()<CR>')
+            -- vim.keymap.set("n", "<leader>cp", '<cmd>lua require("copilot.panel").jump_prev()<CR>')
+            vim.keymap.set("n", "<leader>ct", '<cmd>lua require("copilot.panel").open({"bottom", 0.5})<CR>')
+            vim.keymap.set("n", "<leader>cr", '<cmd>lua require("copilot.panel").refresh()<CR>')
+            -- vim.keymap.set("i", "<c-x>", '<cmd>lua require("copilot.suggestion").next()<CR>')
         end,
     },
 }
