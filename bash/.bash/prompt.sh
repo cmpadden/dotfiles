@@ -53,7 +53,7 @@ apply_colors() {
 # color codes
 cc_background="231"
 cc_foreground="232"
-cc_secondary="235"
+cc_secondary="23"
 
 # Apply custom colors when using a multiplexor, but not the default shell
 if [ "$TERM" == "screen-256color" ]; then
