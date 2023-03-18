@@ -15,7 +15,7 @@ return {
                         ensure_installed = {
                             "bashls", -- Bash
                             "pyright", -- Python
-                            "sumneko_lua", -- Lua
+                            "lua_ls", -- Lua
                             "tailwindcss", -- Tailwind
                             "tsserver", -- Typescript
                         },
