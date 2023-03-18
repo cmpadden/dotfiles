@@ -185,6 +185,7 @@ return {
     -- snippets
 
     -- https://github.com/L3MON4D3/LuaSnip
+    -- https://github.com/honza/vim-snippets/blob/master/snippets/
     {
         "L3MON4D3/LuaSnip",
         config = function()

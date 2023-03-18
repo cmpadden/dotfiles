@@ -108,3 +108,14 @@ df = spark \
     .option("multiline", False) \
     .json("${:input.json}")
 endsnippet
+
+###############################################################################
+#                                  Argparse                                   #
+###############################################################################
+
+snippet argparse ""
+parser = argparse.ArgumentParser()
+parser.add_argument("--req", type=str, required=True)
+parser.add_argument("--boolean", action="store_true")
+args = parser.parse_args()
+endsnippet
