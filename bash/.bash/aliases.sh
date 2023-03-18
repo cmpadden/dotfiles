@@ -29,6 +29,7 @@ alias venvc='python3 -m virtualenv venv'
 alias ipy="python -m IPython --matplotlib"
 alias mkpyenv="echo \"layout pyenv 3.9.13 \" > .envrc && direnv allow"
 alias pydoc='python -m pydoc'
+alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
 
 ########################################################################################
 #                                      JavaScript                                      #
