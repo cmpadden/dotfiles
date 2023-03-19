@@ -25,19 +25,22 @@ HYPER = { "cmd", "ctrl" }
 HYPER_SHIFT = { "cmd", "ctrl", "shift" }
 
 require("modules.plugins")
-require("modules.alerts")
+-- require("modules.alerts")
 require("modules.caffeine")
-require("modules.watchers")
+-- require("modules.watchers")
 
-WINDOW_MANAGER = require("modules.window")
-WINDOW_MANAGER:init()
+-- WINDOW_MANAGER = require("modules.window")
+-- WINDOW_MANAGER:init()
+
+require("modules.hhtwm")
+
 
 -- Custom Spoons
 
-hs.loadSpoon("Pass")
-spoon.Pass:bindHotkeys({
-    toggle_pass = { { "cmd", "ctrl" }, "p" },
-    toggle_otp = { { "cmd", "ctrl" }, "o" },
-})
+-- hs.loadSpoon("Pass")
+-- spoon.Pass:bindHotkeys({
+--     toggle_pass = { { "cmd", "ctrl" }, "p" },
+--     toggle_otp = { { "cmd", "ctrl" }, "o" },
+-- })
 
 hs.alert.show("Configuration Loaded")
