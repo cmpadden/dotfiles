@@ -198,81 +198,51 @@ return {
             local i = ls.insert_node
             local f = ls.function_node
 
-            -- NOTE: this had to be a function to return context-specific
-            -- comment strings, otherwise it would be initialized at startup
-            --
-            -- https://github.com/L3MON4D3/LuaSnip/issues/151#issuecomment-912641351
-            local get_cs = function()
-                return require("luasnip.util.util").buffer_comment_chars()[1]
-            end
+            local function box(opts)
+                -- NOTE: this had to be a function, otherwise `textwidth` was 0 during
+                -- initialization. Still need to better understand when variables are
+                -- populated.
+                local function box_width()
+                    return opts.box_width or vim.opt.textwidth:get()
+                end
 
-            local function create_box(opts)
-                local pl = opts.padding_length or 4
+                local function padding(cs, input_text)
+                    local spaces = box_width() - (2 * #cs)
+                    spaces = spaces - #input_text
+                    return spaces / 2
+                end
 
-
-                return {
-                    f(function(args)
-                        local cs = get_cs()
-                        return cs .. string.rep(string.sub(cs, 1, 1), (pl * 2) + #args[1][1]) .. cs
-                    end, { 1 }),
-                    t({ "", "" }),
-                    f(function()
-                        local cs = get_cs()
-                        return cs .. string.rep(" ", pl)
-                    end),
-                    i(1, "placeholder"),
-                    f(function()
-                        local cs = get_cs()
-                        return string.rep(" ", pl) .. cs
-                    end),
-                    t({ "", "" }),
-                    f(function(args)
-                        local cs = get_cs()
-                        return cs .. string.rep(string.sub(cs, 1, 1), (pl * 2) + #args[1][1]) .. cs
-                    end, { 1 }),
-                }
-            end
-
-            --  TODO : refactor into a single method with box width, reference:
-            --  https://github.com/honza/vim-snippets/blob/c7e61b73a546c9dd0525cd158cc1613bb48e414a/pythonx/vimsnippets.py#L85
-
-            local function bbox()
+                -- https://github.com/L3MON4D3/LuaSnip/issues/151#issuecomment-912641351
+                local comment_string = function()
+                    return require("luasnip.util.util").buffer_comment_chars()[1]
+                end
 
                 return {
                     f(function()
-                        local cs = get_cs()
-                        return string.rep(string.sub(cs, 1, 1), vim.opt.textwidth:get()) 
+                        local cs = comment_string()
+                        return string.rep(string.sub(cs, 1, 1), box_width())
                     end, { 1 }),
                     t({ "", "" }),
                     f(function(args)
-                        local cs = get_cs()
-                        local tw = vim.opt.textwidth:get()
-                        local spaces = tw - (2 * #cs)
-                        spaces = spaces - #args[1][1]
-                        spaces = math.floor(spaces / 2)
-                        return cs .. string.rep(" ", spaces)
+                        local cs = comment_string()
+                        return cs .. string.rep(" ", math.floor(padding(cs, args[1][1])))
                     end, { 1 }),
                     i(1, "placeholder"),
                     f(function(args)
-                        local cs = get_cs()
-                        local tw = vim.opt.textwidth:get()
-                        local spaces = tw - (2 * #cs)
-                        spaces = spaces - #args[1][1]
-                        spaces = math.ceil(spaces / 2)
-                        return string.rep(" ", spaces) .. cs
+                        local cs = comment_string()
+                        return string.rep(" ", math.ceil(padding(cs, args[1][1]))) .. cs
                     end, { 1 }),
                     t({ "", "" }),
                     f(function()
-                        local cs = get_cs()
-                        return string.rep(string.sub(cs, 1, 1), vim.opt.textwidth:get()) 
+                        local cs = comment_string()
+                        return string.rep(string.sub(cs, 1, 1), box_width())
                     end, { 1 }),
                 }
             end
 
             require("luasnip").add_snippets("all", {
-                -- https://github.com/L3MON4D3/LuaSnip/wiki/Cool-Snippets#box-comment-like-ultisnips
-                s({ trig = "box" }, create_box({ padding_length = 8 })),
-                s({ trig = "bbox" }, bbox()),
+                s({ trig = "box" }, box({ box_width = 24 })),
+                s({ trig = "bbox" }, box({})),
             })
 
             vim.cmd([[
