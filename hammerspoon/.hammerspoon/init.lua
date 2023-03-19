@@ -27,7 +27,7 @@ HYPER_SHIFT = { "cmd", "ctrl", "shift" }
 require("modules.plugins")
 require("modules.alerts")
 require("modules.caffeine")
--- require("modules.watchers")
+require("modules.watchers")
 -- require("modules.hhtwm")
 
 WINDOW_MANAGER = require("modules.window")
