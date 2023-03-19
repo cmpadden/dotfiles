@@ -213,6 +213,9 @@ return {
                         position = "right",
                         ratio = 0.5,
                     },
+                    -- USAGE: begin typing and press <c-p> to open panel. naviate
+                    -- between options with `[[` and `]]` and then `<cr>` to select the
+                    -- desired suggestion.
                     keymap = {
                         jump_prev = "[[",
                         jump_next = "]]",
@@ -223,24 +226,8 @@ return {
                 },
                 suggestion = {
                     enabled = false,
-                    auto_trigger = false,
-                    keymap = {
-                        accept = "<M-l>",
-                        accept_word = false,
-                        accept_line = "<C-l>",
-                        next = "<C-]>",
-                        prev = "<C-[>",
-                        dismiss = "<C-CR>",
-                    },
                 },
             })
-
-            -- vim.keymap.set("n", "<leader>ca", '<cmd>lua require("copilot.panel").accept()<CR>')
-            -- vim.keymap.set("n", "<leader>cn", '<cmd>lua require("copilot.panel").jump_next()<CR>')
-            -- vim.keymap.set("n", "<leader>cp", '<cmd>lua require("copilot.panel").jump_prev()<CR>')
-            vim.keymap.set("n", "<leader>ct", '<cmd>lua require("copilot.panel").open({"bottom", 0.5})<CR>')
-            vim.keymap.set("n", "<leader>cr", '<cmd>lua require("copilot.panel").refresh()<CR>')
-            -- vim.keymap.set("i", "<c-x>", '<cmd>lua require("copilot.suggestion").next()<CR>')
         end,
     },
 }
