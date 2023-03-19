@@ -25,15 +25,13 @@ HYPER = { "cmd", "ctrl" }
 HYPER_SHIFT = { "cmd", "ctrl", "shift" }
 
 require("modules.plugins")
--- require("modules.alerts")
+require("modules.alerts")
 require("modules.caffeine")
 -- require("modules.watchers")
+-- require("modules.hhtwm")
 
--- WINDOW_MANAGER = require("modules.window")
--- WINDOW_MANAGER:init()
-
-require("modules.hhtwm")
-
+WINDOW_MANAGER = require("modules.window")
+WINDOW_MANAGER:init()
 
 -- Custom Spoons
 
