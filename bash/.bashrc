@@ -67,7 +67,11 @@ fi
 check_and_source "$HOME/.fzf.bash"
 
 # https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
-# export GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 
 # rustup
 check_and_source "$HOME/.cargo/env"
+
+if hash nvim 2>/dev/null; then
+    export EDITOR="nvim"
+fi
