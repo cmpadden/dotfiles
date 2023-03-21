@@ -50,6 +50,8 @@ return {
         config = function()
             local nls = require("null-ls")
             nls.setup({
+                debug = false,
+                diagnostics_format = "[#{s}] [#{c}] #{m}",
                 sources = {
                     -- python
                     nls.builtins.diagnostics.ruff,
@@ -83,6 +85,8 @@ return {
                         "<cmd>lua vim.lsp.buf.format { async = true }<CR>",
                         {}
                     )
+                    -- https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1131#issuecomment-1432408485
+                    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
                 end,
             })
         end,
