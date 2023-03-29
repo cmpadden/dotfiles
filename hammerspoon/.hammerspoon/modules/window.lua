@@ -38,7 +38,6 @@ SPLIT_RIGHT = hs.geometry({
 })
 
 local LAYOUTS = {
-
     -- Primary layout: |[       ]|
     [1] = {
         { "Calendar", nil, nil, hs.layout.maximized, nil, nil },
@@ -59,7 +58,6 @@ local LAYOUTS = {
         { "kitty", nil, nil, hs.layout.maximized, nil, nil },
         { "zoom.us", nil, nil, hs.layout.maximized, nil, nil },
     },
-
     -- Secondary layout: | [  ][  ] |
     [2] = {
 
@@ -84,7 +82,6 @@ local LAYOUTS = {
         { "Spotify", nil, nil, SPLIT_RIGHT, nil, nil },
         { "zoom.us", nil, nil, SPLIT_RIGHT, nil, nil },
     },
-
     -- Centered layout: |  [   ]  |
     [3] = {
         { "Calendar", nil, nil, WINDOW_CENTERED, nil, nil },
@@ -136,21 +133,13 @@ local function two_display_layout()
     hs.layout.apply(layout)
 end
 
-local function application_callback(app_name, event_type, app)
-    -- apply layout on application launch
-    if event_type == hs.application.watcher.launched then
-        -- workaround: wait for application to be loaded
-        while app:mainWindow() == nil do
-            -- app:mainWindow() will be `nil` until fully loaded
-        end
-
-        -- apply application-specific layout given current `obj.layout`
-        for _, window in ipairs(LAYOUTS[obj.layout]) do
-            if window[1] == app:name() then
-                hs.alert("[" .. obj.layout .. "] " .. app_name)
-                app:mainWindow():moveToUnit(window[4])
-                break
-            end
+-- apply application-specific layout given active `obj.layout`
+local function resize_window(window, _)
+    for _, w in ipairs(LAYOUTS[obj.layout]) do
+        if w[1] == window:title() then
+            hs.alert(window:title())
+            window:moveToUnit(w[4])
+            break
         end
     end
 end
@@ -168,11 +157,13 @@ function obj:init()
     hs.alert("# displays: " .. self.num_displays)
 
     -- set default window layout
-    self.layout = 1
+    self.layout = 3
 
-    -- initialize application watcher to automatically apply layout to new windows
-    self.application_watcher = hs.application.watcher.new(application_callback)
-    self.application_watcher:start()
+    -- TODO - handle window resize events
+    -- hs.window.filter.default:subscribe(hs.window.filter.windowMoved, resize_window)
+
+    hs.window.filter.default:subscribe(hs.window.filter.windowCreated, resize_window)
+
     hs.window.animationDuration = 0
 
     hs.hotkey.bind({ "cmd", "ctrl" }, "1", function()
