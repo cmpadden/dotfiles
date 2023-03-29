@@ -23,6 +23,7 @@ PADDING_C = 0.005
 WINDOW_WIDTH_SPLIT = 0.375
 WINDOW_WIDTH_CENTERED = 0.6
 
+-- [  [    ]  ]
 RECT_CENTER = hs.geometry({
     x = (1 - WINDOW_WIDTH_CENTERED) / 2,
     y = PADDING_V,
@@ -30,12 +31,15 @@ RECT_CENTER = hs.geometry({
     h = 1 - 2 * PADDING_V,
 })
 
+-- [  [ ]     ]
 RECT_LEFT = hs.geometry({
     x = 0.5 - (PADDING_C / 2) - WINDOW_WIDTH_SPLIT,
     y = PADDING_V,
     w = WINDOW_WIDTH_SPLIT,
     h = 1 - 2 * PADDING_V,
 })
+
+-- [     [ ]  ]
 RECT_RIGHT = hs.geometry({
     x = 0.5 + (PADDING_C / 2),
     y = PADDING_V,
@@ -43,15 +47,31 @@ RECT_RIGHT = hs.geometry({
     h = 1 - 2 * PADDING_V,
 })
 
+-- [[]        ]
+RECT_MINI_LEFT = {
+    x = PADDING_V,
+    y = PADDING_V,
+    w = ((1 - WINDOW_WIDTH_CENTERED) / 2) - 2 * PADDING_V,
+    h = 1 - 2 * PADDING_V,
+}
+
+-- [        []]
+RECT_MINI_RIGHT = {
+    x = 1 - ((1 - WINDOW_WIDTH_CENTERED) / 2) + PADDING_V,
+    y = PADDING_V,
+    w = ((1 - WINDOW_WIDTH_CENTERED) / 2) - 2 * PADDING_V,
+    h = 1 - 2 * PADDING_V,
+}
+
 LAYOUTS = {
     -- Primary layout: |[       ]|
     [1] = {
+        ["Brave Browser"] = hs.layout.maximized,
         ["Calendar"] = hs.layout.maximized,
         ["Chromium"] = hs.layout.maximized,
         ["Discord"] = hs.layout.maximized,
         ["Firefox"] = hs.layout.maximized,
         ["Google Chrome"] = hs.layout.maximized,
-        ["Brave Browser"] = hs.layout.maximized,
         ["Logic Pro"] = hs.layout.maximized,
         ["Mail"] = hs.layout.maximized,
         ["Messages"] = hs.layout.maximized,
@@ -66,7 +86,6 @@ LAYOUTS = {
     },
     -- Secondary layout: | [  ][  ] |
     [2] = {
-
         -- left
         ["Terminal"] = RECT_LEFT,
         ["kitty"] = RECT_LEFT,
@@ -90,24 +109,24 @@ LAYOUTS = {
     },
     -- Centered layout: |  [   ]  |
     [3] = {
+        ["Brave Browser"] = RECT_CENTER,
         ["Calendar"] = RECT_CENTER,
         ["Chromium"] = RECT_CENTER,
-        ["Google Chrome"] = RECT_CENTER,
-        ["Firefox"] = RECT_CENTER,
         ["Discord"] = RECT_CENTER,
+        ["Figma"] = RECT_CENTER,
+        ["Firefox"] = RECT_CENTER,
+        ["Google Chrome"] = RECT_CENTER,
         ["Logic Pro"] = RECT_CENTER,
         ["Mail"] = RECT_CENTER,
         ["Messages"] = RECT_CENTER,
-        ["Notion"] = RECT_CENTER,
         ["Notes"] = RECT_CENTER,
+        ["Notion"] = RECT_CENTER,
         ["Safari"] = RECT_CENTER,
         ["Slack"] = RECT_CENTER,
         ["Spotify"] = RECT_CENTER,
         ["Terminal"] = RECT_CENTER,
         ["kitty"] = RECT_CENTER,
         ["zoom.us"] = RECT_CENTER,
-        ["Figma"] = RECT_CENTER,
-        ["Brave Browser"] = RECT_CENTER,
     },
 }
 
@@ -143,6 +162,9 @@ end
 local function resize_window(window, app_name)
     if LAYOUTS[obj.layout][app_name] ~= nil then
         window:moveToUnit(LAYOUTS[obj.layout][app_name])
+    else
+        -- picture-in-picture window
+        window:moveToUnit(RECT_MINI_RIGHT)
     end
 end
 
