@@ -230,4 +230,72 @@ return {
             })
         end,
     },
+
+    -- Query models:
+    --
+    -- models=$(curl -s https://api.openai.com/v1/models -H "Authorization: Bearer $OPENAI_API_KEY")
+    -- jq -r .data[].id  <(echo "$models") | sort | grep code-
+
+    {
+        "cmpadden/ChatGPT.nvim",
+        -- branch = "main",
+        -- dev = true,
+        config = function()
+            require("chatgpt").setup({
+                question_sign = "Q",
+                answer_sign = "A",
+                yank_register = "+",
+                settings_window = {
+                    border = {
+                        style = "single",
+                        text = {
+                            top = " Settings ",
+                        },
+                    },
+                },
+                chat_window = {
+                    filetype = "chatgpt",
+                    border = {
+                        highlight = "FloatBorder",
+                        style = "single",
+                        text = {
+                            top = " ChatGPT ",
+                        },
+                    },
+                },
+                chat_input = {
+                    prompt = " > ",
+                    border = {
+                        highlight = "FloatBorder",
+                        style = "single",
+                        text = {
+                            top_align = "center",
+                            top = " Prompt ",
+                        },
+                    },
+                },
+                keymaps = {
+                    close = { "q", "<C-c>" },
+                    -- submit = "<C-Enter>",
+                    submit = "<C-s>",
+                    yank_last = "<C-y>",
+                    yank_last_code = "<C-k>",
+                    scroll_up = "<C-u>",
+                    scroll_down = "<C-d>",
+                    toggle_settings = "<C-o>",
+                    new_session = "<C-n>",
+                    cycle_windows = "<Tab>",
+                    -- in the Sessions pane
+                    select_session = "<Space>",
+                    rename_session = "r",
+                    delete_session = "d",
+                },
+            })
+        end,
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+        },
+    },
 }

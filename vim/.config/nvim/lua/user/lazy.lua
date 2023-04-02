@@ -15,6 +15,11 @@ vim.opt.rtp:prepend(lazypath)
 
 -- sources `lua/plugins/init.lua`
 require("lazy").setup("plugins", {
+    dev = {
+        -- directory where you store your local plugin projects
+        path = "~/workspace/cmp",
+        fallback = false,
+    },
     -- replace the icons with Unicode symbols.
     ui = {
         icons = {
