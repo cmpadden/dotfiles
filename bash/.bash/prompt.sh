@@ -37,7 +37,6 @@ export -f prompt_git_branch # required for entering sub-processes
 apply_colors() {
     # requires three arguments
     if [ $# -eq 3 ]; then
-      # don't bother with formatting if string is empty
       if [ -z "$1" ]; then
         printf ""
       else
@@ -50,16 +49,21 @@ apply_colors() {
 #                                     PS1                                     #
 ###############################################################################
 
-# color codes
-cc_background="231"
-cc_foreground="232"
-cc_secondary="23"
+
+venv_bg="232"
+venv_fg="15"
+
+git_bg="15"
+git_fg="232"
+
+bg="232"
+fg="15"
 
 # Apply custom colors when using a multiplexor, but not the default shell
 if [ "$TERM" == "screen-256color" ]; then
   # must be single-quotes for expressions to expand
-  PS1='$(apply_colors "$(prompt_venv)" "$cc_background" "$cc_foreground")'
-  PS1+='$(apply_colors "$(prompt_git_branch)" "$cc_secondary" "$cc_background")'
-  PS1+='$(apply_colors "$(pwd)" "$cc_background" "$cc_foreground")'
-  PS1+='\n> '
+  PS1='$(apply_colors "$(prompt_venv)" "$venv_bg" "$venv_fg")'
+  PS1+='$(apply_colors "$(prompt_git_branch)" "$git_bg" "$git_fg")'
+  PS1+='$(apply_colors "$(pwd)" "$bg" "$fg")'
+  PS1+='\n > '
 fi

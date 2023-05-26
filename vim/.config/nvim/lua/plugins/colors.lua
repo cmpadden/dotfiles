@@ -37,7 +37,8 @@ return {
         lazy = false,
         priority = 1000,
         init = function()
-            vim.cmd("colorscheme carbonfox")
+            -- vim.cmd("colorscheme carbonfox")
+            vim.cmd("colorscheme terafox")
         end,
     },
 
