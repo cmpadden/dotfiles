@@ -13,34 +13,15 @@ return {
                 config = function()
                     require("mason-lspconfig").setup({
                         ensure_installed = {
-                            "bashls", -- Bash
-                            "pyright", -- Python
-                            "lua_ls", -- Lua
+                            "bashls",      -- Bash
+                            "pyright",     -- Python
+                            "lua_ls",      -- Lua
                             "tailwindcss", -- Tailwind
-                            "tsserver", -- Typescript
+                            "tsserver",    -- Typescript
                         },
                     })
                 end,
             },
-        },
-        {
-            "williamboman/mason.nvim",
-            config = function()
-                require("mason").setup({
-                    ensure_installed = {
-                        "black",
-                        "flake8",
-                        "isort",
-                        "prettier",
-                        "ruff",
-                        "shellcheck",
-                        "shfmt",
-                        "sqlfluff",
-                        "stylua",
-                        "vale",
-                    },
-                })
-            end,
         },
     },
 
