@@ -7,7 +7,7 @@ return {
     -- https://github.com/hrsh7th/nvim-cmp
     {
         "hrsh7th/nvim-cmp",
-        -- event = "InsertEnter",
+        event = "InsertEnter",
         dependencies = {
             "hrsh7th/cmp-buffer", -- https://github.com/hrsh7th/cmp-buffer
             "hrsh7th/cmp-cmdline", -- https://github.com/hrsh7th/cmp-cmdline
@@ -19,6 +19,12 @@ return {
         config = function()
             local cmp = require("cmp")
             local lspconfig = require("lspconfig")
+
+            -- custom border styles of completions
+            local border_opts = {
+                border = "single",
+                winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+            }
 
             cmp.setup({
                 snippet = {
@@ -50,6 +56,10 @@ return {
                     { name = "path" },
                     { name = "emoji" },
                 }),
+                window = {
+                    completion = cmp.config.window.bordered(border_opts),
+                    documentation = cmp.config.window.bordered(border_opts),
+                },
             })
 
             -- Set configuration for specific filetype.
@@ -251,7 +261,7 @@ inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
 snoremap <silent> <Tab> <cmd>lua require('luasnip').jump(1)<Cr>
 snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
-]]           )
+]])
 
             vim.api.nvim_create_user_command(
                 "EditSnippets",
