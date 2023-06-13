@@ -22,9 +22,6 @@ return {
     -- https://github.com/tpope/vim-surround
     { "tpope/vim-surround" },
 
-    -- https://github.com/nvim-treesitter/playground
-    { "nvim-treesitter/playground" },
-
     -- https://github.com/ggandor/lightspeed.nvim
     { "ggandor/lightspeed.nvim" },
 
@@ -144,51 +141,6 @@ return {
 
     { "nvim-lua/plenary.nvim" },
 
-    {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            -- https://github.com/joosepalviste/nvim-ts-context-commentstring
-            { "joosepalviste/nvim-ts-context-commentstring" },
-        },
-        config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                    "bash",
-                    "css",
-                    "diff",
-                    "gitignore",
-                    "hcl",
-                    "help",
-                    "html",
-                    "http",
-                    "javascript",
-                    "jsdoc",
-                    "lua",
-                    "markdown",
-                    "markdown_inline",
-                    "python",
-                    "rust",
-                    "sql",
-                    "toml",
-                    "typescript",
-                    "vue",
-                    "yaml",
-                },
-                context_commentstring = { enable = true, enable_autocmd = false },
-                highlight = {
-                    enable = true,
-                    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-                    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-                    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-                    -- Instead of true it can also be a list of languages
-                    additional_vim_regex_highlighting = false,
-                },
-                indent = {
-                    enable = false,
-                },
-            })
-        end,
-    },
 
     -- https://github.com/preservim/vim-markdown
     {
