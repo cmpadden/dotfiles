@@ -9,11 +9,11 @@ return {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
         dependencies = {
-            "hrsh7th/cmp-buffer", -- https://github.com/hrsh7th/cmp-buffer
-            "hrsh7th/cmp-cmdline", -- https://github.com/hrsh7th/cmp-cmdline
-            "hrsh7th/cmp-emoji", -- https://github.com/hrsh7th/cmp-emoji
-            "hrsh7th/cmp-nvim-lsp", -- https://github.com/hrsh7th/cmp-nvim-lsp
-            "hrsh7th/cmp-path", -- https://github.com/hrsh7th/cmp-path
+            "hrsh7th/cmp-buffer",       -- https://github.com/hrsh7th/cmp-buffer
+            "hrsh7th/cmp-cmdline",      -- https://github.com/hrsh7th/cmp-cmdline
+            "hrsh7th/cmp-emoji",        -- https://github.com/hrsh7th/cmp-emoji
+            "hrsh7th/cmp-nvim-lsp",     -- https://github.com/hrsh7th/cmp-nvim-lsp
+            "hrsh7th/cmp-path",         -- https://github.com/hrsh7th/cmp-path
             "saadparwaiz1/cmp_luasnip", -- https://github.com/saadparwaiz1/cmp_luasnip
         },
         config = function()
@@ -268,6 +268,38 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                 'lua require("luasnip.loaders").edit_snippet_files()',
                 { desc = "Edit LuaSnip snippets" }
             )
+        end,
+    },
+
+    -- https://github.com/zbirenbaum/copilot.lua
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                panel = {
+                    enabled = true,
+                    auto_refresh = false,
+                    layout = {
+                        position = "right",
+                        ratio = 0.5,
+                    },
+                    -- USAGE: begin typing and press <c-p> to open panel. naviate
+                    -- between options with `[[` and `]]` and then `<cr>` to select the
+                    -- desired suggestion.
+                    keymap = {
+                        jump_prev = "[[",
+                        jump_next = "]]",
+                        accept = "<CR>",
+                        refresh = "gr",
+                        open = "<C-p>",
+                    },
+                },
+                suggestion = {
+                    enabled = false,
+                },
+            })
         end,
     },
 }
