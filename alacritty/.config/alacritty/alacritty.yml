@@ -199,6 +199,9 @@ schemas:
 # colors: *solarized-light
 colors: *nightfox-carbonfox
 
+env:
+  TERM: xterm-256color
+
 window:
   title: ""
   padding:
