@@ -11,62 +11,42 @@ return {
             {
                 "williamboman/mason-lspconfig.nvim",
                 config = function()
-                    require("mason-lspconfig").setup({
+                    local mason_lspconfig = require("mason-lspconfig")
+                    mason_lspconfig.setup({
                         ensure_installed = {
-                            "bashls",      -- Bash
-                            "pyright",     -- Python
-                            "lua_ls",      -- Lua
+                            "bashls", -- Bash
+                            "eslint", -- Typescript
+                            "html", -- HTML
+                            "jsonls", -- JSON
+                            "lua_ls", -- Lua
+                            "pyright", -- Python
+                            "rust_analyzer",
                             "tailwindcss", -- Tailwind
-                            "tsserver",    -- Typescript
+                            "tsserver", -- Typescript
+                            "vuels", -- Vue
                         },
+                        automatic_installation = true,
+                    })
+                    -- https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
+                    mason_lspconfig.setup_handlers({
+
+                        -- The first entry (without a key) will be the default handler
+                        -- and will be called for each installed server that doesn't have
+                        -- a dedicated handler.
+                        function(server_name)
+                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+                            require("lspconfig")[server_name].setup({
+                                on_attach = require("custom.utils.lsp").on_attach,
+                                capabilities = capabilities,
+                                flags = {
+                                    debounce_text_changes = 150,
+                                },
+                            })
+                        end,
                     })
                 end,
             },
         },
-        config = function()
-            local lspconfig = require("lspconfig")
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-            local servers = {
-                "bashls",
-                "eslint",
-                "html",
-                "jsonls",
-                "lua_ls",
-                "pyright",
-                "rust_analyzer",
-                "tailwindcss",
-                "tsserver",
-                "vuels",
-            }
-
-            for _, lsp in ipairs(servers) do
-                lspconfig[lsp].setup({
-                    on_attach = require("custom.utils.lsp").on_attach,
-                    capabilities = capabilities,
-                    flags = {
-                        debounce_text_changes = 150,
-                    },
-                    settings = {
-                        Lua = {
-                            runtime = {
-                                version = "LuaJIT",
-                            },
-                            diagnostics = {
-                                globals = { "vim", "hs", "spoon" },
-                            },
-                            workspace = {
-                                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
-                                checkThirdParty = false,
-                            },
-                            telemetry = {
-                                enable = false, -- Do not send telemetry data containing a randomized but unique identifier
-                            },
-                        },
-                    },
-                })
-            end
-        end,
     },
 
     -- https://github.com/jose-elias-alvarez/null-ls.nvim
