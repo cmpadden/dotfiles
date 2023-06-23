@@ -60,7 +60,7 @@ bg="232"
 fg="15"
 
 # Apply custom colors when using a multiplexor, but not the default shell
-if [ "$TERM" == "screen-256color" ]; then
+if [ "$TERM" == "xterm-256color" ]; then
   # must be single-quotes for expressions to expand
   PS1='$(apply_colors "$(prompt_venv)" "$venv_bg" "$venv_fg")'
   PS1+='$(apply_colors "$(prompt_git_branch)" "$git_bg" "$git_fg")'

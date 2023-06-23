@@ -11,45 +11,52 @@ return {
             {
                 "williamboman/mason-lspconfig.nvim",
                 config = function()
-                    require("mason-lspconfig").setup({
+                    local mason_lspconfig = require("mason-lspconfig")
+                    mason_lspconfig.setup({
                         ensure_installed = {
                             "bashls", -- Bash
-                            "pyright", -- Python
+                            "eslint", -- Typescript
+                            "html", -- HTML
+                            "jsonls", -- JSON
                             "lua_ls", -- Lua
+                            "pyright", -- Python
+                            "rust_analyzer",
                             "tailwindcss", -- Tailwind
                             "tsserver", -- Typescript
+                            "vuels", -- Vue
                         },
+                        automatic_installation = true,
+                    })
+                    -- https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
+                    mason_lspconfig.setup_handlers({
+
+                        -- The first entry (without a key) will be the default handler
+                        -- and will be called for each installed server that doesn't have
+                        -- a dedicated handler.
+                        function(server_name)
+                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+                            require("lspconfig")[server_name].setup({
+                                on_attach = require("custom.utils.lsp").on_attach,
+                                capabilities = capabilities,
+                                flags = {
+                                    debounce_text_changes = 150,
+                                },
+                            })
+                        end,
                     })
                 end,
             },
-        },
-        {
-            "williamboman/mason.nvim",
-            config = function()
-                require("mason").setup({
-                    ensure_installed = {
-                        "black",
-                        "flake8",
-                        "isort",
-                        "prettier",
-                        "ruff",
-                        "shellcheck",
-                        "shfmt",
-                        "sqlfluff",
-                        "stylua",
-                        "vale",
-                    },
-                })
-            end,
         },
     },
 
     -- https://github.com/jose-elias-alvarez/null-ls.nvim
     {
         "jose-elias-alvarez/null-ls.nvim",
-        config = function()
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = { "mason.nvim" },
+        opts = function()
             local nls = require("null-ls")
-            nls.setup({
+            return {
                 debug = false,
                 diagnostics_format = "[#{s}] [#{c}] #{m}",
                 sources = {
@@ -77,18 +84,8 @@ return {
                     -- javascript
                     nls.builtins.formatting.prettier,
                 },
-                on_attach = function(_, bufnr)
-                    vim.api.nvim_buf_set_keymap(
-                        bufnr,
-                        "n",
-                        "<leader>f",
-                        "<cmd>lua vim.lsp.buf.format { async = true }<CR>",
-                        {}
-                    )
-                    -- https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1131#issuecomment-1432408485
-                    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
-                end,
-            })
+                on_attach = require("custom.utils.lsp").on_attach,
+            }
         end,
     },
 }

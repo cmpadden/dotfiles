@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # docker
-alias drmf='docker rmi -f $(docker images -q)'
-alias drmp='docker kill $(docker ps -q)'
+alias docker_remove_images='docker rmi -f $(docker images -q)'
+alias docker_kill_all='docker kill $(docker ps -qa)'
 
 ########################################################################################
 #                                         Git                                          #
@@ -85,4 +85,10 @@ if [ -f "$HOME/notes.md.asc" ]; then
     alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
 fi
 
-alias d="date +%Y%m%d"
+alias date_short="date +%Y%m%d"
+
+########################################################################################
+#                                       ChatGPT                                        #
+########################################################################################
+
+alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"

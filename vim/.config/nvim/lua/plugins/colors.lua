@@ -37,9 +37,26 @@ return {
         lazy = false,
         priority = 1000,
         init = function()
-            -- vim.cmd("colorscheme carbonfox")
-            vim.cmd("colorscheme terafox")
+            vim.cmd.colorscheme("terafox") -- carbonfox
         end,
     },
 
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
+        init = function()
+            -- require("catppuccin").setup({
+            --     flavour = "mocha", -- latte, frappe, macchiato, mocha
+            --     term_colors = true,
+            --     transparent_background = false,
+            --     color_overrides = {
+            --         mocha = {
+            --             base = "#000000",
+            --         },
+            --     },
+            -- })
+            -- vim.cmd.colorscheme("catppuccin")
+        end,
+    },
 }
