@@ -23,14 +23,60 @@ return {
                 end,
             },
         },
+        config = function()
+            local lspconfig = require("lspconfig")
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+            local servers = {
+                "bashls",
+                "eslint",
+                "html",
+                "jsonls",
+                "lua_ls",
+                "pyright",
+                "rust_analyzer",
+                "tailwindcss",
+                "tsserver",
+                "vuels",
+            }
+
+            for _, lsp in ipairs(servers) do
+                lspconfig[lsp].setup({
+                    on_attach = require("custom.utils.lsp").on_attach,
+                    capabilities = capabilities,
+                    flags = {
+                        debounce_text_changes = 150,
+                    },
+                    settings = {
+                        Lua = {
+                            runtime = {
+                                version = "LuaJIT",
+                            },
+                            diagnostics = {
+                                globals = { "vim", "hs", "spoon" },
+                            },
+                            workspace = {
+                                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+                                checkThirdParty = false,
+                            },
+                            telemetry = {
+                                enable = false, -- Do not send telemetry data containing a randomized but unique identifier
+                            },
+                        },
+                    },
+                })
+            end
+        end,
     },
 
     -- https://github.com/jose-elias-alvarez/null-ls.nvim
     {
         "jose-elias-alvarez/null-ls.nvim",
-        config = function()
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = { "mason.nvim" },
+        opts = function()
             local nls = require("null-ls")
-            nls.setup({
+            return {
                 debug = false,
                 diagnostics_format = "[#{s}] [#{c}] #{m}",
                 sources = {
@@ -58,18 +104,8 @@ return {
                     -- javascript
                     nls.builtins.formatting.prettier,
                 },
-                on_attach = function(_, bufnr)
-                    vim.api.nvim_buf_set_keymap(
-                        bufnr,
-                        "n",
-                        "<leader>f",
-                        "<cmd>lua vim.lsp.buf.format { async = true }<CR>",
-                        {}
-                    )
-                    -- https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1131#issuecomment-1432408485
-                    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
-                end,
-            })
+                on_attach = require("custom.utils.lsp").on_attach,
+            }
         end,
     },
 }
