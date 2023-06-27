@@ -8,6 +8,7 @@ return {
             return
         end
 
+        -- https://textart.sh/topic/ghost
         dashboard.section.header.val = {
             "                          ░░░░░░░░░░                            ",
             "                      ▒▒▒▒░░░░░░░░░░░░▒▒▒▒                      ",
