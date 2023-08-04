@@ -74,4 +74,12 @@ https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 | https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#sqlfluff-1             | python3 -m pip install sqlfluff               |
 | https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#stylua                 | brew install stylua                           |
 
+## Debugging
+
+### Neovim
+
+| Error | Resolution |
+| ----- | -----------|
+| `invalid node type at position 2765 for language vim` | `rm /opt/homebrew/lib/nvim/parser/vim.so` |
+
 </details>

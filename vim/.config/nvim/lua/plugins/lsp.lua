@@ -14,16 +14,16 @@ return {
                     local mason_lspconfig = require("mason-lspconfig")
                     mason_lspconfig.setup({
                         ensure_installed = {
-                            "bashls", -- Bash
-                            "eslint", -- Typescript
-                            "html", -- HTML
-                            "jsonls", -- JSON
-                            "lua_ls", -- Lua
-                            "pyright", -- Python
+                            "bashls",      -- Bash
+                            "eslint",      -- Typescript
+                            "html",        -- HTML
+                            "jsonls",      -- JSON
+                            "lua_ls",      -- Lua
+                            "pyright",     -- Python
                             "rust_analyzer",
                             "tailwindcss", -- Tailwind
-                            "tsserver", -- Typescript
-                            "vuels", -- Vue
+                            "tsserver",    -- Typescript
+                            "vuels",       -- Vue
                         },
                         automatic_installation = true,
                     })
@@ -75,14 +75,16 @@ return {
                     nls.builtins.formatting.shfmt.with({ extra_args = { "-i", "4" } }),
 
                     -- prose
-                    nls.builtins.completion.spell,
-                    nls.builtins.diagnostics.vale,
+                    -- https://github.com/hrsh7th/nvim-cmp/discussions/1286#discussioncomment-4092747
+                    -- nls.builtins.completion.spell,
+                    -- nls.builtins.diagnostics.vale,
 
                     -- lua
                     nls.builtins.formatting.stylua.with({ extra_args = { "--indent-type", "Spaces" } }),
 
                     -- javascript
                     nls.builtins.formatting.prettier,
+                    nls.builtins.formatting.eslint,
                 },
                 on_attach = require("custom.utils.lsp").on_attach,
             }
