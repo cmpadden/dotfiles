@@ -48,12 +48,20 @@ return {
                         c = cmp.mapping.close(),
                     }),
                 },
+                formatting = {
+                    format = function(entry, vim_item)
+                        -- https://www.youtube.com/watch?v=8zENSGqOk8w
+                        local source = entry.source.name
+                        vim_item.menu = "[" .. source .. "]"
+                        return vim_item
+                    end,
+                },
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp" },
-                    { name = "luasnip" },
-                    { name = "buffer" },
-                    { name = "path" },
-                    { name = "emoji" },
+                    { name = "nvim_lsp", priority = 1250 },
+                    { name = "buffer",   priority = 1000 },
+                    { name = "luasnip",  priority = 750 },
+                    { name = "path",     priority = 500 },
+                    { name = "emoji",    priority = 250 },
                 }),
                 window = {
                     completion = cmp.config.window.bordered(border_opts),
