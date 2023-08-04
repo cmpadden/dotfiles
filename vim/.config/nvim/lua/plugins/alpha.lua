@@ -45,10 +45,10 @@ return {
         dashboard.section.header.opts.hl = "DashboardHeader"
 
         dashboard.section.buttons.val = {
-            dashboard.button("i", "> New file", ":ene <BAR> startinsert <CR>"),
-            dashboard.button("f", "> Find file", ":FzfLua files<CR>"),
-            dashboard.button("s", "> Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
-            dashboard.button("q", "> Quit", ":qa<CR>"),
+            dashboard.button("i", ">  New file", ":ene <BAR> startinsert <CR>"),
+            dashboard.button("f", ">  Find file", ":FzfLua files<CR>"),
+            dashboard.button("s", ">  Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
+            dashboard.button("q", ">  Quit", ":qa<CR>"),
         }
 
         dashboard.config.layout[1].val = vim.fn.max({ 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) })
