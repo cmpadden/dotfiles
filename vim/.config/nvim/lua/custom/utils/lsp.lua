@@ -6,6 +6,13 @@ local M = {}
 M.on_attach = function(client, bufnr)
     local opts = { noremap = true, silent = true }
 
+    -- Avoid using formatting capability for `tsserver`, and instead use `eslint` or
+    -- `prettier`.
+    if client.name == "tsserver" then
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
+    end
+
     -- Global Bindings - Diagnostics
 
     vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
@@ -68,9 +75,11 @@ M.on_attach = function(client, bufnr)
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts_buffer)
 
-    -- TODO - review if needed
+    -- Set `formatexpr` to re-enable the `gq` command for formatting paragraphs; another
+    -- workaround is to use `gw` which is unaffected by `formatexpr`
+    --
     -- https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1131#issuecomment-1432408485
-    -- vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
+    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
 end
 
 return M
