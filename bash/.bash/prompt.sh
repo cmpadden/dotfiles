@@ -50,13 +50,13 @@ apply_colors() {
 ###############################################################################
 
 
-venv_bg="232"
+venv_bg="0"
 venv_fg="15"
 
-git_bg="15"
-git_fg="232"
+git_bg="14"
+git_fg="0"
 
-bg="232"
+bg="0"
 fg="15"
 
 # Apply custom colors when using a multiplexor, but not the default shell
