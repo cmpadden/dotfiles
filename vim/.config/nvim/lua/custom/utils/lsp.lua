@@ -75,11 +75,6 @@ M.on_attach = function(client, bufnr)
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts_buffer)
 
-    -- Set `formatexpr` to re-enable the `gq` command for formatting paragraphs; another
-    -- workaround is to use `gw` which is unaffected by `formatexpr`
-    --
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1131#issuecomment-1432408485
-    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "")
 end
 
 return M
