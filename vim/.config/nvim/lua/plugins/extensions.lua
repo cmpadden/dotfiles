@@ -151,4 +151,42 @@ return {
             "nvim-telescope/telescope.nvim",
         },
     },
+
+    -- https://github.com/mhartington/formatter.nvim
+    {
+        "mhartington/formatter.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        opts = function()
+            return {
+                logging = true,
+                log_level = vim.log.levels.WARN,
+                filetype = {
+                    python = {
+                        require("formatter.filetypes.python").black,
+                        require("formatter.filetypes.python").isort,
+                    },
+                    sh = {
+                        require("formatter.filetypes.sh").shfmt,
+                    },
+                    sql = {
+                        {
+                            exe = "sqlfluff",
+                            args = {
+                                "fix",
+                                "--force",
+                                "--disable-progress-bar",
+                                "--nocolor",
+                                "-",
+                            },
+                            stdin = true,
+                            ignore_exitcode = true,
+                        },
+                    },
+                    ["*"] = {
+                        require("formatter.filetypes.any").remove_trailing_whitespace
+                    }
+                }
+            }
+        end
+    },
 }
