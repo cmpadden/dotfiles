@@ -20,7 +20,7 @@ return {
                             "jsonls",        -- JSON
                             "lua_ls",        -- Lua
                             "pyright",       -- Python
-                            "ruff-lsp",      -- Python
+                            -- "ruff-lsp",      -- Python
                             "rust_analyzer", -- Rust
                             "tailwindcss",   -- Tailwind
                             "tsserver",      -- Typescript
@@ -44,6 +44,19 @@ return {
                                 },
                             })
                         end,
+                        -- Next, you can provide a dedicated handler for specific servers.
+                        -- For example, a handler override for the `lua_ls`:
+                        ["lua_ls"] = function ()
+                            require("lspconfig").lua_ls.setup {
+                                settings = {
+                                    Lua = {
+                                        diagnostics = {
+                                            globals = { "vim", "hs" }
+                                        }
+                                    }
+                                }
+                            }
+                        end
                     })
                 end,
             },
