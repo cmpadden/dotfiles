@@ -174,37 +174,5 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                 { desc = "Edit LuaSnip snippets" }
             )
         end,
-    },
-
-    -- https://github.com/zbirenbaum/copilot.lua
-    {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                panel = {
-                    enabled = true,
-                    auto_refresh = false,
-                    layout = {
-                        position = "right",
-                        ratio = 0.5,
-                    },
-                    -- USAGE: begin typing and press <c-p> to open panel. naviate
-                    -- between options with `[[` and `]]` and then `<cr>` to select the
-                    -- desired suggestion.
-                    keymap = {
-                        jump_prev = "[[",
-                        jump_next = "]]",
-                        accept = "<CR>",
-                        refresh = "gr",
-                        open = "<C-p>",
-                    },
-                },
-                suggestion = {
-                    enabled = false,
-                },
-            })
-        end,
-    },
+    }
 }
