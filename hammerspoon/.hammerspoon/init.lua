@@ -1,44 +1,22 @@
 -- ~/.hammerspoon/init.lua
 
--- https://www.hammerspoon.org/
+-- I had originally attempted to use the `fennel` package available via luarocks, similar to what is recommended with Spacehammer
+-- However, I was unable to get the `package.path` or `package.cpath` configured correctly to successfully `require('fennel')`.
+-- As a workaround, I've embedded the `fennel.lua` source file within the `.hammerspoon/` directory.
+--
+--     wget https://fennel-lang.org/downloads/fennel-1.3.1.tar.gz
+--     tar xvzf fennel-1.3.1.tar.gz
+--     mv fennel-1.3.1/fennel.lua .
+--     rm -r fennel-1.3.1/
+--
+-- https://fennel-lang.org/setup#embedding-the-fennel-compiler-in-a-lua-application
+-- https://github.com/agzam/spacehammer/blob/master/init.lua
+-- https://blog.exupero.org/hammerspoon-with-fennel/
 
--- custom styling for alerts
-hs.alert.defaultStyle.textColor       = { hex = "#000000", alpha = 1 }
-hs.alert.defaultStyle.textFont        = "Courier"
-hs.alert.defaultStyle.textSize        = 12
-hs.alert.defaultStyle.fillColor       = { hex = "#FFFFFF", alpha = 0.95 }
-hs.alert.defaultStyle.strokeColor     = { hex = "#000000", alpha = 0.95 }
-hs.alert.defaultStyle.strokeWidth     = 2
-hs.alert.defaultStyle.padding         = 12
-hs.alert.defaultStyle.radius          = 1
-hs.alert.defaultStyle.fadeInDuration  = 0
-hs.alert.defaultStyle.fadeOutDuration = 2
+local fennel = require('fennel')
 
--- https://www.hammerspoon.org/docs/hs.ipc.html#cliInstall
--- https://github.com/Hammerspoon/hammerspoon/issues/2930#issuecomment-899092002
-if not hs.ipc.cliStatus("/opt/homebrew") then
-    hs.ipc.cliInstall("/opt/homebrew")
-end
+fennel.path = package.path .. ";" .. os.getenv("HOME") .. "/.hammerspoon/?.fnl"
 
--- global hotkey prefix key combinations (used in modules)
-HYPER = { "cmd", "ctrl" }
-HYPER_SHIFT = { "cmd", "ctrl", "shift" }
+table.insert(package.loaders or package.searchers, fennel.searcher)
 
-require("modules.plugins")
-require("modules.alerts")
-require("modules.caffeine")
-require("modules.watchers")
--- require("modules.hhtwm")
-
-WINDOW_MANAGER = require("modules.window")
-WINDOW_MANAGER:init()
-
--- Custom Spoons
-
--- hs.loadSpoon("Pass")
--- spoon.Pass:bindHotkeys({
---     toggle_pass = { { "cmd", "ctrl" }, "p" },
---     toggle_otp = { { "cmd", "ctrl" }, "o" },
--- })
-
-hs.alert.show("Configuration Loaded")
+require 'main'
