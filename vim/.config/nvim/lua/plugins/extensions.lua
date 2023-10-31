@@ -88,14 +88,22 @@ return {
     {
         "mhartington/formatter.nvim",
         event = { "BufReadPre", "BufNewFile" },
+        init = function()
+            vim.keymap.set("n", "<leader>f", "<cmd>FormatWrite<cr>")
+        end,
         opts = function()
             return {
                 logging = true,
                 log_level = vim.log.levels.WARN,
                 filetype = {
                     python = {
-                        require("formatter.filetypes.python").black,
+                        -- require("formatter.filetypes.python").black,
                         require("formatter.filetypes.python").isort,
+                        {
+                            exe = "ruff format",
+                            args = { "-q", "-" },
+                            stdin = true,
+                        }
                     },
                     sh = {
                         require("formatter.filetypes.sh").shfmt,
@@ -114,6 +122,9 @@ return {
                             stdin = true,
                             ignore_exitcode = true,
                         },
+                    },
+                    vue = {
+                        require("formatter.filetypes.vue").prettier,
                     },
                     ["*"] = {
                         require("formatter.filetypes.any").remove_trailing_whitespace
