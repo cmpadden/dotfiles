@@ -22,3 +22,10 @@ vim.keymap.set("n", "<leader>p", '"+p')
 vim.keymap.set("n", "<leader>P", '"+P')
 vim.keymap.set("v", "<leader>p", '"+p')
 vim.keymap.set("v", "<leader>P", '"+P')
+
+-- external call to `chatblade`
+-- prompts (eg. `programmer`) can be found in `~/.config/chatblade/`
+vim.keymap.set("v", "<leader>c", ':!chatblade -r -p programmer<CR>')
+vim.keymap.set("v", "<leader>cx", ':!chatblade -e -r -p programmer<CR>')
+vim.keymap.set("v", "<leader>cd", ':!chatblade -r -p document<CR>')
+vim.keymap.set("v", "<leader>ce", ':!chatblade -r -p explain<CR>')
