@@ -1,3 +1,7 @@
+########################################################################################
+#                                        Common                                        #
+########################################################################################
+
 snippet tbl
 	create table ${1:table} (
 		${0:columns}
@@ -24,3 +28,24 @@ snippet seq
 	create sequence ${1:name} start with ${2:1} increment by ${3:1} minvalue ${0:1};
 snippet s*
 	select * from ${0:table}
+snippet dt
+	describe table ${0:table}
+
+########################################################################################
+#                                      Snowflake                                       #
+########################################################################################
+
+snippet role
+	use role ${0:table};
+
+snippet network_policies_show
+	show network policies;
+
+snippet network_policies_describe
+	describe network policy ${0:network_policy_name};
+
+snippet network_policies_alter
+	alter network policy if exists ${0:network_policy_name}
+	set allowed_ip_list = (
+	  '${1:0.0.0.0}'
+	);
