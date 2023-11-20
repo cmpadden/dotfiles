@@ -4,11 +4,11 @@
 [[ $- != *i* ]] && return
 
 warn() {
-    printf '\e[43m %s \e[0m %s\n' "WARNING" "$1"
+    printf '\e[38;5;0;48;5;226m %s \e[0m %s\n' "WARN" "$1"
 }
 
 error() {
-    printf '\e[41m %s \e[0m %s\n' "ERROR" "$1"
+    printf '\e[38;5;0;48;5;196m %s \e[0m %s\n' "ERROR" "$1"
 }
 
 check_and_source() {
