@@ -44,7 +44,7 @@ alias gcp_project="gcloud info --format='value(config.project)'"
 # vim
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
-    alias v="nvim"
+    alias vimdiff="nvim -d"
 fi
 
 # rsync
