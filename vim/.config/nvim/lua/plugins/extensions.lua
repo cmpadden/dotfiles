@@ -112,8 +112,7 @@ return {
                         {
                             exe = "sqlfluff",
                             args = {
-                                "fix",
-                                "--force",
+                                "format",
                                 "--disable-progress-bar",
                                 "--nocolor",
                                 "--dialect snowflake",
