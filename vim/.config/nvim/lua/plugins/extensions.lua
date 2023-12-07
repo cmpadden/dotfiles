@@ -94,7 +94,7 @@ return {
                 log_level = vim.log.levels.WARN,
                 filetype = {
                     python = {
-                        require("formatter.filetypes.python").black,
+                        require("formatter.filetypes.python").ruff,
                         require("formatter.filetypes.python").isort,
                     },
                     sh = {
@@ -114,6 +114,9 @@ return {
                             stdin = true,
                             ignore_exitcode = true,
                         },
+                    },
+                    vue = {
+                        require("formatter.filetypes.vue").prettier,
                     },
                     ["*"] = {
                         require("formatter.filetypes.any").remove_trailing_whitespace
