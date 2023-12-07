@@ -35,7 +35,7 @@ alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
 #                                      JavaScript                                      #
 ########################################################################################
 
-alias npm="pnpm"
+# alias npm="pnpm"
 
 # google cloud platform
 alias gcp_project="gcloud info --format='value(config.project)'"
@@ -92,3 +92,10 @@ alias date_short="date +%Y%m%d"
 ########################################################################################
 
 alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
+
+########################################################################################
+#                                        MacOS                                         #
+########################################################################################
+
+alias books_library="cd ~/Library/Mobile\ Documents/iCloud~com~apple~iBooks/Documents/"
+alias taio="cd ~/Library/Mobile\ Documents/iCloud~app~cyan~taio/Documents"
