@@ -25,9 +25,7 @@ fi
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 
-# export PATH="/opt/homebrew/opt/node@14/bin:$PATH"
-export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
-# export PATH="/opt/homebrew/opt/node@17/bin:$PATH"
+export PATH="/opt/homebrew/opt/node@18/bin:$PATH"
 
 if [ ! -L "/Library/Java/JavaVirtualMachines/openjdk.jdk" ]; then
     echo "The /Library/Java/JavaVirtualMachines/openjdk.jdk file is missing"

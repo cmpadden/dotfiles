@@ -127,6 +127,14 @@
     (when (not= (. active-layout app-name) nil)
       (w:moveToUnit (. active-layout app-name)))))
 
+(fn set-active-window-size [w h]
+  "Sets the active window to the desired resolution w x h."
+  (local win (hs.window.focusedWindow))
+  (local f (win:frame))
+  (set f.h h)
+  (set f.w w)
+  (win:setFrame f))
+
 (fn obj.init [self]
   "Sets default layout, subscribes to window creation events, and sets key bindings"
   (set self.layout obj.config.default-layout)
@@ -134,6 +142,7 @@
   (set hs.window.animationDuration 0)
   (hs.hotkey.bind [:cmd :ctrl] :1 (fn [] (obj:set_layout 1)))
   (hs.hotkey.bind [:cmd :ctrl] :2 (fn [] (obj:set_layout 2)))
-  (hs.hotkey.bind [:cmd :ctrl] :3 (fn [] (obj:set_layout 3))))
+  (hs.hotkey.bind [:cmd :ctrl] :3 (fn [] (obj:set_layout 3)))
+  (hs.hotkey.bind [:cmd :ctrl] :4 (fn [] (set-active-window-size 1920 1080))))
 
 obj
