@@ -40,3 +40,12 @@ vim.cmd([[
       autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
   augroup END
 ]])
+
+-- Meh, it's close enough...
+vim.cmd([[
+  augroup hySyntax
+      autocmd!
+      autocmd BufNewFile,BufRead *.hy set syntax=clojure
+  augroup END
+]])
+
