@@ -10,6 +10,14 @@ return {
         cmd = { "TSUpdateSync" },
         build = ":TSUpdate",
         config = function()
+
+            -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#getting-started
+            vim.g.skip_ts_context_commentstring_module = true
+
+            require('nvim-treesitter.configs').setup {
+                enable_autocmd = false,
+            }
+
             require("nvim-treesitter.configs").setup({
                 ensure_installed = {
                     "bash",
@@ -33,7 +41,6 @@ return {
                     "vue",
                     "yaml",
                 },
-                context_commentstring = { enable = true, enable_autocmd = false },
                 highlight = {
                     enable = true,
                     disable = function(_, bufnr)
@@ -102,5 +109,7 @@ return {
                 },
             })
         end,
+    },
+    {
     },
 }

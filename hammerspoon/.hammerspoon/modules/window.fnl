@@ -12,6 +12,7 @@
 
 (set obj.config {
   :default-layout 3
+  :split-padding 0.1
   :padding 0.02
   :window-width-centered 0.65})
 
@@ -25,14 +26,14 @@
 
 (global RECT_LEFT (hs.geometry {
   :h (- 1 (* 2 obj.config.padding))
-  :w (- 0.5 (+ obj.config.padding (/ obj.config.padding 2)))
-  :x obj.config.padding
+  :w (- 0.5 (+ obj.config.split-padding 0.005))
+  :x obj.config.split-padding
   :y obj.config.padding}))
 
 (global RECT_RIGHT (hs.geometry {
   :h (- 1 (* 2 obj.config.padding))
-  :w (- 0.5 (+ obj.config.padding (/ obj.config.padding 2)))
-  :x (+ 0.5 (/ obj.config.padding 2))
+  :w (- 0.5 obj.config.split-padding 0.005)
+  :x (+ 0.5 0.005)
   :y obj.config.padding}))
 
 

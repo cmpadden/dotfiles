@@ -15,6 +15,7 @@ alias gc="git checkout"
 alias gs="git status ."
 alias gd="git diff"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
+alias gfm="git fetch origin main:main"
 alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
 
 alias gcm="git checkout main"
@@ -43,7 +44,7 @@ alias gcp_project="gcloud info --format='value(config.project)'"
 # vim
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
-    alias v="nvim"
+    alias vimdiff="nvim -d"
 fi
 
 # rsync
@@ -70,7 +71,7 @@ fi
 
 # https://github.com/ggreer/the_silver_searcher
 if hash ag 2>/dev/null; then
-    alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist"
+    alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist --ignore .direnv"
 fi
 
 # snowflake

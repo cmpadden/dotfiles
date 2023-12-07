@@ -88,6 +88,9 @@ return {
     {
         "mhartington/formatter.nvim",
         event = { "BufReadPre", "BufNewFile" },
+        init = function()
+            vim.keymap.set("n", "<leader>f", "<cmd>FormatWrite<cr>")
+        end,
         opts = function()
             return {
                 logging = true,
