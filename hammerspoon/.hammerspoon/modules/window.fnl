@@ -14,7 +14,8 @@
   :default-layout 3
   :split-padding 0.1
   :padding 0.02
-  :window-width-centered 0.65})
+  :window-width-centered 0.65
+  :window-width-skinny 0.35})
 
 (global RECT_CENTER (hs.geometry {
   :h (- 1 (* 2 obj.config.padding))
@@ -34,6 +35,12 @@
   :h (- 1 (* 2 obj.config.padding))
   :w (- 0.5 obj.config.split-padding 0.005)
   :x (+ 0.5 0.005)
+  :y obj.config.padding}))
+
+(global RECT_SKINNY (hs.geometry {
+  :h (- 1 (* 2 obj.config.padding))
+  :w obj.config.window-width-skinny
+  :x (/ (- 1 obj.config.window-width-skinny) 2)
   :y obj.config.padding}))
 
 
@@ -107,6 +114,30 @@
     :Terminal RECT_CENTER
     :kitty RECT_CENTER
     :zoom.us RECT_CENTER
+    }
+  4 {
+    :Alacritty RECT_SKINNY
+    :Arc RECT_SKINNY
+    "Bitwig Studio" RECT_SKINNY
+    "Brave Browser" RECT_SKINNY
+    :Calendar RECT_SKINNY
+    :Chromium RECT_SKINNY
+    :Discord RECT_SKINNY
+    :Figma RECT_SKINNY
+    :Firefox RECT_SKINNY
+    "Google Chrome" RECT_SKINNY
+    :LibreWolf RECT_SKINNY
+    "Logic Pro" RECT_SKINNY
+    :Mail RECT_SKINNY
+    :Messages RECT_SKINNY
+    :Notes RECT_SKINNY
+    :Notion RECT_SKINNY
+    :Safari RECT_SKINNY
+    :Slack RECT_SKINNY
+    :Spotify RECT_SKINNY
+    :Terminal RECT_SKINNY
+    :kitty RECT_SKINNY
+    :zoom.us RECT_SKINNY
     }})
 
 ; TODO - explore if pattern matching on window layouts is more elegant
@@ -143,6 +174,7 @@
   (hs.hotkey.bind [:cmd :ctrl] :1 (fn [] (obj:set_layout 1)))
   (hs.hotkey.bind [:cmd :ctrl] :2 (fn [] (obj:set_layout 2)))
   (hs.hotkey.bind [:cmd :ctrl] :3 (fn [] (obj:set_layout 3)))
-  (hs.hotkey.bind [:cmd :ctrl] :4 (fn [] (set-active-window-size 1920 1080))))
+  (hs.hotkey.bind [:cmd :ctrl] :4 (fn [] (obj:set_layout 4)))
+  (hs.hotkey.bind [:cmd :ctrl] :5 (fn [] (set-active-window-size 1920 1080))))
 
 obj
