@@ -30,7 +30,7 @@ alias gcb="git checkout -b"
 
 alias venvc='python3 -m virtualenv venv'
 alias ipy="python -m IPython --matplotlib"
-alias mkpyenv="echo \"layout pyenv 3.11.3 \" > .envrc && direnv allow"
+alias mkpyenv="echo \"layout pyenv 3.11.7 \" > .envrc && direnv allow"
 alias pydoc='python -m pydoc'
 alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
 
