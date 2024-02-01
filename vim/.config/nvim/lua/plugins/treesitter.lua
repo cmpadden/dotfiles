@@ -25,7 +25,6 @@ return {
                     "diff",
                     "gitignore",
                     "hcl",
-                    "help",
                     "html",
                     "http",
                     "javascript",
