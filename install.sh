@@ -77,44 +77,64 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         bash \
         bash-completion \
         bat \
+        chatblade \
+        cmake \
         curl \
         direnv \
+        docker \
+        docker-compose \
         exa \
         fd \
         fzf \
         git \
-        cmake \
         httpie \
         imagemagick \
         jq \
         neovim \
-        node@16 \
-        pandoc \
+        node \
+        nvm \
         pass \
         pass-otp \
         pdfgrep \
+        pre-commit \
+        pyenv \
+        pyenv-virtualenv \
         stow \
         the_silver_searcher \
         tldr \
         tmux \
-        yarn \
-        watch
+        watch \
+        withgraphite/tap/graphite \
+        yarn
+
+        # node@16 \
+        # pandoc \
 
     _log "Installing brew casks"
     brew install --cask \
-        docker \
-        google-cloud-sdk \
+        chromium \
         hammerspoon \
         kitty \
         mpv \
         notion \
         slack \
-        discord \
-        spotify
+        spotify \
+        zoom
 
-    brew tap adoptopenjdk/openjdk
-    brew install --cask adoptopenjdk8
+    # brew tap adoptopenjdk/openjdk
+    # brew install --cask adoptopenjdk8
 
+    _log "Installing LTS version of Node.js"
+    nvm install --lts
+
+    _log "Installing Tmux Plugin Manager"
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+    _log "Setting MacOS settings: InitialKeyRepeat, KeyRepeat"
+    defaults write -g InitialKeyRepeat -int 10
+    defaults write -g KeyRepeat -int 1
+
+    _log 'NOTE: If Chromium.app fails to open, run `xattr -cr /Applications/Chromium.app`'
 
 fi
 
