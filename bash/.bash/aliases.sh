@@ -86,6 +86,8 @@ if [ -f "$HOME/notes.md.asc" ]; then
     alias notes="nvim \$HOME/notes.md.asc"
     alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
     alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
+else
+    alias notes="nvim ~/notes.md"
 fi
 
 alias date_short="date +%Y%m%d"
