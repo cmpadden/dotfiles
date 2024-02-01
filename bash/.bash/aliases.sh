@@ -20,6 +20,8 @@ alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | x
 
 alias gcm="git checkout main"
 alias gpm="git pull origin main"
+alias gcma="git checkout master"
+alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 
 ########################################################################################
