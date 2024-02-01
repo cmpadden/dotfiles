@@ -98,7 +98,7 @@ return {
                 filetype = {
                     python = {
                         require("formatter.filetypes.python").ruff,
-                        require("formatter.filetypes.python").isort,
+                        -- require("formatter.filetypes.python").isort,
                     },
                     sh = {
                         require("formatter.filetypes.sh").shfmt,

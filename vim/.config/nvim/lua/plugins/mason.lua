@@ -22,7 +22,7 @@ return {
                 ensure_installed = {
                     "black",
                     "flake8",
-                    "isort",
+                    -- "isort",
                     "prettier",
                     "ruff",
                     "shellcheck",
