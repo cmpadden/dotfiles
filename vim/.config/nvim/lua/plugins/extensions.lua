@@ -79,8 +79,8 @@ return {
     {
         "preservim/vim-markdown",
         config = function()
-            -- use pythonic folding for vim-markdown
-            vim.g.vim_markdown_folding_style_pythonic = 1
+            vim.g.vim_markdown_folding_style_pythonic = 1 -- use pythonic folding for vim-markdown
+            vim.g.vim_markdown_folding_level = 6 -- default to open folds
         end,
     },
 
