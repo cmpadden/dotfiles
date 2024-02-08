@@ -10,13 +10,12 @@ return {
         cmd = { "TSUpdateSync" },
         build = ":TSUpdate",
         config = function()
-
             -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#getting-started
             vim.g.skip_ts_context_commentstring_module = true
 
-            require('nvim-treesitter.configs').setup {
+            require("nvim-treesitter.configs").setup({
                 enable_autocmd = false,
-            }
+            })
 
             require("nvim-treesitter.configs").setup({
                 ensure_installed = {
@@ -72,43 +71,92 @@ return {
                         enable = true,
                         set_jumps = true,
                         goto_next_start = {
-                            ["]k"] = { query = "@block.outer", desc = "Next block start" },
-                            ["]f"] = { query = "@function.outer", desc = "Next function start" },
-                            ["]a"] = { query = "@parameter.outer", desc = "Next parameter start" },
+                            ["]k"] = {
+                                query = "@block.outer",
+                                desc = "Next block start",
+                            },
+                            ["]f"] = {
+                                query = "@function.outer",
+                                desc = "Next function start",
+                            },
+                            ["]a"] = {
+                                query = "@parameter.outer",
+                                desc = "Next parameter start",
+                            },
                         },
                         goto_next_end = {
                             ["]k"] = { query = "@block.outer", desc = "Next block end" },
-                            ["]f"] = { query = "@function.outer", desc = "Next function end" },
-                            ["]a"] = { query = "@parameter.outer", desc = "Next parameter end" },
+                            ["]f"] = {
+                                query = "@function.outer",
+                                desc = "Next function end",
+                            },
+                            ["]a"] = {
+                                query = "@parameter.outer",
+                                desc = "Next parameter end",
+                            },
                         },
                         goto_previous_start = {
-                            ["[k"] = { query = "@block.outer", desc = "Previous block start" },
-                            ["[f"] = { query = "@function.outer", desc = "Previous function start" },
-                            ["[a"] = { query = "@parameter.outer", desc = "Previous parameter start" },
+                            ["[k"] = {
+                                query = "@block.outer",
+                                desc = "Previous block start",
+                            },
+                            ["[f"] = {
+                                query = "@function.outer",
+                                desc = "Previous function start",
+                            },
+                            ["[a"] = {
+                                query = "@parameter.outer",
+                                desc = "Previous parameter start",
+                            },
                         },
                         goto_previous_end = {
-                            ["[K"] = { query = "@block.outer", desc = "Previous block end" },
-                            ["[F"] = { query = "@function.outer", desc = "Previous function end" },
-                            ["[A"] = { query = "@parameter.outer", desc = "Previous parameter end" },
+                            ["[K"] = {
+                                query = "@block.outer",
+                                desc = "Previous block end",
+                            },
+                            ["[F"] = {
+                                query = "@function.outer",
+                                desc = "Previous function end",
+                            },
+                            ["[A"] = {
+                                query = "@parameter.outer",
+                                desc = "Previous parameter end",
+                            },
                         },
                     },
                     swap = {
                         enable = true,
                         swap_next = {
-                            [">K"] = { query = "@block.outer", desc = "Swap next block" },
-                            [">F"] = { query = "@function.outer", desc = "Swap next function" },
-                            [">A"] = { query = "@parameter.inner", desc = "Swap next parameter" },
+                            [">K"] = {
+                                query = "@block.outer",
+                                desc = "Swap next block",
+                            },
+                            [">F"] = {
+                                query = "@function.outer",
+                                desc = "Swap next function",
+                            },
+                            [">A"] = {
+                                query = "@parameter.inner",
+                                desc = "Swap next parameter",
+                            },
                         },
                         swap_previous = {
-                            ["<K"] = { query = "@block.outer", desc = "Swap previous block" },
-                            ["<F"] = { query = "@function.outer", desc = "Swap previous function" },
-                            ["<A"] = { query = "@parameter.inner", desc = "Swap previous parameter" },
+                            ["<K"] = {
+                                query = "@block.outer",
+                                desc = "Swap previous block",
+                            },
+                            ["<F"] = {
+                                query = "@function.outer",
+                                desc = "Swap previous function",
+                            },
+                            ["<A"] = {
+                                query = "@parameter.inner",
+                                desc = "Swap previous parameter",
+                            },
                         },
                     },
                 },
             })
         end,
-    },
-    {
     },
 }

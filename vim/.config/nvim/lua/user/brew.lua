@@ -161,9 +161,7 @@ end
 
 local win_bufnr, win_id = make_window(0.8, 0.7)
 
-
 -- local result = vim.fn.systemlist('date')
-
 
 api.nvim_buf_set_lines(win_bufnr, 0, -1, true, {})
 api.nvim_buf_set_option(win_bufnr, "buftype", "nofile")
@@ -173,10 +171,14 @@ api.nvim_buf_set_option(win_bufnr, "modifiable", true)
 api.nvim_buf_set_keymap(win_bufnr, "n", "<Esc>", "<cmd>bd<CR>", { noremap = true })
 
 local timer = vim.loop.new_timer()
-timer:start(0, 1000, vim.schedule_wrap(function()
-    local result = vim.fn.systemlist('date')
-    api.nvim_buf_set_lines(win_bufnr, 0, -1, true, result)
-end))
+timer:start(
+    0,
+    1000,
+    vim.schedule_wrap(function()
+        local result = vim.fn.systemlist("date")
+        api.nvim_buf_set_lines(win_bufnr, 0, -1, true, result)
+    end)
+)
 
 timer:stop()
 
