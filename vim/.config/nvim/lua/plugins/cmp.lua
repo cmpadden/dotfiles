@@ -9,11 +9,11 @@ return {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
         dependencies = {
-            "hrsh7th/cmp-buffer",       -- https://github.com/hrsh7th/cmp-buffer
-            "hrsh7th/cmp-cmdline",      -- https://github.com/hrsh7th/cmp-cmdline
-            "hrsh7th/cmp-emoji",        -- https://github.com/hrsh7th/cmp-emoji
-            "hrsh7th/cmp-nvim-lsp",     -- https://github.com/hrsh7th/cmp-nvim-lsp
-            "hrsh7th/cmp-path",         -- https://github.com/hrsh7th/cmp-path
+            "hrsh7th/cmp-buffer", -- https://github.com/hrsh7th/cmp-buffer
+            "hrsh7th/cmp-cmdline", -- https://github.com/hrsh7th/cmp-cmdline
+            "hrsh7th/cmp-emoji", -- https://github.com/hrsh7th/cmp-emoji
+            "hrsh7th/cmp-nvim-lsp", -- https://github.com/hrsh7th/cmp-nvim-lsp
+            "hrsh7th/cmp-path", -- https://github.com/hrsh7th/cmp-path
             "saadparwaiz1/cmp_luasnip", -- https://github.com/saadparwaiz1/cmp_luasnip
         },
         config = function()
@@ -58,10 +58,10 @@ return {
                 },
                 sources = cmp.config.sources({
                     { name = "nvim_lsp", priority = 1250 },
-                    { name = "buffer",   priority = 1000 },
-                    { name = "luasnip",  priority = 750 },
-                    { name = "path",     priority = 500 },
-                    { name = "emoji",    priority = 250 },
+                    { name = "buffer", priority = 1000 },
+                    { name = "luasnip", priority = 750 },
+                    { name = "path", priority = 500 },
+                    { name = "emoji", priority = 250 },
                 }),
                 window = {
                     completion = cmp.config.window.bordered(border_opts),
@@ -140,7 +140,8 @@ return {
                     t({ "", "" }),
                     f(function(args)
                         local cs = comment_string()
-                        return cs .. string.rep(" ", math.floor(padding(cs, args[1][1])))
+                        return cs
+                            .. string.rep(" ", math.floor(padding(cs, args[1][1])))
                     end, { 1 }),
                     i(1, "placeholder"),
                     f(function(args)
@@ -174,5 +175,5 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                 { desc = "Edit LuaSnip snippets" }
             )
         end,
-    }
+    },
 }

@@ -48,4 +48,3 @@ vim.cmd([[
       autocmd BufNewFile,BufRead *.hy set syntax=clojure
   augroup END
 ]])
-
