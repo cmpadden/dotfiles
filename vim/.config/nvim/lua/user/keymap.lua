@@ -23,9 +23,18 @@ vim.keymap.set("n", "<leader>P", '"+P')
 vim.keymap.set("v", "<leader>p", '"+p')
 vim.keymap.set("v", "<leader>P", '"+P')
 
--- external call to `chatblade`
--- prompts (eg. `programmer`) can be found in `~/.config/chatblade/`
-vim.keymap.set("v", "<leader>c", ':!chatblade -r -p programmer<CR>')
-vim.keymap.set("v", "<leader>cx", ':!chatblade -e -r -p programmer<CR>')
-vim.keymap.set("v", "<leader>cd", ':!chatblade -r -p document<CR>')
-vim.keymap.set("v", "<leader>ce", ':!chatblade -r -p explain<CR>')
+-- `chatblade`
+-- * prompts (eg. `programmer`) can be found in `~/.config/chatblade/`
+-- * `<leader>c` defaults to `-e` extracting the content
+vim.keymap.set("v", "<leader>c", ':!chatblade -e -r -p programmer<CR>')
+vim.keymap.set("v", "<leader>fc", ':!chatblade -r -p programmer<CR>')
+vim.keymap.set("v", "<leader>e", ':!chatblade -e -r -p explain<CR>')
+vim.keymap.set("v", "<leader>fe", ':!chatblade -r -p explain<CR>')
+
+-- Future enhancement would be to not replace the current visual selection, but instead
+-- place the command output below the selection. This may be possible by using
+-- registers, yanking the selection, passing the register to the command, and then
+-- putting the register contents above the output.
+
+-- source current Lua file
+vim.keymap.set("n", "<leader>ss", ":luafile %<CR>")
