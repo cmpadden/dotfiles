@@ -1,10 +1,21 @@
 --[[ Chatblade.nvim
 
-REQUIREMENTS
+BACKGROUND
 
-    - Populate `OPENAI_API_KEY` environment variable
+    The `chatblade.nvim` plugin provides a barebones wrapper around the `chatblade`
+    command line utility. It's easy to call out to `chatblade` without the need for
+    YAP (yet-another-plugin), however, this plugin aims to add a few quality of life
+    improvements, and possible configurations over that. If you would prefer to _not_
+    use a plugin, you may find the following binding helpful:
 
-TRACKING
+        vim.keymap.set("v", "<leader>c", ':!chatblade -e -r<CR>')
+
+PREREQUISITES
+
+    - Install the `chatblade` CLI
+    - Set the `OPENAI_API_KEY` environment variable
+
+FEATURE TRACKING
 
     - explore `line1`, `line2` and `rows` available in `params` in `nvim_create_user_command`
     - handle creation of prompt files
