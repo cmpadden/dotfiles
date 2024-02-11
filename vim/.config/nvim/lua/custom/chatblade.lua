@@ -29,8 +29,7 @@ local function get_visual_selection_indexes()
     return srow, scol, erow, ecol
 end
 
-local function get_visual_selection()
-    local srow, scol, erow, ecol = get_visual_selection_indexes()
+local function get_visual_selection(srow, scol, erow, ecol)
     local lines = vim.api.nvim_buf_get_lines(0, srow - 1, erow, false)
     if #lines == 0 then
         return nil
@@ -40,9 +39,9 @@ local function get_visual_selection()
     return lines
 end
 
-local function put_lines_below_cursor(lines)
-    local current_line = unpack(vim.api.nvim_win_get_cursor(0), 1)
-    vim.api.nvim_buf_set_lines(0, current_line, current_line, true, lines)
+local function put_lines_below_line_number(line_number, lines)
+    -- local current_line = unpack(vim.api.nvim_win_get_cursor(0), 1)
+    vim.api.nvim_buf_set_lines(0, line_number, line_number, true, lines)
 end
 
 ----------------------------------------------------------------------------------------
@@ -58,9 +57,14 @@ M.default_config = {
 }
 
 function M.run(user_config)
-    local config = vim.tbl_deep_extend("force", user_config, M.default_config)
+    local config = M.default_config
+    if user_config then
+        config = vim.tbl_deep_extend("force", user_config, M.default_config)
+    end
 
-    local selected_lines = get_visual_selection()
+    local srow, scol, erow, ecol = get_visual_selection_indexes()
+
+    local selected_lines = get_visual_selection(srow, scol, erow, ecol)
     if not selected_lines then
         return
     end
@@ -68,18 +72,17 @@ function M.run(user_config)
     local command = { "chatblade", "--raw" }
 
     if config.extract then
-        command.insert("--extract")
+        table.insert(command, "--extract")
     end
 
     if config.prompt then
-        command.insert("--prompt-file")
-        command.insert(config.prompt)
+        table.insert(command, "--prompt-file")
+        table.insert(command, config.prompt)
     end
 
     local stdout = vim.fn.systemlist(command, selected_lines)
 
-    -- TODO - put the lines below the `erow`
-    put_lines_below_cursor(stdout)
+    put_lines_below_line_number(erow, stdout)
 end
 
 return M
