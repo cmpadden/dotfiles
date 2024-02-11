@@ -19,3 +19,7 @@ vim.cmd([[
     runtime work.vim
   endif
 ]])
+
+-- Testing of `chatblade.nvim`
+vim.api.nvim_create_user_command("X", require("custom.chatblade").run, { range = true })
+vim.keymap.set("v", "<leader>x", ":lua require('custom.chatblade').run()<CR>")
