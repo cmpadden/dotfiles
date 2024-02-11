@@ -34,12 +34,19 @@ unpack = unpack or table.unpack
 --                                       Utils                                        --
 ----------------------------------------------------------------------------------------
 
+-- Gets row and column indexes for a visual selection.
+-- @return array of start and end indexes for selected lines
 local function get_visual_selection_indexes()
     local srow, scol = unpack(vim.fn.getpos("'<"), 2)
     local erow, ecol = unpack(vim.fn.getpos("'>"), 2)
     return srow, scol, erow, ecol
 end
 
+-- Gets text in current buffer given selection indexes.
+-- @param srow index of visual start row
+-- @param scol index of visual start column
+-- @param erow index of visual end row
+-- @param ecol index of visual end column
 local function get_visual_selection(srow, scol, erow, ecol)
     local lines = vim.api.nvim_buf_get_lines(0, srow - 1, erow, false)
     if #lines == 0 then
@@ -50,8 +57,10 @@ local function get_visual_selection(srow, scol, erow, ecol)
     return lines
 end
 
-local function put_lines_below_line_number(line_number, lines)
-    -- local current_line = unpack(vim.api.nvim_win_get_cursor(0), 1)
+-- Puts array of lines below specified `line_number`.
+-- @param line_number line to place text below
+-- @param lines array of strings to place into buffer
+local function put_lines_below_line(line_number, lines)
     vim.api.nvim_buf_set_lines(0, line_number, line_number, true, lines)
 end
 
@@ -80,7 +89,11 @@ function M.run(user_config)
         return
     end
 
-    local command = { "chatblade", "--raw" }
+    local command = { "chatblade" }
+
+    if config.raw then
+        table.insert(command, "--raw")
+    end
 
     if config.extract then
         table.insert(command, "--extract")
@@ -93,7 +106,7 @@ function M.run(user_config)
 
     local stdout = vim.fn.systemlist(command, selected_lines)
 
-    put_lines_below_line_number(erow, stdout)
+    put_lines_below_line(erow, stdout)
 end
 
 return M
