@@ -12,7 +12,7 @@
 
 (set obj.config {
   :default-layout 3
-  :split-padding 0.1
+  :split-padding 0.08
   :padding 0.02
   :window-width-centered 0.65
   :window-width-skinny 0.35})
@@ -43,6 +43,12 @@
   :x (/ (- 1 obj.config.window-width-skinny) 2)
   :y obj.config.padding}))
 
+; small square in the bottom right of the screen
+(global RECT_PIP (hs.geometry {
+  :h 0.20
+  :w 0.142
+  :x (- 1 0.162)
+  :y (- 1 0.22)}))
 
 (global LAYOUTS {
   1 {
@@ -67,6 +73,7 @@
     :Terminal hs.layout.maximized
     :kitty hs.layout.maximized
     :zoom.us hs.layout.maximized
+    :Gather RECT_PIP
     }
   2 {
     :Alacritty RECT_LEFT
@@ -83,13 +90,14 @@
     :Mail RECT_RIGHT
     :Messages RECT_RIGHT
     :Notes RECT_RIGHT
-    :Notion RECT_RIGHT
+    :Notion RECT_LEFT
     :Safari RECT_RIGHT
     :Slack RECT_RIGHT
     :Spotify RECT_RIGHT
     :Terminal RECT_LEFT
     :kitty RECT_LEFT
     :zoom.us RECT_RIGHT
+    :Gather RECT_PIP
     }
   3 {
     :Alacritty RECT_CENTER
@@ -114,6 +122,7 @@
     :Terminal RECT_CENTER
     :kitty RECT_CENTER
     :zoom.us RECT_CENTER
+    :Gather RECT_PIP
     }
   4 {
     :Alacritty RECT_SKINNY
