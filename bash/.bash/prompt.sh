@@ -58,11 +58,16 @@ git_fg="232"
 bg="232"
 fg="255"
 
+
+# &#x276E; ❭
+# &#x276F; ❯
+# &#x2771; ❱
+
 # Apply custom colors when using a multiplexor, but not the default shell
 if [ "$TERM" == "xterm-256color" ]; then
     # must be single-quotes for expressions to expand
     PS1='$(apply_colors "$(prompt_venv)" "$venv_bg" "$venv_fg")'
     PS1+='$(apply_colors "$(prompt_git_branch)" "$git_bg" "$git_fg")'
     PS1+='$(apply_colors "$(pwd)" "$bg" "$fg")'
-    PS1+='\n > '
+    PS1+='\n ❭ '
 fi
