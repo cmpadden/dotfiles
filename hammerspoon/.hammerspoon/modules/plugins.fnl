@@ -7,7 +7,7 @@
 (_G.spoon.SpoonInstall:andUse :AppLauncher {
   :config {:modifiers HYPER}
   :hotkeys {
-    :i "Google Chrome"
+    :i "Chromium"
     :k :kitty
     :m :Mail
     :n :Notion

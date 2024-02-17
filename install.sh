@@ -85,6 +85,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         docker-compose \
         exa \
         fd \
+        ffmpeg \
         fzf \
         git \
         httpie \
@@ -99,6 +100,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         pre-commit \
         pyenv \
         pyenv-virtualenv \
+        ripgrep \
         stow \
         the_silver_searcher \
         tldr \
@@ -106,9 +108,6 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         watch \
         withgraphite/tap/graphite \
         yarn
-
-        # node@16 \
-        # pandoc \
 
     _log "Installing brew casks"
     brew install --cask \

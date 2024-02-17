@@ -71,9 +71,14 @@ if hash bat 2>/dev/null; then
         --wrap=never"
 fi
 
-# https://github.com/ggreer/the_silver_searcher
-if hash ag 2>/dev/null; then
-    alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist --ignore .direnv"
+# # https://github.com/ggreer/the_silver_searcher
+# if hash ag 2>/dev/null; then
+#     alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist --ignore .direnv"
+# fi
+
+if hash rg 2>/dev/null; then
+    # alias grep="rg --ignore --hidden"
+    alias grep="rg --smart-case"
 fi
 
 # snowflake
