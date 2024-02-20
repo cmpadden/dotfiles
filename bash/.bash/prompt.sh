@@ -52,7 +52,8 @@ venv_bg="232"
 venv_fg="255"
 
 # git_bg="255"
-git_bg="16"
+# git_bg="16"
+git_bg="10"
 git_fg="232"
 
 bg="232"
@@ -69,5 +70,5 @@ if [ "$TERM" == "xterm-256color" ]; then
     PS1='$(apply_colors "$(prompt_venv)" "$venv_bg" "$venv_fg")'
     PS1+='$(apply_colors "$(prompt_git_branch)" "$git_bg" "$git_fg")'
     PS1+='$(apply_colors "$(pwd)" "$bg" "$fg")'
-    PS1+='\n ❭ '
+    PS1+='\n ❯ '
 fi

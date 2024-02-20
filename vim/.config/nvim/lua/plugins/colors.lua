@@ -25,12 +25,16 @@ return {
         priority = 1000,
         init = function()
             require("catppuccin").setup({
-                flavour = "mocha", -- latte, frappe, macchiato, mocha
+                -- flavour = "latte",
+                -- flavour = "frappe",
+                -- flavour = "macchiato",
+                flavour = "mocha",
                 term_colors = true,
                 transparent_background = false,
                 color_overrides = {
                     mocha = {
-                        base = "#000000",
+                        -- base = "#000000",
+                        base = "#122F2B",
                     },
                 },
             })

@@ -109,3 +109,10 @@ alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
 
 alias books_library="cd ~/Library/Mobile\ Documents/iCloud~com~apple~iBooks/Documents/"
 alias taio="cd ~/Library/Mobile\ Documents/iCloud~app~cyan~taio/Documents"
+
+########################################################################################
+#                                        Kitty                                         #
+########################################################################################
+
+alias icat="kitty +kitten icat"
+

@@ -17,7 +17,7 @@
 (require :modules.plugins)
 (require :modules.alerts)
 (require :modules.caffeine)
-(require :modules.watchers)
+; (require :modules.watchers)
 
 (: (require :modules.window) :init)
 
