@@ -75,3 +75,16 @@ check_and_source "$HOME/.cargo/env"
 if hash nvim 2>/dev/null; then
     export EDITOR="nvim"
 fi
+
+# override fzf shell expansion (eg. **<tab>)
+#
+# https://github.com/junegunn/fzf?tab=readme-ov-file#settings
+#
+# declare -f _fzf_compgen_path
+_fzf_compgen_path ()
+{
+    echo "$1";
+    # command find -L "$1" -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
+    command find -L "$1" -name *.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
+}
+
