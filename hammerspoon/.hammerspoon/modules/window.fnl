@@ -147,7 +147,29 @@
     :Terminal RECT_SKINNY
     :kitty RECT_SKINNY
     :zoom.us RECT_SKINNY
+    }
+  5 {
+    :Chromium { :w 0.75 :h 0.85 :x 0.25 :y 0 }
+    :kitty { :w 0.25 :h 0.85 :x 0.25 :y 0 }
+    :zoom.us { :w 0.25 :h 0.85 :x 0 :y 0 }
+    :TextEdit { :w 0.25 :h 0.85 :x 0 :y 0 }
+    :Slack { :w 0.25 :h 0.25 :x 0 :y 0 }
+    :Spotify { :w 0.25 :h 0.25 :x 0 :y 0 }
+    :Gather { :w 0.25 :h 0.25 :x 0 :y 0 }
+    }
+  6 {
+    ; cruft
+    :Slack { :w 0.25 :h 0.50 :x 0 :y 0 }
+    :Spotify { :w 0.25 :h 0.50 :x 0 :y 0 }
+    :Gather { :w 0.25 :h 0.50 :x 0 :y 0 }
+    ; important
+    :Chromium { :w 0.5 :h 0.85 :x 0.5 :y 0 }
+    :kitty { :w 0.25 :h 0.85 :x 0.25 :y 0 }
+    :zoom.us { :w 0.25 :h 0.85 :x 0 :y 0 }
+    :TextEdit { :w 0.25 :h 0.85 :x 0 :y 0 }
     }})
+
+; 5 is intended for presentations
 
 ; TODO - explore if pattern matching on window layouts is more elegant
 
@@ -175,15 +197,27 @@
   (set f.w w)
   (win:setFrame f))
 
+; Temporarily disable window subscription
+
+; (fn obj.init [self]
+;   "Sets default layout, subscribes to window creation events, and sets key bindings"
+;   (set self.layout obj.config.default-layout)
+;   (hs.window.filter.default:subscribe hs.window.filter.windowCreated resize-window)
+;   (set hs.window.animationDuration 0)
+;   (hs.hotkey.bind [:cmd :ctrl] :1 (fn [] (obj:set_layout 1)))
+;   (hs.hotkey.bind [:cmd :ctrl] :2 (fn [] (obj:set_layout 2)))
+;   (hs.hotkey.bind [:cmd :ctrl] :3 (fn [] (obj:set_layout 3)))
+;   (hs.hotkey.bind [:cmd :ctrl] :4 (fn [] (obj:set_layout 4)))
+;   (hs.hotkey.bind [:cmd :ctrl] :5 (fn [] (obj:set_layout 5)))
+;   (hs.hotkey.bind [:cmd :ctrl] :6 (fn [] (obj:set_layout 6))))
+
 (fn obj.init [self]
-  "Sets default layout, subscribes to window creation events, and sets key bindings"
-  (set self.layout obj.config.default-layout)
-  (hs.window.filter.default:subscribe hs.window.filter.windowCreated resize-window)
   (set hs.window.animationDuration 0)
   (hs.hotkey.bind [:cmd :ctrl] :1 (fn [] (obj:set_layout 1)))
   (hs.hotkey.bind [:cmd :ctrl] :2 (fn [] (obj:set_layout 2)))
   (hs.hotkey.bind [:cmd :ctrl] :3 (fn [] (obj:set_layout 3)))
   (hs.hotkey.bind [:cmd :ctrl] :4 (fn [] (obj:set_layout 4)))
-  (hs.hotkey.bind [:cmd :ctrl] :5 (fn [] (set-active-window-size 1920 1080))))
+  (hs.hotkey.bind [:cmd :ctrl] :5 (fn [] (obj:set_layout 5)))
+  (hs.hotkey.bind [:cmd :ctrl] :6 (fn [] (obj:set_layout 6))))
 
 obj
