@@ -134,4 +134,32 @@ return {
             }
         end,
     },
+
+    -- Shoutout to Tim!
+    {
+        "ellisonleao/carbon-now.nvim",
+        cmd = "CarbonNow",
+        lazy = true,
+        opts = {
+            open_cmd = "Chromium",
+            options = {
+                bg = "#21463D",
+                drop_shadow_blur = "68px",
+                drop_shadow = false,
+                drop_shadow_offset_y = "20px",
+                font_family = "Hack",
+                font_size = "18px",
+                line_height = "133%",
+                line_numbers = true,
+                theme = "nord",
+                titlebar = "",
+                watermark = false,
+                width = "680",
+                window_theme = "round",
+            },
+        },
+        keys = {
+            { "<leader>cn", ":CarbonNow<CR>", mode = "v", silent = true },
+        },
+    },
 }
