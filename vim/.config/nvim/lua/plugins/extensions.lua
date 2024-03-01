@@ -141,7 +141,7 @@ return {
         cmd = "CarbonNow",
         lazy = true,
         opts = {
-            open_cmd = "Chromium",
+            open_cmd = "open",  -- default: xdg-open
             options = {
                 bg = "#21463D",
                 drop_shadow_blur = "68px",
