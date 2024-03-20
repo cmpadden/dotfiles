@@ -83,6 +83,9 @@ if hash ranger 2>/dev/null; then
     alias r="ranger"
 fi
 
+# source environment variables in `.env`                                                    │
+alias dotenv="export $(xargs <.env)"
+
 ########################################################################################
 #                                        Python                                        #
 ########################################################################################
