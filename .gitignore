@@ -2,14 +2,15 @@
 
 .DS_Store
 
+vim/.config/github-copilot/
+vim/.config/nvim/plugin/packer_compiled.lua
+vim/.config/nvim/spell/
+vim/.config/nvim/work.vim
 vim/.vim/*.vim
 vim/.vim/.netrwhist
 vim/.vim/autoload/
-vim/.config/nvim/plugin/packer_compiled.lua
 vim/.vim/spell/
 vim/.vim/view
-vim/.config/nvim/work.vim
-vim/.config/github-copilot/
 
 qutebrowser/.qutebrowser/bookmarks/urls
 qutebrowser/.qutebrowser/quickmarks
