@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-# docker
+########################################################################################
+#                                        Docker                                        #
+########################################################################################
+
 alias docker_remove_images='docker rmi -f $(docker images -q)'
 alias docker_kill_all='docker kill $(docker ps -qa)'
 
@@ -25,29 +28,25 @@ alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 
 ########################################################################################
-#                                        Python                                        #
+#                                       General                                        #
 ########################################################################################
-
-alias venvc='python3 -m virtualenv venv'
-alias ipy="python -m IPython --matplotlib"
-alias mkpyenv="echo \"layout pyenv 3.11.7 \" > .envrc && direnv allow"
-alias pydoc='python -m pydoc'
-alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
-
-########################################################################################
-#                                      JavaScript                                      #
-########################################################################################
-
-# alias npm="pnpm"
-
-# google cloud platform
-alias gcp_project="gcloud info --format='value(config.project)'"
 
 # vim
 if hash nvim 2>/dev/null; then
     alias vim="nvim"
     alias vimdiff="nvim -d"
 fi
+
+# notes
+if [ -f "$HOME/notes.md.asc" ]; then
+    alias notes="nvim \$HOME/notes.md.asc"
+    alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
+    alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
+else
+    alias notes="nvim ~/notes.md"
+fi
+
+alias date_short="date +%Y%m%d"
 
 # rsync
 alias rscp='rsync -aP'
@@ -77,31 +76,39 @@ fi
 # fi
 
 if hash rg 2>/dev/null; then
-    # alias grep="rg --ignore --hidden"
     alias grep="rg --smart-case"
 fi
+
+if hash ranger 2>/dev/null; then
+    alias r="ranger"
+fi
+
+########################################################################################
+#                                        Python                                        #
+########################################################################################
+
+alias ipy="python -m IPython --matplotlib"
+alias mkpyenv="echo \"layout pyenv 3.11.7 \" > .envrc && direnv allow"
+alias pip='uv pip'
+alias pydoc='python -m pydoc'
+alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
+alias venvc='python3 -m virtualenv venv'
+
+########################################################################################
+#                                     Google Cloud                                     #
+########################################################################################
+
+# google cloud platform
+alias gcp_project="gcloud info --format='value(config.project)'"
 
 # snowflake
 if [ -f /Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
     alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
 fi
 
-# notes
-if [ -f "$HOME/notes.md.asc" ]; then
-    alias notes="nvim \$HOME/notes.md.asc"
-    alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
-    alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
-else
-    alias notes="nvim ~/notes.md"
+if hash chatblade 2>/dev/null; then
+    alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
 fi
-
-alias date_short="date +%Y%m%d"
-
-########################################################################################
-#                                       ChatGPT                                        #
-########################################################################################
-
-alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
 
 ########################################################################################
 #                                        MacOS                                         #
@@ -115,4 +122,3 @@ alias taio="cd ~/Library/Mobile\ Documents/iCloud~app~cyan~taio/Documents"
 ########################################################################################
 
 alias icat="kitty +kitten icat"
-
