@@ -33,10 +33,10 @@ prompt_git_branch()
 # 2 -> color code
 #
 # Reference(s):
-#  - https://wiki.gentoo.org/wiki/Bash#PS1 for more information.
+#  - https://wiki.gentoo.org/wiki/Bash#PS1 for more information
 #  - https://wiki.archlinux.org/title/Bash/Prompt_customization
 #
 if [ "$TERM" == "xterm-256color" ]; then
     # PS1='\e[0;32m\]$(prompt_venv)\e[0;33m\]$(prompt_git_branch)\e[0;32m\]\w\n\e[0m\] ❯ '
-    PS1='\e[0;32m\]$(prompt_venv)\e[0;33m\]$(prompt_git_branch)\e[0;32m\]\w\n\e[0m\]\$ '
+    PS1='\e[0;32m\]$(prompt_venv)\e[0;33m\]$(prompt_git_branch)\w\[\e[0m\]\n\$ '
 fi
