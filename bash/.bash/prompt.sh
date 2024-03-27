@@ -37,6 +37,5 @@ prompt_git_branch()
 #  - https://wiki.archlinux.org/title/Bash/Prompt_customization
 #
 if [ "$TERM" == "xterm-256color" ]; then
-    # PS1='\e[0;32m\]$(prompt_venv)\e[0;33m\]$(prompt_git_branch)\e[0;32m\]\w\n\e[0m\] ❯ '
-    PS1='\e[0;32m\]$(prompt_venv)\e[0;33m\]$(prompt_git_branch)\w\[\e[0m\]\n\$ '
+    PS1='\e[0;32m\]$(prompt_venv)\e[0;34m\]$(prompt_git_branch)\e[0;32m\]\w\n\[\e[0m\]\$ '
 fi
