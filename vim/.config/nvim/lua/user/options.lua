@@ -14,8 +14,11 @@ vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.softtabstop = 0
 
-vim.opt.textwidth = 88
-vim.opt.colorcolumn = "80,88"
+-- vim.opt.textwidth = 88
+-- vim.opt.colorcolumn = "80,88"
+
+vim.opt.textwidth = 100
+vim.opt.colorcolumn = "88,100"
 
 vim.opt.dictionary = "/usr/share/dict/words"
 
