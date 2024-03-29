@@ -17,6 +17,7 @@ alias gs="git add"
 alias gc="git checkout"
 alias gs="git status ."
 alias gd="git diff"
+alias gds="git diff --staged"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 alias gfm="git fetch origin main:main"
 alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
@@ -84,7 +85,7 @@ if hash ranger 2>/dev/null; then
 fi
 
 # source environment variables in `.env`                                                    │
-alias dotenv="export $(xargs <.env)"
+alias source_env="export $(xargs < .env)"
 
 ########################################################################################
 #                                        Python                                        #
@@ -105,8 +106,8 @@ alias venvc='python3 -m virtualenv venv'
 alias gcp_project="gcloud info --format='value(config.project)'"
 
 # snowflake
-if [ -f /Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
-    alias snowsql=/Applications/SnowSQL.app/Contents/MacOS/snowsql
+if [ -f ~/Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
+    alias snowsql='~/Applications/SnowSQL.app/Contents/MacOS/snowsql'
 fi
 
 if hash chatblade 2>/dev/null; then
