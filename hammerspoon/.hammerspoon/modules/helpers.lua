@@ -1,65 +1,87 @@
-(local obj {})
+local obj = {}
 
-(fn obj.get_asset [self filename]
-  "Loads image stored in assets directory."
-  (hs.image.imageFromPath (.. hs.configdir :/assets/ filename)))
+function obj:get_asset(filename)
+	return hs.image.imageFromPath(hs.configdir .. "/assets/" .. filename)
+end
 
-;; Image assets
-(set obj.assets {
-  :ban (obj:get_asset :ban.png)
-  :check (obj:get_asset :check.png)
-  :logo (obj:get_asset :logo.png)})
+-- icons were sourced from heroicons.dev and converted to PNGs using
+-- `svgexport` (eg. svgexport assets/ban.svg assets/ban.png 50:50)
+obj.assets = {
+	logo = obj:get_asset("logo.png"),
+	check = obj:get_asset("check.png"),
+	ban = obj:get_asset("ban.png"),
+}
 
-;; Default styles used in alerts
-(set obj.styles {
-  :error {:fillColor {:alpha 0.95 :hex "#FFCDD2"}}
-  :info {:fillColor {:alpha 0.95 :hex "#FFFFFF"}}
-  :success {:fillColor {:alpha 0.95 :hex "#DCEDC8"}}
-  :warn {:fillColor {:alpha 0.95 :hex "#FFF59D"}}})
+obj.styles = {
+	info = { fillColor = { hex = "#FFFFFF", alpha = 0.95 } },
+	success = { fillColor = { hex = "#DCEDC8", alpha = 0.95 } },
+	warn = { fillColor = { hex = "#FFF59D", alpha = 0.95 } },
+	error = { fillColor = { hex = "#FFCDD2", alpha = 0.95 } },
+}
 
-(fn rpad [str len]
-    (.. str (string.rep " " (- len (length str)))))
+string.rpad = function(str, len)
+	return str .. string.rep(" ", len - #str)
+end
 
-(fn lpad [str len]
-    (.. (string.rep " " (- len (length str))) str))
+string.lpad = function(str, len)
+	return string.rep(" ", len - #str) .. str
+end
 
+--- Displays alert with `title` and pairs of `attributes`
+---
+--- Parameters:
+--- * title     - Title message of alert
+--- * attributs - Key-value pairs of attributes to present in body of alert
+function obj:show(title, attributes, style, logo)
+	style = style or obj.styles.info
+	logo = logo or obj.assets.logo
+	local lines = { title }
+	if not (attributes == nil) then
+		lines[#lines + 1] = string.rep("-", 80)
+		for i = 1, #attributes do
+			lines[#lines + 1] = string.rpad(attributes[i].name, 30) .. ": " .. attributes[i].value
+		end
+	end
+	hs.alert.showWithImage(table.concat(lines, "\n"), logo, style)
+end
 
-(fn obj.show [self title attributes style logo]
-  "Stylized alert with images"
-  (set-forcibly! style (or style obj.styles.info))
-  (set-forcibly! logo (or logo obj.assets.logo))
-  (local lines [title])
-  (when (not (= attributes nil))
-    (tset lines (+ (length lines) 1) (string.rep "-" 80))
-    (for [i 1 (length attributes)]
-      (tset lines (+ (length lines) 1)
-            (.. (rpad (. (. attributes i) :name) 30) ": "
-                (. (. attributes i) :value)))))
-  (hs.alert.showWithImage (table.concat lines "\n") logo style))
+function obj:info(msg)
+	hs.alert.showWithImage(msg, obj.assets.logo, obj.styles.info)
+end
 
-(fn obj.info [self msg]
-  "Info level stylized alert"
-  (hs.alert.showWithImage msg obj.assets.logo obj.styles.info))
+function obj:success(msg)
+	hs.alert.showWithImage(msg, obj.assets.logo, obj.styles.success)
+end
 
-(fn obj.success [self msg]
-  "Success level stylized alert"
-  (hs.alert.showWithImage msg obj.assets.logo obj.styles.success))
+function obj:warn(msg)
+	hs.alert.showWithImage(msg, obj.assets.logo, obj.styles.warn)
+end
 
-(fn obj.warn [self msg]
-  "Warning level stylized alert"
-  (hs.alert.showWithImage msg obj.assets.logo obj.styles.warn))
+function obj:error(msg)
+	hs.alert.showWithImage(msg, obj.assets.logo, obj.styles.error)
+end
 
-(fn obj.error [self msg]
-  "Error level stylized alert"
-  (hs.alert.showWithImage msg obj.assets.logo obj.styles.error))
+-- Sleep for `ms` milliseconds.
+--
+-- http://lua-users.org/wiki/SleepFunction
+function obj:sleep(ms)
+	os.execute("sleep " .. tonumber(ms) / 1000)
+end
 
-(fn obj.sleep [ms]
-  "Delays execution for `ms` milliseconds"
-  (os.execute (.. "sleep " (/ (tonumber ms) 1000))))
+function obj:led_blinker()
+	for _ = 1, 10 do
+		obj:sleep(100)
+		hs.hid.led.set("caps", true)
+		obj:sleep(100)
+		hs.hid.led.set("caps", false)
+	end
+end
 
-(fn obj.led_blinker [self]
-  "Blinks `hid.led` 10 times with 100 ms cycle"
-  (for [_ 1 10] (obj:sleep 100) (hs.hid.led.set :caps true) (obj:sleep 100)
-    (hs.hid.led.set :caps false)))
+-- function obj.tty()
+--     local handle, err = io.popen("tty")
+--     local output = handle:read("*all")
+--     handle:close()
+--     return output
+-- end
 
-obj
+return obj
