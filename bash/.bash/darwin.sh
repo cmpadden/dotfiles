@@ -24,18 +24,25 @@ fi
 # OSX 10.15 SILENCE BASH DEPRECATION MESSAGE
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# Node.js via `nvm`
 
-export PATH="/opt/homebrew/opt/node@18/bin:$PATH"
-
-if [ ! -L "/Library/Java/JavaVirtualMachines/openjdk.jdk" ]; then
-    echo "The /Library/Java/JavaVirtualMachines/openjdk.jdk file is missing"
-    echo "See \`brew info openjdk\` for more information"
+if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then 
+    . "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
-if [ -f /usr/libexec/java_home ]; then
-  JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-  export JAVA_HOME
+if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then 
+    . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 fi
+
+# if [ ! -L "/Library/Java/JavaVirtualMachines/openjdk.jdk" ]; then
+#     echo "The /Library/Java/JavaVirtualMachines/openjdk.jdk file is missing"
+#     echo "See \`brew info openjdk\` for more information"
+# fi
+
+# if [ -f /usr/libexec/java_home ]; then
+#   JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+#   export JAVA_HOME
+# fi
 
 # if [ -d /usr/lib/jvm/java-16-openjdk ]; then
 #     export JAVA_HOME=/usr/lib/jvm/java-16-openjdk
@@ -48,8 +55,3 @@ fi
 # if [ -d /usr/lib/jvm/java-8-openjdk ]; then
 #     export JAVA_HOME=/usr/lib/jvm/java-8-openjdk/jre
 # fi
-
-# added by Snowflake SnowSQL installer v1.2
-if [ -f /Applications/SnowSQL.app/Contents/MacOS ]; then
-  export PATH=/Applications/SnowSQL.app/Contents/MacOS:$PATH
-fi

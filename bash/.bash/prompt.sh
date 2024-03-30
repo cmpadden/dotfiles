@@ -28,7 +28,7 @@ prompt_git_branch()
 
 # Applies custom prompt when `xterm-256color` is active (eg. when in tmux)
 #
-# \e[0;32m\]
+# \e[0;33m\]
 # 0 -> foreground (1: foreground bold; 4: foreground underlined, nil: background)
 # 2 -> color code
 #
@@ -37,5 +37,5 @@ prompt_git_branch()
 #  - https://wiki.archlinux.org/title/Bash/Prompt_customization
 #
 if [ "$TERM" == "xterm-256color" ]; then
-    PS1='\e[0;32m\]$(prompt_venv)\e[0;34m\]$(prompt_git_branch)\e[0;32m\]\w\n\[\e[0m\]\$ '
+    PS1='\e[0;33m\]$(prompt_venv)\e[0;34m\]$(prompt_git_branch)\e[0;33m\]\w\n\[\e[0m\]\$ '
 fi
