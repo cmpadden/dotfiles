@@ -1,7 +1,7 @@
 import os
 import colors
 
-c = c            # noqa: F821 pylint: disable=E0602,C0103
+c = c  # noqa: F821 pylint: disable=E0602,C0103
 config = config  # noqa: F821 pylint: disable=E0602,C0103
 
 QUTE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -12,10 +12,11 @@ colors.apply_base16(c)
 
 c.editor.command = [
     f"{VIM}",
-    "-u", "NONE",                # Do not load custom `.vimrc`
-    "-f",                        # Foreground: Don't fork when starting GUI
+    "-u",
+    "NONE",  # Do not load custom `.vimrc`
+    "-f",  # Foreground: Don't fork when starting GUI
     "{file}",
-    "-c",                        # Execute <command> after loading the first file
+    "-c",  # Execute <command> after loading the first file
     "normal {line}G{column0}l",  # Go to cursor location
 ]
 
@@ -48,21 +49,21 @@ c.content.headers.accept_language = ""
 
 # aliases to toggle javascript
 c.content.javascript.enabled = True
-c.aliases['js-on'] = 'set content.javascript.enabled True'
-c.aliases['js-off'] = 'set content.javascript.enabled False'
+c.aliases["js-on"] = "set content.javascript.enabled True"
+c.aliases["js-off"] = "set content.javascript.enabled False"
 
 # Manually edit quickmarks/bookmarks
-config.bind('<e><q>', f"spawn {VIM} -u NONE {QUTE_PATH}/quickmarks")
-config.bind('<e><b>', f"spawn {VIM} -u NONE {QUTE_PATH}/bookmarks/urls")
+config.bind("<e><q>", f"spawn {VIM} -u NONE {QUTE_PATH}/quickmarks")
+config.bind("<e><b>", f"spawn {VIM} -u NONE {QUTE_PATH}/bookmarks/urls")
 
 # Userscripts
-config.bind('<z><l>', 'spawn --userscript qute-pass')
-config.bind('<z><u><l>', 'spawn --userscript qute-pass --username-only')
-config.bind('<z><p><l>', 'spawn --userscript qute-pass --password-only')
-config.bind('<z><o><l>', 'spawn --userscript qute-pass --otp-only')
+config.bind("<z><l>", "spawn --userscript qute-pass")
+config.bind("<z><u><l>", "spawn --userscript qute-pass --username-only")
+config.bind("<z><p><l>", "spawn --userscript qute-pass --password-only")
+config.bind("<z><o><l>", "spawn --userscript qute-pass --otp-only")
 
 # QuteBrowser on MacOS is finicky with paths, requiring `open -a ... --args`
 config.bind(
-    '<Ctrl-Shift-m>',
-    'hint links spawn --detach open -a mpv --args --profile=pip {hint-url}'
+    "<Ctrl-Shift-m>",
+    "hint links spawn --detach open -a mpv --args --profile=pip {hint-url}",
 )
