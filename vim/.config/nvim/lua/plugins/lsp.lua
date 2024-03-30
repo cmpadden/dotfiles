@@ -35,8 +35,7 @@ return {
                         -- and will be called for each installed server that doesn't have
                         -- a dedicated handler.
                         function(server_name)
-                            local capabilities =
-                                require("cmp_nvim_lsp").default_capabilities()
+                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
                             require("lspconfig")[server_name].setup({
                                 on_attach = require("custom.utils.lsp").on_attach,
                                 capabilities = capabilities,

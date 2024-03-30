@@ -140,8 +140,7 @@ return {
                     t({ "", "" }),
                     f(function(args)
                         local cs = comment_string()
-                        return cs
-                            .. string.rep(" ", math.floor(padding(cs, args[1][1])))
+                        return cs .. string.rep(" ", math.floor(padding(cs, args[1][1])))
                     end, { 1 }),
                     i(1, "placeholder"),
                     f(function(args)

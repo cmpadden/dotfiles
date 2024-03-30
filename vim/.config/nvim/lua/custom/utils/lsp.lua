@@ -74,7 +74,6 @@ M.on_attach = function(client, bufnr)
     vim.keymap.set("n", "<space>wl", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts_buffer)
-
 end
 
 return M
