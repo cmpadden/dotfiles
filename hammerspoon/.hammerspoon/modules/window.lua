@@ -5,46 +5,46 @@ obj.name = "Window Management"
 obj.version = "1.0.0"
 
 obj.config = {
-	["default-layout"] = 3,
-	["split-padding"] = 0.08,
-	padding = 0.02,
-	["window-width-centered"] = 0.65,
-	["window-width-skinny"] = 0.35,
+    ["default-layout"] = 3,
+    ["split-padding"] = 0.08,
+    padding = 0.02,
+    ["window-width-centered"] = 0.65,
+    ["window-width-skinny"] = 0.35,
 }
 
 RECT_CENTER = hs.geometry({
-	h = (1 - (2 * obj.config.padding)),
-	w = obj.config["window-width-centered"],
-	x = ((1 - obj.config["window-width-centered"]) / 2),
-	y = obj.config.padding,
+    h = (1 - (2 * obj.config.padding)),
+    w = obj.config["window-width-centered"],
+    x = ((1 - obj.config["window-width-centered"]) / 2),
+    y = obj.config.padding,
 })
 
 RECT_LEFT = hs.geometry({
-	h = (1 - (2 * obj.config.padding)),
-	w = (0.5 - (obj.config["split-padding"] + 0.005)),
-	x = obj.config["split-padding"],
-	y = obj.config.padding,
+    h = (1 - (2 * obj.config.padding)),
+    w = (0.5 - (obj.config["split-padding"] + 0.005)),
+    x = obj.config["split-padding"],
+    y = obj.config.padding,
 })
 
 RECT_RIGHT = hs.geometry({
-	h = (1 - (2 * obj.config.padding)),
-	w = (0.5 - obj.config["split-padding"] - 0.005),
-	x = (0.5 + 0.005),
-	y = obj.config.padding,
+    h = (1 - (2 * obj.config.padding)),
+    w = (0.5 - obj.config["split-padding"] - 0.005),
+    x = (0.5 + 0.005),
+    y = obj.config.padding,
 })
 
 RECT_SKINNY = hs.geometry({
-	h = (1 - (2 * obj.config.padding)),
-	w = obj.config["window-width-skinny"],
-	x = ((1 - obj.config["window-width-skinny"]) / 2),
-	y = obj.config.padding,
+    h = (1 - (2 * obj.config.padding)),
+    w = obj.config["window-width-skinny"],
+    x = ((1 - obj.config["window-width-skinny"]) / 2),
+    y = obj.config.padding,
 })
 
 RECT_PIP = hs.geometry({
-	h = 0.35,
-	w = 0.142,
-	x = (1 - 0.162),
-	y = ((1 - 0.35) - obj.config.padding),
+    h = 0.35,
+    w = 0.142,
+    x = (1 - 0.162),
+    y = ((1 - 0.35) - obj.config.padding),
 })
 
 -- stylua: ignore start
@@ -194,35 +194,35 @@ LAYOUTS = {
 -- end
 
 function obj:set_layout(layout)
-	self.layout = layout
-	local active_layout = LAYOUTS[layout]
-	local active_windows = (hs.window.filter.default):getWindows()
-	for _, w in ipairs(active_windows) do
-		local app_name = w:application():name()
-		if active_layout[app_name] ~= nil then
-			w:moveToUnit(active_layout[app_name])
-		else
-		end
-	end
+    self.layout = layout
+    local active_layout = LAYOUTS[layout]
+    local active_windows = (hs.window.filter.default):getWindows()
+    for _, w in ipairs(active_windows) do
+        local app_name = w:application():name()
+        if active_layout[app_name] ~= nil then
+            w:moveToUnit(active_layout[app_name])
+        else
+        end
+    end
 end
 
 function obj:init()
-	hs.window.animationDuration = 0
+    hs.window.animationDuration = 0
 
-	-- set default window layout
-	self.layout = 1
+    -- set default window layout
+    self.layout = 1
 
-	-- -- initialize application watcher to automatically apply layout to new windows
-	-- self.application_watcher = hs.application.watcher.new(application_callback)
-	-- self.application_watcher:start()
-	-- hs.window.animationDuration = 0
+    -- -- initialize application watcher to automatically apply layout to new windows
+    -- self.application_watcher = hs.application.watcher.new(application_callback)
+    -- self.application_watcher:start()
+    -- hs.window.animationDuration = 0
 
-	-- bind layouts to corresponding 1, 2, ..., n
-	for key, _ in pairs(LAYOUTS) do
-		hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
-			obj:set_layout(key)
-		end)
-	end
+    -- bind layouts to corresponding 1, 2, ..., n
+    for key, _ in pairs(LAYOUTS) do
+        hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
+            obj:set_layout(key)
+        end)
+    end
 end
 
 return obj
