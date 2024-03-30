@@ -1,22 +1,24 @@
--- ~/.hammerspoon/init.lua
+HYPER = { "cmd", "ctrl" }
+HYPER_SHIFT = { "cmd", "ctrl", "shift" }
 
--- I had originally attempted to use the `fennel` package available via luarocks, similar to what is recommended with Spacehammer
--- However, I was unable to get the `package.path` or `package.cpath` configured correctly to successfully `require('fennel')`.
--- As a workaround, I've embedded the `fennel.lua` source file within the `.hammerspoon/` directory.
---
---     wget https://fennel-lang.org/downloads/fennel-1.3.1.tar.gz
---     tar xvzf fennel-1.3.1.tar.gz
---     mv fennel-1.3.1/fennel.lua .
---     rm -r fennel-1.3.1/
---
--- https://fennel-lang.org/setup#embedding-the-fennel-compiler-in-a-lua-application
--- https://github.com/agzam/spacehammer/blob/master/init.lua
--- https://blog.exupero.org/hammerspoon-with-fennel/
+hs.alert.defaultStyle.textColor = { alpha = 1, hex = "#000000" }
+hs.alert.defaultStyle.textFont = "Courier"
+hs.alert.defaultStyle.textSize = 12
+hs.alert.defaultStyle.fillColor = { alpha = 0.95, hex = "#FFFFFF" }
+hs.alert.defaultStyle.strokeColor = { alpha = 0.95, hex = "#000000" }
+hs.alert.defaultStyle.strokeWidth = 2
+hs.alert.defaultStyle.padding = 12
+hs.alert.defaultStyle.radius = 1
+hs.alert.defaultStyle.fadeInDuration = 0
+hs.alert.defaultStyle.fadeOutDuration = 2
 
-local fennel = require('fennel')
+require("modules.plugins")
+require("modules.alerts")
+require("modules.caffeine")
+require("modules.window"):init()
 
-fennel.path = package.path .. ";" .. os.getenv("HOME") .. "/.hammerspoon/?.fnl"
+if not hs.ipc.cliStatus("/opt/homebrew") then
+    hs.ipc.cliInstall("/opt/homebrew")
+end
 
-table.insert(package.loaders or package.searchers, fennel.searcher)
-
-require 'main'
+hs.alert.show("Completed load of `main.fnl`")
