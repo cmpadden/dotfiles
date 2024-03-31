@@ -85,7 +85,7 @@ if hash ranger 2>/dev/null; then
 fi
 
 # source environment variables in `.env`                                                    │
-alias source_env="export $(xargs < .env)"
+alias source_env='export $(xargs < .env)'
 
 ########################################################################################
 #                                        Python                                        #

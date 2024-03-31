@@ -26,12 +26,14 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Node.js via `nvm`
 
-if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then 
-    . "/opt/homebrew/opt/nvm/nvm.sh"
+if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+    # shellcheck source=/dev/null
+    source "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
-if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then 
-    . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
+    # shellcheck source=/dev/null
+    source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 fi
 
 # if [ ! -L "/Library/Java/JavaVirtualMachines/openjdk.jdk" ]; then

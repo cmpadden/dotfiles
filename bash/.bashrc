@@ -13,21 +13,22 @@ error() {
 
 check_and_source() {
     if [ -f "$1" ]; then
+        # shellcheck disable=SC1090
         source "$1"
     else
         warn "$1 does not exist"
     fi
 }
 
-check_and_source "$HOME/.bash/aliases.sh"
-check_and_source "$HOME/.bash/completion.sh"
-check_and_source "$HOME/.bash/colors.sh"
-check_and_source "$HOME/.bash/functions.sh"
-check_and_source "$HOME/.bash/env.sh"
-check_and_source "$HOME/.bash/prompt.sh"
-check_and_source "$HOME/.bash/shopt.sh"
-check_and_source "$HOME/.bash/darwin.sh"
-check_and_source "$HOME/.bash/private.sh"
+check_and_source "$HOME/.bash/aliases.bash"
+check_and_source "$HOME/.bash/completion.bash"
+check_and_source "$HOME/.bash/colors.bash"
+check_and_source "$HOME/.bash/functions.bash"
+check_and_source "$HOME/.bash/env.bash"
+check_and_source "$HOME/.bash/prompt.bash"
+check_and_source "$HOME/.bash/shopt.bash"
+check_and_source "$HOME/.bash/darwin.bash"
+check_and_source "$HOME/.bash/private.bash"
 
 # Auto-attach to a tmux session
 if command -v tmux &>/dev/null; then
@@ -67,7 +68,8 @@ fi
 check_and_source "$HOME/.fzf.bash"
 
 # https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
-export GPG_TTY=$(tty)
+GPG_TTY=$(tty)
+export GPG_TTY
 
 # rustup
 check_and_source "$HOME/.cargo/env"
@@ -84,7 +86,5 @@ fi
 _fzf_compgen_path ()
 {
     echo "$1";
-    # command find -L "$1" -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
-    command find -L "$1" -name *.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
+    command find -L "$1" -name ./*.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
 }
-
