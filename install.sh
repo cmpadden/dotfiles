@@ -69,8 +69,8 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     fi
 
-    # Install core packages and casks (NOTE: one can find a list of top-level
-    # packages with `brew leaves`)
+    # Install core packages and casks (NOTE: one can find a list of top-level packages with `brew
+    # leaves`)
 
     _log "Installing brew packages"
     brew install \
@@ -83,6 +83,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         direnv \
         docker \
         docker-compose \
+        duckdb \
         exa \
         fd \
         ffmpeg \
@@ -100,8 +101,11 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         pre-commit \
         pyenv \
         pyenv-virtualenv \
+        ranger \
         ripgrep \
+        shfmt \
         stow \
+        stylua \
         the_silver_searcher \
         tldr \
         tmux \
@@ -114,14 +118,14 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         chromium \
         hammerspoon \
         kitty \
+        linear-linear \
         mpv \
         notion \
+        notion notion-calendar \
         slack \
+        snowflake-snowsql \
         spotify \
         zoom
-
-    # brew tap adoptopenjdk/openjdk
-    # brew install --cask adoptopenjdk8
 
     _log "Installing LTS version of Node.js"
     nvm install --lts
@@ -133,8 +137,25 @@ if [ "$OS_NAME" = 'Darwin' ]; then
     defaults write -g InitialKeyRepeat -int 10
     defaults write -g KeyRepeat -int 1
 
-    _log 'NOTE: If Chromium.app fails to open, run `xattr -cr /Applications/Chromium.app`'
+    if ! /usr/bin/grep -q '/opt/homebrew/bin/bash' /etc/shells; then
+        _log 'Adding /opt/homebrew/bin/bash to /etc/shells'
+        echo "/opt/homebrew/bin/bash" >> /etc/shells
+    fi
 
+    if [ ! "$SHELL" = "/opt/homebrew/bin/bash" ]; then
+        _log 'Changing shell to /opt/homebrew/bin/bash'
+        chsh -s /opt/homebrew/bin/bash
+        echo '!'
+    fi
+
+    if [ ! -f ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
+        _log 'Installing Hammerspoon SpoonInstall.spoon'
+        curl -O -L https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip
+        unzip SpoonInstall.spoon.zip
+        open SpoonInstall.spoon
+    fi
+
+    _log 'NOTE: If Chromium.app fails to open, run: xattr -cr /Applications/Chromium.app'
 fi
 
 ###############################################################################
