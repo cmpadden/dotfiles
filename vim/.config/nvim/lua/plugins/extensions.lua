@@ -123,6 +123,9 @@ return {
                     vue = {
                         require("formatter.filetypes.vue").prettier,
                     },
+                    typescript = {
+                        require("formatter.filetypes.typescript").prettier,
+                    },
                     lua = {
                         require("formatter.filetypes.lua").stylua,
                     },
