@@ -17,6 +17,15 @@ require("modules.alerts")
 require("modules.caffeine")
 require("modules.window"):init()
 
+hs.hotkey.bind({ "cmd", "shift" }, "b", function()
+    local applescript_toggle_menubar = [[
+    tell application "System Events"
+        set autohide menu bar of dock preferences to (not autohide menu bar of dock preferences)
+    end tell
+    ]]
+    hs.osascript.applescript(applescript_toggle_menubar)
+end)
+
 if not hs.ipc.cliStatus("/opt/homebrew") then
     hs.ipc.cliInstall("/opt/homebrew")
 end
