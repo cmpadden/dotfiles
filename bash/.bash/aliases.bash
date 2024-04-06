@@ -27,6 +27,7 @@ alias gpm="git pull origin main"
 alias gcma="git checkout master"
 alias gpma="git pull origin master"
 alias gcb="git checkout -b"
+alias gcp="git checkout -"
 
 ########################################################################################
 #                                       General                                        #
