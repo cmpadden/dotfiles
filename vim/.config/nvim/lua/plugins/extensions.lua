@@ -145,7 +145,6 @@ return {
         opts = {
             open_cmd = "open", -- default: xdg-open
             options = {
-                bg = "#21463D",
                 drop_shadow_blur = "68px",
                 drop_shadow = false,
                 drop_shadow_offset_y = "20px",
@@ -153,11 +152,12 @@ return {
                 font_size = "18px",
                 line_height = "133%",
                 line_numbers = true,
-                theme = "nord",
+                theme = "shades-of-purple",
                 titlebar = "",
                 watermark = false,
                 width = "680",
                 window_theme = "round",
+                bg = "black",
             },
         },
         keys = {
