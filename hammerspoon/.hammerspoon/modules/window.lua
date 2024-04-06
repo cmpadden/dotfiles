@@ -40,11 +40,19 @@ RECT_SKINNY = hs.geometry({
     y = obj.config.padding,
 })
 
-RECT_PIP = hs.geometry({
+PIP_BOTTOM_RIGHT = hs.geometry({
     h = 0.35,
     w = 0.142,
     x = (1 - 0.162),
     y = ((1 - 0.35) - obj.config.padding),
+})
+
+PIP_TOP_RIGHT = hs.geometry({
+    h = 0.35,
+    w = 0.142,
+    -- x = (1 - 0.162),
+    x = obj.config.padding,
+    y = obj.config.padding,
 })
 
 -- stylua: ignore start
@@ -56,7 +64,8 @@ LAYOUTS = {
         Chromium            = hs.layout.maximized,
         Discord             = hs.layout.maximized,
         Firefox             = hs.layout.maximized,
-        Gather              = RECT_PIP,
+        Gather              = PIP_BOTTOM_RIGHT,
+        Stickies            = PIP_TOP_RIGHT,
         LibreWolf           = hs.layout.maximized,
         Mail                = hs.layout.maximized,
         Messages            = hs.layout.maximized,
@@ -73,6 +82,7 @@ LAYOUTS = {
         ["Notion Calendar"] = hs.layout.maximized,
         ["zoom.us"]         = hs.layout.maximized,
         kitty               = hs.layout.maximized,
+        Linear              = hs.layout.maximized,
     },
     [2] = {
         Alacritty           = RECT_LEFT,
@@ -81,13 +91,14 @@ LAYOUTS = {
         Chromium            = RECT_RIGHT,
         Discord             = RECT_RIGHT,
         Firefox             = RECT_RIGHT,
-        Gather              = RECT_PIP,
+        Gather              = PIP_BOTTOM_RIGHT,
+        Stickies            = PIP_TOP_RIGHT,
         LibreWolf           = RECT_RIGHT,
         Linear              = RECT_LEFT,
         Mail                = RECT_RIGHT,
         Messages            = RECT_RIGHT,
         Notes               = RECT_RIGHT,
-        Notion              = RECT_LEFT,
+        Notion              = RECT_RIGHT,
         Safari              = RECT_RIGHT,
         Slack               = RECT_RIGHT,
         Spotify             = RECT_RIGHT,
@@ -108,7 +119,8 @@ LAYOUTS = {
         Discord             = RECT_CENTER,
         Figma               = RECT_CENTER,
         Firefox             = RECT_CENTER,
-        Gather              = RECT_PIP,
+        Gather              = PIP_BOTTOM_RIGHT,
+        Stickies            = PIP_TOP_RIGHT,
         LibreWolf           = RECT_CENTER,
         Linear              = RECT_CENTER,
         Mail                = RECT_CENTER,
@@ -152,46 +164,21 @@ LAYOUTS = {
         ["Notion Calendar"] = RECT_SKINNY,
         ["zoom.us"]         = RECT_SKINNY,
         kitty               = RECT_SKINNY,
-    },
-    [5] = {
-        Chromium = { w = 0.75, h = 0.85, x = 0.25, y = 0 },
-        Gather = { w = 0.25, h = 0.25, x = 0, y = 0 },
-        Slack = { w = 0.25, h = 0.25, x = 0, y = 0 },
-        Spotify = { w = 0.25, h = 0.25, x = 0, y = 0 },
-        TextEdit = { w = 0.25, h = 0.85, x = 0, y = 0 },
-        ["zoom.us"] = { w = 0.25, h = 0.85, x = 0, y = 0 },
-        kitty = { w = 0.25, h = 0.85, x = 0.25, y = 0 },
-    },
-    [6] = {
-        Chromium = { w = 0.5, h = 0.85, x = 0.5, y = 0 },
-        Gather = { w = 0.25, h = 0.5, x = 0, y = 0 },
-        Slack = { w = 0.25, h = 0.5, x = 0, y = 0 },
-        Spotify = { w = 0.25, h = 0.5, x = 0, y = 0 },
-        TextEdit = { w = 0.25, h = 0.85, x = 0, y = 0 },
-        ["zoom.us"] = { w = 0.25, h = 0.85, x = 0, y = 0 },
-        kitty = { w = 0.25, h = 0.85, x = 0.25, y = 0 },
-    },
+    }
 }
 -- stylua: ignore end
 
--- local function application_callback(app_name, event_type, app)
---     -- apply layout on application launch
---     if event_type == hs.application.watcher.launched then
---         -- workaround: wait for application to be loaded
---         while app:mainWindow() == nil do
---             -- app:mainWindow() will be `nil` until fully loaded
---         end
---
---         -- apply application-specific layout given current `obj.layout`
---         for _, window in ipairs(LAYOUTS[obj.layout]) do
---             if window[1] == app:name() then
---                 hs.alert("[" .. obj.layout .. "] " .. app_name)
---                 app:mainWindow():moveToUnit(window[4])
---                 break
---             end
---         end
---     end
--- end
+--- Callback to automatically position a launched application to the desired layout.
+---
+--- Reference:
+--- https://www.hammerspoon.org/docs/hs.application.watcher.html
+local function set_application_layout_callback(app_name, event_type, app)
+    if event_type == hs.application.watcher.launched then
+        repeat
+        until app:mainWindow() -- app:mainWindow() will be `nil` until fully loaded
+        app:mainWindow():moveToUnit(LAYOUTS[obj.layout][app_name])
+    end
+end
 
 function obj:set_layout(layout)
     self.layout = layout
@@ -208,14 +195,9 @@ end
 
 function obj:init()
     hs.window.animationDuration = 0
-
-    -- set default window layout
     self.layout = 1
-
-    -- -- initialize application watcher to automatically apply layout to new windows
-    -- self.application_watcher = hs.application.watcher.new(application_callback)
-    -- self.application_watcher:start()
-    -- hs.window.animationDuration = 0
+    self.application_watcher = hs.application.watcher.new(set_application_layout_callback)
+    self.application_watcher:start()
 
     -- bind layouts to corresponding 1, 2, ..., n
     for key, _ in pairs(LAYOUTS) do
