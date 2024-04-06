@@ -33,8 +33,7 @@ check_and_source "$HOME/.bash/private.bash"
 # Auto-attach to a tmux session
 if command -v tmux &>/dev/null; then
     # Do not run when already inside of a `tmux` session
-    if [ -z "$TMUX" ]; then
-        # Attach to an existing session, or create a new session
+    if [ -z "$TMUX" ]; then # Attach to an existing session, or create a new session
         tmux attach || tmux new-session
     fi
 else
@@ -88,3 +87,6 @@ _fzf_compgen_path ()
     echo "$1";
     command find -L "$1" -name ./*.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2> /dev/null | command sed 's@^\./@@'
 }
+
+# shellcheck source=/dev/null
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
