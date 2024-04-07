@@ -56,7 +56,7 @@ PIP_TOP_RIGHT = hs.geometry({
 })
 
 -- stylua: ignore start
-LAYOUTS = {
+obj.layouts = {
     [1] = {
         Alacritty           = hs.layout.maximized,
         Arc                 = hs.layout.maximized,
@@ -167,42 +167,75 @@ LAYOUTS = {
     }
 }
 -- stylua: ignore end
+--
 
---- Callback to automatically position a launched application to the desired layout.
----
---- Reference:
---- https://www.hammerspoon.org/docs/hs.application.watcher.html
-local function set_application_layout_callback(app_name, event_type, app)
-    if event_type == hs.application.watcher.launched then
-        repeat
-        until app:mainWindow() -- app:mainWindow() will be `nil` until fully loaded
-        app:mainWindow():moveToUnit(LAYOUTS[obj.layout][app_name])
-    end
+-- Convert relative `unitrect` to `rect` (hs.window:fromUnitRect does not seem to work)
+local function _unit_rect_to_rect(unit_rect)
+    local screen_frame = hs.screen.mainScreen():frame()
+    return hs.geometry.rect(
+        screen_frame.x + (unit_rect.x * screen_frame.w),
+        screen_frame.y + (unit_rect.y * screen_frame.h),
+        unit_rect.w * screen_frame.w,
+        unit_rect.h * screen_frame.h
+    )
+end
+
+-- Temporary workaround: move windows until we confirm that they are at the frame that
+-- we expect. Have a retry of 3 to prevent any unwanted infinite loops. For more
+-- information reference the open github issue:
+--
+-- https://github.com/Hammerspoon/hammerspoon/issues/3624
+local function _move_to_unit_with_retries(geometry, window)
+    window:moveToUnit(geometry)
+    local retries = 3
+    hs.timer.doUntil(function()
+        return retries == 0 or window:frame():equals(_unit_rect_to_rect(geometry):floor())
+    end, function()
+        window:moveToUnit(geometry)
+        retries = retries - 1
+    end, 0.25)
 end
 
 function obj:set_layout(layout)
     self.layout = layout
-    local active_layout = LAYOUTS[layout]
-    local active_windows = (hs.window.filter.default):getWindows()
+    local active_layout = self.layouts[layout]
+    local active_windows = hs.window.filter.default:getWindows()
     for _, w in ipairs(active_windows) do
         local app_name = w:application():name()
         if active_layout[app_name] ~= nil then
-            w:moveToUnit(active_layout[app_name])
-        else
+            local target_geometry = active_layout[app_name]
+            _move_to_unit_with_retries(target_geometry, w)
         end
     end
 end
 
 function obj:init()
     hs.window.animationDuration = 0
+    -- hs.window.setFrameCorrectness = true
     self.layout = 1
-    self.application_watcher = hs.application.watcher.new(set_application_layout_callback)
-    self.application_watcher:start()
+
+    -- Automatic layout application to new/focused windows.
+    --
+    -- Consider usage of `windowCreated` and `windowFocused` for ideal resizing trigger
+    --
+    -- References:
+    --     https://www.hammerspoon.org/docs/hs.window.filter.html
+    self.window_filter_all = hs.window.filter.new()
+    self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
+        local target_geometry = self.layouts[obj.layout][app_name]
+        _move_to_unit_with_retries(target_geometry, window)
+    end)
 
     -- bind layouts to corresponding 1, 2, ..., n
-    for key, _ in pairs(LAYOUTS) do
+    for key, _ in pairs(self.layouts) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
             obj:set_layout(key)
+
+            -- explore hs.timer:doUntil and validate window positions
+            -- get window dimensions before, validate that size is same
+            hs.timer:doAfter(2, function()
+                obj:set_layout(key)
+            end)
         end)
     end
 end
