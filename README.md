@@ -1,19 +1,13 @@
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/5807118/173071635-c3f78d9a-0927-4b25-9e22-3978c00f9845.svg" alt="Logo project" height="75" />
-    <br>
-    <p>
-        <i>Personal System Configuration Files</i>
-    </p>
+    <img src="https://github.com/cmpadden/dotfiles/assets/5807118/8111f6b9-3460-4a27-a84b-cab7a0c090a6" alt="Logo project" height="160" />
 </div>
 
----
-
-### Dependencies
+## Dependencies
 
 - [GNU Stow](https://www.gnu.org/software/stow/) is used to symbolically link configuration files to
 the home directory.
 
-### Tools
+## Tools
 
 These are the applications and utilities that I choose to use at the moment, reference the
 [Appendix](#appendix) to see utilities that were used in the days bygone.
@@ -27,8 +21,6 @@ These are the applications and utilities that I choose to use at the moment, ref
 | [Hammerspoon](https://www.hammerspoon.org) | This is a tool for powerful automation of OS X.                                                                                                                          | Utility  |
 
 ---
-
-### Appendix
 
 <details>
 <summary>Legacy Utilities</summary>
