@@ -7,10 +7,50 @@
 - [GNU Stow](https://www.gnu.org/software/stow/) is used to symbolically link configuration files to
 the home directory.
 
+## Usage
+
+Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
+
+```sh
+$ ./restore.sh
+
+ ________  _________  ________  ___       __
+|\   ____\|\___   ___\\   __  \|\  \     |\  \
+\ \  \___|\|___ \  \_\ \  \|\  \ \  \    \ \  \
+ \ \_____  \   \ \  \ \ \  \\\  \ \  \  __\ \  \
+  \|____|\  \   \ \  \ \ \  \\\  \ \  \|\__\_\  \
+    ____\_\  \   \ \__\ \ \_______\ \____________\
+   |\_________\   \|__|  \|_______|\|____________|
+   \|_________|
+
+[y/N] - Restore alacritty?
+```
+
+Install platform agnostic system-wide dependencies using [install.sh](https://github.com/cmpadden/dotfiles/blob/main/install.sh). [Brew]() will be used for macOS, and `pacman` for Arch Linux.
+
+```sh
+$ ./install.sh
+
+      ___           ___           ___           ___           ___
+     /\__\         /\  \         /\  \         /\  \         /\  \
+    /::|  |       /::\  \       /::\  \       /::\  \       /::\  \
+   /:|:|  |      /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\ \  \
+  /:/|:|__|__   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   _\:\~\ \  \
+ /:/ |::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /\ \:\ \ \__\
+ \/__/~~/:/  / \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \:\ \:\ \/__/
+       /:/  /       \::/  /   \:\  \        \:\  /:/  /   \:\ \:\__\
+      /:/  /        /:/  /     \:\  \        \:\/:/  /     \:\/:/  /
+     /:/  /        /:/  /       \:\__\        \::/  /       \::/  /
+     \/__/         \/__/         \/__/         \/__/         \/__/
+
+22:52:36 - Homebrew is already installed
+22:52:36 - Installing brew packages
+...
+```
+
 ## Tools
 
-These are the applications and utilities that I choose to use at the moment, reference the
-[Appendix](#appendix) to see utilities that were used in the days bygone.
+These are the applications and utilities that I choose to use at the moment, reference the [Appendix](#appendix) to see utilities that were used in the days bygone.
 
 | Name                                       | Tagline                                                                                                                                                                  | Category |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
