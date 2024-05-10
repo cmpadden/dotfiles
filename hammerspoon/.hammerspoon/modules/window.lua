@@ -55,6 +55,15 @@ PIP_TOP_RIGHT = hs.geometry({
     y = obj.config.padding,
 })
 
+-- cached state to prevent moving windows already in appropriate position
+obj.state = {
+    -- Calendar            = {active_layout = nil},
+    -- Chromium            = {active_layout = nil},
+    -- LibreWolf           = {active_layout = nil},
+}
+
+
+
 -- stylua: ignore start
 obj.layouts = {
     [1] = {
@@ -167,7 +176,6 @@ obj.layouts = {
     }
 }
 -- stylua: ignore end
---
 
 -- Convert relative `unitrect` to `rect` (hs.window:fromUnitRect does not seem to work)
 local function _unit_rect_to_rect(unit_rect)
@@ -196,17 +204,36 @@ local function _move_to_unit_with_retries(geometry, window)
     end, 0.25)
 end
 
+-- local function screen_is_portrait(screen)
+--     local frame = screen:frame()
+--     return frame.h > frame.w
+-- end
+
 function obj:set_layout(layout)
     self.layout = layout
     local active_layout = self.layouts[layout]
-    local active_windows = hs.window.filter.default:getWindows()
-    for _, w in ipairs(active_windows) do
-        local app_name = w:application():name()
-        if active_layout[app_name] ~= nil then
-            local target_geometry = active_layout[app_name]
-            _move_to_unit_with_retries(target_geometry, w)
+    local active_windows = self.window_filter_all:getWindows()
+
+    for _, window in ipairs(active_windows) do
+        local app_name = window:application():name()
+        local target_geometry = active_layout[app_name]
+
+        if obj.state[app_name] ~= nil and obj.state[app_name].active_layout == layout then
+            -- skip movement of windows in appropriate layout
+        else
+            obj.state[app_name] = { active_layout = layout }
+            if target_geometry then
+                _move_to_unit_with_retries(target_geometry, window)
+            end
         end
     end
+
+    -- display active window layouts
+    local lines = {}
+    for key, value in pairs(obj.state) do
+        lines[#lines + 1] = string.format("%-20s layout=%s", key, tostring(value.active_layout))
+    end
+    hs.alert(table.concat(lines, "\n"))
 end
 
 function obj:init()
