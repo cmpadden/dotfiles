@@ -16,63 +16,81 @@ local obj = {
     name = "Window Management",
     version = "1.0.0",
     config = {
-        default_layout = 3,
-        split_padding = 0.08,
-        padding = 0.02,
-        window_width_centered = 0.65,
-        window_width_skinny = 0.35,
-        pip_height = 0.35,
-        pip_width = 0.142,
+        default_layout = 2,
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
     },
 }
 
--- Encapsulate access of configuration values for improved ability to refactor, and readability.
-local function get_config(key)
-    return obj.config[key]
+--- Retrieve configuration value with support for nested parameters.
+local function get_config(...)
+    local args = { ... }
+    local value = nil
+    for _, param in ipairs(args) do
+        if value == nil then
+            value = obj.config[param]
+        else
+            value = value[param]
+        end
+        if value == nil then
+            error(string.format("Invalid parameter: %s", param))
+        end
+    end
+    return value
 end
 
+-- user defined geometries; once published, it will be the user's responsibility to register geometries
+-- in their configuration
+
+local split_padding = 0.08
+local padding = 0.02
+local window_width_centered = 0.65
+local window_width_skinny = 0.35
+local pip_height = 0.35
+local pip_width = 0.142
+
 local RECT_CENTER = hs.geometry({
-    h = (1 - (2 * get_config("padding"))),
-    w = get_config("window_width_centered"),
-    x = ((1 - get_config("window_width_centered")) / 2),
-    y = get_config("padding"),
+    h = (1 - (2 * padding)),
+    w = window_width_centered,
+    x = ((1 - window_width_centered) / 2),
+    y = padding,
 })
 
 local RECT_LEFT = hs.geometry({
-    h = (1 - (2 * get_config("padding"))),
-    w = (0.5 - (get_config("split_padding") + 0.005)),
-    x = get_config("split_padding"),
-    y = get_config("padding"),
+    h = (1 - (2 * padding)),
+    w = (0.5 - (split_padding + 0.005)),
+    x = split_padding,
+    y = padding,
 })
 
 local RECT_RIGHT = hs.geometry({
-    h = (1 - (2 * get_config("padding"))),
-    w = (0.5 - get_config("split_padding") - 0.005),
+    h = (1 - (2 * padding)),
+    w = (0.5 - split_padding - 0.005),
     x = (0.5 + 0.005),
-    y = get_config("padding"),
+    y = padding,
 })
 
 local RECT_SKINNY = hs.geometry({
-    h = (1 - (2 * get_config("padding"))),
-    w = get_config("window_width_skinny"),
-    x = ((1 - get_config("window_width_skinny")) / 2),
-    y = get_config("padding"),
+    h = (1 - (2 * padding)),
+    w = window_width_skinny,
+    x = ((1 - window_width_skinny) / 2),
+    y = padding,
 })
 
 local PIP_BOTTOM_RIGHT = hs.geometry({
-    h = get_config("pip_height"),
-    w = get_config("pip_width"),
+    h = pip_height,
+    w = pip_width,
     x = (1 - 0.162),
-    y = ((1 - get_config("pip_height")) - get_config("padding")),
+    y = ((1 - pip_height) - padding),
 })
 
 local PIP_TOP_RIGHT = hs.geometry({
-    h = get_config("pip_height"),
-    w = get_config("pip_width"),
-    x = get_config("padding"),
-    y = get_config("padding"),
+    h = pip_height,
+    w = pip_width,
+    x = padding,
+    y = padding,
 })
+
+-- end user-defined geometries
 
 local state = {
     -- [1] = { application_name_1 = 1, application_name_2 = 1 }
@@ -214,7 +232,7 @@ end
 function obj:init()
     hs.window.animationDuration = 0
     hs.window.setFrameCorrectness = true
-    self.layout = 1
+    self.layout = get_config("default_layout")
 
     -- Automatic layout application to new/focused windows.
     self.window_filter_all = hs.window.filter.new()
