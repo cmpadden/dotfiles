@@ -262,7 +262,8 @@ function obj:init()
     -- bind layouts to corresponding 1, 2, ..., n
     for key, _ in pairs(self.layouts) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
-            obj:set_layout_new(key)
+            -- obj:set_layout_new(key)
+            obj:set_layout(key)
         end)
     end
 
@@ -287,7 +288,6 @@ function obj:init()
             state[layout][application_name] = index
             return
         end
-        hs.alert("!")
         state[layout][application_name] = index
     end
 
@@ -307,7 +307,6 @@ function obj:init()
         if step > 0 and index + step > #table then
             return index + step - #table
         elseif step < 0 and index + step <= 0 then
-            hs.alert(#table + index + step)
             return #table + index + step
         else
             return index + step
@@ -317,19 +316,20 @@ function obj:init()
     local function move_focused_window_next_geometry(direction)
         local focused_window = hs.window.focusedWindow()
         local focused_application_name = focused_window:application():name()
-        hs.alert(focused_application_name)
 
         local current_index = get_application_geometry_index(self.layout, focused_application_name)
-        hs.alert(current_index)
         local next_index = next_index_circular(layouts[self.layout], current_index, direction)
-        hs.alert(next_index)
-        hs.alert(#layouts[self.layout])
         set_application_geometry_index(self.layout, focused_application_name, next_index)
 
         local target_geometry = layouts[self.layout][next_index]
         focused_window:moveToUnit(target_geometry)
     end
 
+    local function persist_state()
+        -- todo: implement
+    end
+
+    --- Display cached state window geometries for active layout
     local function hs_alert_window_state()
         if state[self.layout] == nil then
             hs.alert(string.format("No state for layout: %s", self.layout))
@@ -339,7 +339,7 @@ function obj:init()
         lines[#lines + 1] = string.format("Active Layout: %s", self.layout)
         lines[#lines + 1] = string.rep("-", 80)
         for application, geometry_index in pairs(state[self.layout]) do
-            lines[#lines + 1] = string.format("%-79s %s", application, geometry_index)
+            lines[#lines + 1] = string.format("%-40s %40s", application, geometry_index)
         end
         hs.alert(table.concat(lines, "\n"))
     end
