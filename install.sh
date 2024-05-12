@@ -92,12 +92,14 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         httpie \
         imagemagick \
         jq \
+        llm \
         neovim \
         node \
         nvm \
         pass \
         pass-otp \
         pdfgrep \
+        pinentry-mac \
         pre-commit \
         pyenv \
         pyenv-virtualenv \
