@@ -69,101 +69,30 @@ local PIP_TOP_RIGHT = hs.geometry({
     y = get_config("padding"),
 })
 
+local state = {
+    -- [1] = { application_name_1 = 1, application_name_2 = 1 }
+    -- [2] = { application_name_1 = 1, application_name_2 = 3 }
+}
 
--- stylua: ignore start
-obj.layouts = {
+local layouts = {
     [1] = {
-        Calendar            = hs.layout.maximized,
-        Chromium            = hs.layout.maximized,
-        Discord             = hs.layout.maximized,
-        Firefox             = hs.layout.maximized,
-        Gather              = PIP_BOTTOM_RIGHT,
-        Stickies            = PIP_TOP_RIGHT,
-        LibreWolf           = hs.layout.maximized,
-        Mail                = hs.layout.maximized,
-        Messages            = hs.layout.maximized,
-        Notes               = hs.layout.maximized,
-        Notion              = hs.layout.maximized,
-        Safari              = hs.layout.maximized,
-        Slack               = hs.layout.maximized,
-        Spotify             = hs.layout.maximized,
-        ["Bitwig Studio"]   = hs.layout.maximized,
-        ["Google Chrome"]   = hs.layout.maximized,
-        ["Logic Pro"]       = hs.layout.maximized,
-        ["Notion Calendar"] = hs.layout.maximized,
-        ["zoom.us"]         = hs.layout.maximized,
-        kitty               = hs.layout.maximized,
-        Linear              = hs.layout.maximized,
+        RECT_LEFT,
+        RECT_RIGHT,
     },
     [2] = {
-        Calendar            = RECT_RIGHT,
-        Chromium            = RECT_RIGHT,
-        Discord             = RECT_RIGHT,
-        Firefox             = RECT_RIGHT,
-        Gather              = PIP_BOTTOM_RIGHT,
-        Stickies            = PIP_TOP_RIGHT,
-        LibreWolf           = RECT_RIGHT,
-        Linear              = RECT_LEFT,
-        Mail                = RECT_RIGHT,
-        Messages            = RECT_RIGHT,
-        Notes               = RECT_RIGHT,
-        Notion              = RECT_RIGHT,
-        Safari              = RECT_RIGHT,
-        Slack               = RECT_RIGHT,
-        Spotify             = RECT_RIGHT,
-        ["Bitwig Studio"]   = RECT_LEFT,
-        ["Google Chrome"]   = RECT_RIGHT,
-        ["Logic Pro"]       = RECT_RIGHT,
-        ["Notion Calendar"] = RECT_LEFT,
-        ["zoom.us"]         = RECT_RIGHT,
-        kitty               = RECT_LEFT,
+        RECT_LEFT,
+        RECT_RIGHT,
+        PIP_BOTTOM_RIGHT,
     },
     [3] = {
-        Calendar            = RECT_CENTER,
-        Chromium            = RECT_CENTER,
-        Discord             = RECT_CENTER,
-        Firefox             = RECT_CENTER,
-        Gather              = PIP_BOTTOM_RIGHT,
-        Stickies            = PIP_TOP_RIGHT,
-        LibreWolf           = RECT_CENTER,
-        Linear              = RECT_CENTER,
-        Mail                = RECT_CENTER,
-        Messages            = RECT_CENTER,
-        Notes               = RECT_CENTER,
-        Notion              = RECT_CENTER,
-        Safari              = RECT_CENTER,
-        Slack               = RECT_CENTER,
-        Spotify             = RECT_CENTER,
-        ["Bitwig Studio"]   = RECT_CENTER,
-        ["Google Chrome"]   = RECT_CENTER,
-        ["Logic Pro"]       = RECT_CENTER,
-        ["Notion Calendar"] = RECT_CENTER,
-        ["zoom.us"]         = RECT_CENTER,
-        kitty               = RECT_CENTER,
+        RECT_CENTER,
+        PIP_BOTTOM_RIGHT,
     },
     [4] = {
-        Calendar            = RECT_SKINNY,
-        Chromium            = RECT_SKINNY,
-        Discord             = RECT_SKINNY,
-        Firefox             = RECT_SKINNY,
-        LibreWolf           = RECT_SKINNY,
-        Linear              = RECT_SKINNY,
-        Mail                = RECT_SKINNY,
-        Messages            = RECT_SKINNY,
-        Notes               = RECT_SKINNY,
-        Notion              = RECT_SKINNY,
-        Safari              = RECT_SKINNY,
-        Slack               = RECT_SKINNY,
-        Spotify             = RECT_SKINNY,
-        ["Bitwig Studio"]   = RECT_SKINNY,
-        ["Google Chrome"]   = RECT_SKINNY,
-        ["Logic Pro"]       = RECT_SKINNY,
-        ["Notion Calendar"] = RECT_SKINNY,
-        ["zoom.us"]         = RECT_SKINNY,
-        kitty               = RECT_SKINNY,
-    }
+        RECT_SKINNY,
+        PIP_TOP_RIGHT,
+    },
 }
--- stylua: ignore end
 
 --- Converts a unitrect (relative coordinates) to a rect (absolute coordinates) based on the main screen's frame.
 -- --- @param unit_rect hs.geometry A unitrect representing relative coordinates.
@@ -194,55 +123,80 @@ local function _move_to_unit_with_retries(geometry, window)
     end, 0.25)
 end
 
-function obj:set_layout(layout)
-    self.layout = layout
-    local active_layout = self.layouts[layout]
-    local active_windows = self.window_filter_all:getWindows()
+local function get_application_geometry_index(layout, application_name)
+    if state[layout] == nil then
+        state[layout] = {}
+        state[layout][application_name] = 1
+        return 1
+    end
 
-    for _, window in ipairs(active_windows) do
-        local app_name = window:application():name()
-        local target_geometry = active_layout[app_name]
-        if target_geometry then
-            _move_to_unit_with_retries(target_geometry, window)
-        end
+    if state[layout][application_name] == nil then
+        state[layout][application_name] = 1
+        return 1
+    end
+
+    return state[layout][application_name]
+end
+
+local function set_application_geometry_index(layout, application_name, index)
+    if state[layout] == nil then
+        state[layout] = {}
+        state[layout][application_name] = index
+        return
+    end
+    state[layout][application_name] = index
+end
+
+--- Traverse `table` by `step` wrapping around to the beginning and end of the table.
+--
+-- If Lua arrays had a 0-based index, then this would be simple using the modulus operator,
+-- however, instead we have to do this hacky workaround. See another user with the same
+-- bewilderment: https://devforum.roblox.com/t/wrapping-index-in-an-array/1476197/2
+--
+---@param table table table to traverse
+---@param index integer current index of table
+---@param step integer positive or negative value to iterate over table
+local function next_index_circular(table, index, step)
+    if #table == 1 then
+        return 1
+    end
+    if step > 0 and index + step > #table then
+        return index + step - #table
+    elseif step < 0 and index + step <= 0 then
+        return #table + index + step
+    else
+        return index + step
     end
 end
 
-local layouts = {
-    [1] = {
-        RECT_LEFT,
-        RECT_RIGHT,
-    },
-    [2] = {
-        RECT_LEFT,
-        RECT_RIGHT,
-        PIP_BOTTOM_RIGHT,
-    },
-    [3] = {
-        RECT_CENTER,
-        PIP_BOTTOM_RIGHT,
-    },
-}
+function obj:move_focused_window_next_geometry(direction)
+    local focused_window = hs.window.focusedWindow()
+    local focused_application_name = focused_window:application():name()
 
---- State tracking layout > application > window geometry
-local state = {
-    -- [1] = { application_name_1 = 1, application_name_2 = 1 }
-    -- [2] = { application_name_1 = 1, application_name_2 = 3 }
-}
+    local current_index = get_application_geometry_index(self.layout, focused_application_name)
+    local next_index = next_index_circular(layouts[self.layout], current_index, direction)
+    set_application_geometry_index(self.layout, focused_application_name, next_index)
 
---- Move window to cached geometry or default to geometry at index 1.
+    local target_geometry = layouts[self.layout][next_index]
+    focused_window:moveToUnit(target_geometry)
+end
+
 function obj:set_layout_new(layout)
     self.layout = layout
     local active_layout = layouts[layout]
-    local active_windows = self.window_filter_all:getWindows()
 
+    local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
         local app_name = window:application():name()
-        local target_geometry = active_layout[app_name]
-        if target_geometry then
-            _move_to_unit_with_retries(target_geometry, window)
-        end
+        local ix = get_application_geometry_index(layout, app_name)
+        local target_geometry = active_layout[ix]
+        _move_to_unit_with_retries(target_geometry, window)
     end
+end
+
+function obj:persist_state()
+    -- todo: implement
+    -- hotkey to save layouts
 end
 
 function obj:init()
@@ -254,79 +208,19 @@ function obj:init()
     self.window_filter_all = hs.window.filter.new()
 
     -- Consider usage of `windowCreated` and `windowFocused` for ideal resizing trigger
+    -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
-        local target_geometry = self.layouts[obj.layout][app_name]
+        local ix = get_application_geometry_index(self.layout, app_name)
+        local target_geometry = layouts[self.layout][ix]
         _move_to_unit_with_retries(target_geometry, window)
     end)
 
     -- bind layouts to corresponding 1, 2, ..., n
-    for key, _ in pairs(self.layouts) do
+    for key, _ in pairs(layouts) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
-            -- obj:set_layout_new(key)
-            obj:set_layout(key)
+            obj:set_layout_new(key)
+            -- obj:set_layout(key)
         end)
-    end
-
-    local function get_application_geometry_index(layout, application_name)
-        if state[layout] == nil then
-            state[layout] = {}
-            state[layout][application_name] = 1
-            return 1
-        end
-
-        if state[layout][application_name] == nil then
-            state[layout][application_name] = 1
-            return 1
-        end
-
-        return state[layout][application_name]
-    end
-
-    local function set_application_geometry_index(layout, application_name, index)
-        if state[layout] == nil then
-            state[layout] = {}
-            state[layout][application_name] = index
-            return
-        end
-        state[layout][application_name] = index
-    end
-
-    --- Traverse `table` by `step` wrapping around to the beginning and end of the table.
-    --
-    -- If Lua arrays had a 0-based index, then this would be simple using the modulus operator,
-    -- however, instead we have to do this hacky workaround. See another user with the same
-    -- bewilderment: https://devforum.roblox.com/t/wrapping-index-in-an-array/1476197/2
-    --
-    ---@param table table table to traverse
-    ---@param index integer current index of table
-    ---@param step integer positive or negative value to iterate over table
-    local function next_index_circular(table, index, step)
-        if #table == 1 then
-            return 1
-        end
-        if step > 0 and index + step > #table then
-            return index + step - #table
-        elseif step < 0 and index + step <= 0 then
-            return #table + index + step
-        else
-            return index + step
-        end
-    end
-
-    local function move_focused_window_next_geometry(direction)
-        local focused_window = hs.window.focusedWindow()
-        local focused_application_name = focused_window:application():name()
-
-        local current_index = get_application_geometry_index(self.layout, focused_application_name)
-        local next_index = next_index_circular(layouts[self.layout], current_index, direction)
-        set_application_geometry_index(self.layout, focused_application_name, next_index)
-
-        local target_geometry = layouts[self.layout][next_index]
-        focused_window:moveToUnit(target_geometry)
-    end
-
-    local function persist_state()
-        -- todo: implement
     end
 
     --- Display cached state window geometries for active layout
@@ -345,10 +239,10 @@ function obj:init()
     end
 
     hs.hotkey.bind({ "cmd", "shift" }, "l", function()
-        move_focused_window_next_geometry(1)
+        self:move_focused_window_next_geometry(1)
     end)
     hs.hotkey.bind({ "cmd", "shift" }, "h", function()
-        move_focused_window_next_geometry(-1)
+        self:move_focused_window_next_geometry(-1)
     end)
     hs.hotkey.bind({ "cmd", "shift" }, "/", function()
         hs_alert_window_state()
