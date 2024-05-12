@@ -1,43 +1,3 @@
---- Window Management
---
--- Task list:
--- - [ ] Multi-monitor support
--- - [ ] Differing geometries for multiple windows in the same application
-
--- New implementation:
--- * Cycle active window between geometries in a given layout (directional cycle)
--- * Create layout definitions that is table of geometries
--- * Track assigned window geometries
--- * Default created window to geometry 1 of layout
--- * Export to WindowManager.Spoon
--- * Parameterize disabling of animations
-
-local obj = {
-    name = "Window Management",
-    version = "1.0.0",
-    config = {
-        default_layout = 2,
-        state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
-    },
-}
-
---- Retrieve configuration value with support for nested parameters.
-local function get_config(...)
-    local args = { ... }
-    local value = nil
-    for _, param in ipairs(args) do
-        if value == nil then
-            value = obj.config[param]
-        else
-            value = value[param]
-        end
-        if value == nil then
-            error(string.format("Invalid parameter: %s", param))
-        end
-    end
-    return value
-end
-
 -- user defined geometries; once published, it will be the user's responsibility to register geometries
 -- in their configuration
 
@@ -92,30 +52,68 @@ local PIP_TOP_RIGHT = hs.geometry({
 
 -- end user-defined geometries
 
-local state = {
-    -- [1] = { application_name_1 = 1, application_name_2 = 1 }
-    -- [2] = { application_name_1 = 1, application_name_2 = 3 }
+--- Window Management
+--
+-- Task list:
+-- - [ ] Multi-monitor support
+-- - [ ] Differing geometries for multiple windows in the same application
+
+-- New implementation:
+-- * Cycle active window between geometries in a given layout (directional cycle)
+-- * Create layout definitions that is table of geometries
+-- * Track assigned window geometries
+-- * Default created window to geometry 1 of layout
+-- * Export to WindowManager.Spoon
+-- * Parameterize disabling of animations
+
+local obj = {
+    name = "Window Management",
+    version = "1.0.0",
+    config = {
+        default_layout = 2,
+        state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
+    },
+    state = {
+        -- [1] = { application_name_1 = 1, application_name_2 = 1 }
+        -- [2] = { application_name_1 = 1, application_name_2 = 3 }
+    },
+    layouts = {
+        [1] = {
+            RECT_LEFT,
+            RECT_RIGHT,
+        },
+        [2] = {
+            RECT_LEFT,
+            RECT_RIGHT,
+            PIP_BOTTOM_RIGHT,
+        },
+        [3] = {
+            RECT_CENTER,
+            PIP_BOTTOM_RIGHT,
+        },
+        [4] = {
+            RECT_SKINNY,
+            PIP_TOP_RIGHT,
+        },
+    },
 }
 
-local layouts = {
-    [1] = {
-        RECT_LEFT,
-        RECT_RIGHT,
-    },
-    [2] = {
-        RECT_LEFT,
-        RECT_RIGHT,
-        PIP_BOTTOM_RIGHT,
-    },
-    [3] = {
-        RECT_CENTER,
-        PIP_BOTTOM_RIGHT,
-    },
-    [4] = {
-        RECT_SKINNY,
-        PIP_TOP_RIGHT,
-    },
-}
+--- Retrieve configuration value with support for nested parameters.
+local function get_config(...)
+    local args = { ... }
+    local value = nil
+    for _, param in ipairs(args) do
+        if value == nil then
+            value = obj.config[param]
+        else
+            value = value[param]
+        end
+        if value == nil then
+            error(string.format("Invalid parameter: %s", param))
+        end
+    end
+    return value
+end
 
 --- Converts a unitrect (relative coordinates) to a rect (absolute coordinates) based on the main screen's frame.
 -- --- @param unit_rect hs.geometry A unitrect representing relative coordinates.
@@ -147,27 +145,27 @@ local function _move_to_unit_with_retries(geometry, window)
 end
 
 local function get_application_geometry_index(layout, application_name)
-    if state[layout] == nil then
-        state[layout] = {}
-        state[layout][application_name] = 1
+    if obj.state[layout] == nil then
+        obj.state[layout] = {}
+        obj.state[layout][application_name] = 1
         return 1
     end
 
-    if state[layout][application_name] == nil then
-        state[layout][application_name] = 1
+    if obj.state[layout][application_name] == nil then
+        obj.state[layout][application_name] = 1
         return 1
     end
 
-    return state[layout][application_name]
+    return obj.state[layout][application_name]
 end
 
 local function set_application_geometry_index(layout, application_name, index)
-    if state[layout] == nil then
-        state[layout] = {}
-        state[layout][application_name] = index
+    if obj.state[layout] == nil then
+        obj.state[layout] = {}
+        obj.state[layout][application_name] = index
         return
     end
-    state[layout][application_name] = index
+    obj.state[layout][application_name] = index
 end
 
 --- Traverse `table` by `step` wrapping around to the beginning and end of the table.
@@ -197,16 +195,16 @@ function obj:move_focused_window_next_geometry(direction)
     local focused_application_name = focused_window:application():name()
 
     local current_index = get_application_geometry_index(self.layout, focused_application_name)
-    local next_index = next_index_circular(layouts[self.layout], current_index, direction)
+    local next_index = next_index_circular(self.layouts[self.layout], current_index, direction)
     set_application_geometry_index(self.layout, focused_application_name, next_index)
 
-    local target_geometry = layouts[self.layout][next_index]
+    local target_geometry = self.layouts[self.layout][next_index]
     focused_window:moveToUnit(target_geometry)
 end
 
 function obj:set_layout_new(layout)
     self.layout = layout
-    local active_layout = layouts[layout]
+    local active_layout = self.layouts[layout]
 
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
@@ -241,12 +239,12 @@ function obj:init()
     -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
         local ix = get_application_geometry_index(self.layout, app_name)
-        local target_geometry = layouts[self.layout][ix]
+        local target_geometry = self.layouts[self.layout][ix]
         _move_to_unit_with_retries(target_geometry, window)
     end)
 
     -- bind layouts to corresponding 1, 2, ..., n
-    for key, _ in pairs(layouts) do
+    for key, _ in pairs(self.layouts) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
             obj:set_layout_new(key)
             -- obj:set_layout(key)
@@ -255,14 +253,14 @@ function obj:init()
 
     --- Display cached state window geometries for active layout
     local function hs_alert_window_state()
-        if state[self.layout] == nil then
+        if obj.state[self.layout] == nil then
             hs.alert(string.format("No state for layout: %s", self.layout))
             return
         end
         local lines = {}
         lines[#lines + 1] = string.format("Active Layout: %s", self.layout)
         lines[#lines + 1] = string.rep("-", 80)
-        for application, geometry_index in pairs(state[self.layout]) do
+        for application, geometry_index in pairs(obj.state[self.layout]) do
             lines[#lines + 1] = string.format("%-40s %40s", application, geometry_index)
         end
         hs.alert(table.concat(lines, "\n"))
