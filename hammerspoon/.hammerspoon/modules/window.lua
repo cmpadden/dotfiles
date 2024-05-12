@@ -1,4 +1,8 @@
 --- Window Management
+--
+-- Task list:
+-- - [ ] Multi-monitor support
+-- - [ ] Differing geometries for multiple windows in the same application
 
 -- New implementation:
 -- * Cycle active window between geometries in a given layout (directional cycle)
@@ -19,6 +23,7 @@ local obj = {
         window_width_skinny = 0.35,
         pip_height = 0.35,
         pip_width = 0.142,
+        state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
     },
 }
 
@@ -194,9 +199,16 @@ function obj:set_layout_new(layout)
     end
 end
 
-function obj:persist_state()
-    -- todo: implement
-    -- hotkey to save layouts
+function obj:save_state()
+    local path = get_config("state_file_path")
+    hs.json.write(state, path, true, true)
+    hs.alert(string.format("wm.spoon state written to file: %s", path))
+end
+
+function obj:load_state()
+    local path = get_config("state_file_path")
+    obj.state = hs.json.read(path)
+    hs.alert(string.format("wm.spoon state loaded from file: %s", path))
 end
 
 function obj:init()
@@ -246,6 +258,12 @@ function obj:init()
     end)
     hs.hotkey.bind({ "cmd", "shift" }, "/", function()
         hs_alert_window_state()
+    end)
+    hs.hotkey.bind({ "cmd", "control" }, "-", function()
+        self:save_state()
+    end)
+    hs.hotkey.bind({ "cmd", "control" }, "=", function()
+        self:load_state()
     end)
 end
 
