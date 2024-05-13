@@ -67,34 +67,33 @@ local PIP_TOP_RIGHT = hs.geometry({
 -- * Parameterize disabling of animations
 
 local obj = {
-    name = "Window Management",
-    version = "1.0.0",
+    name = "wm.spoon",
     config = {
         default_layout = 2,
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
+        layouts = {
+            [1] = {
+                RECT_LEFT,
+                RECT_RIGHT,
+            },
+            [2] = {
+                RECT_LEFT,
+                RECT_RIGHT,
+                PIP_BOTTOM_RIGHT,
+            },
+            [3] = {
+                RECT_CENTER,
+                PIP_BOTTOM_RIGHT,
+            },
+            [4] = {
+                RECT_SKINNY,
+                PIP_TOP_RIGHT,
+            },
+        },
     },
     state = {
         -- [1] = { application_name_1 = 1, application_name_2 = 1 }
         -- [2] = { application_name_1 = 1, application_name_2 = 3 }
-    },
-    layouts = {
-        [1] = {
-            RECT_LEFT,
-            RECT_RIGHT,
-        },
-        [2] = {
-            RECT_LEFT,
-            RECT_RIGHT,
-            PIP_BOTTOM_RIGHT,
-        },
-        [3] = {
-            RECT_CENTER,
-            PIP_BOTTOM_RIGHT,
-        },
-        [4] = {
-            RECT_SKINNY,
-            PIP_TOP_RIGHT,
-        },
     },
 }
 
@@ -195,16 +194,16 @@ function obj:move_focused_window_next_geometry(direction)
     local focused_application_name = focused_window:application():name()
 
     local current_index = get_application_geometry_index(self.layout, focused_application_name)
-    local next_index = next_index_circular(self.layouts[self.layout], current_index, direction)
+    local next_index = next_index_circular(get_config("layouts"), current_index, direction)
     set_application_geometry_index(self.layout, focused_application_name, next_index)
 
-    local target_geometry = self.layouts[self.layout][next_index]
+    local target_geometry = get_config("layouts")[self.layout][next_index]
     focused_window:moveToUnit(target_geometry)
 end
 
 function obj:set_layout_new(layout)
     self.layout = layout
-    local active_layout = self.layouts[layout]
+    local active_layout = get_config("layouts")[layout]
 
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
@@ -217,7 +216,7 @@ end
 
 function obj:save_state()
     local path = get_config("state_file_path")
-    hs.json.write(state, path, true, true)
+    hs.json.write(self.state, path, true, true)
     hs.alert(string.format("wm.spoon state written to file: %s", path))
 end
 
@@ -239,12 +238,12 @@ function obj:init()
     -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
         local ix = get_application_geometry_index(self.layout, app_name)
-        local target_geometry = self.layouts[self.layout][ix]
+        local target_geometry = get_config("layouts")[self.layout][ix]
         _move_to_unit_with_retries(target_geometry, window)
     end)
 
     -- bind layouts to corresponding 1, 2, ..., n
-    for key, _ in pairs(self.layouts) do
+    for key, _ in pairs(get_config("layouts")) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
             obj:set_layout_new(key)
             -- obj:set_layout(key)
