@@ -1,16 +1,9 @@
 --- Window Management
 --
--- Task list:
+-- Tracking:
 -- - [ ] Multi-monitor support
 -- - [ ] Differing geometries for multiple windows in the same application
-
--- New implementation:
--- * Cycle active window between geometries in a given layout (directional cycle)
--- * Create layout definitions that is table of geometries
--- * Track assigned window geometries
--- * Default created window to geometry 1 of layout
--- * Export to WindowManager.Spoon
--- * Parameterize disabling of animations
+-- - [ ] Parameterize animation disable
 
 local obj = {
     name = "wm.spoon",
@@ -18,6 +11,14 @@ local obj = {
         default_layout = 2,
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
         layouts = {},
+        bindings = {
+            prefix = { "cmd", "shift" },
+            cycle_left = "h",
+            cycle_right = "l",
+            state_save = "-",
+            state_restore = "=",
+            state_alert = "/",
+        },
     },
     state = {
         -- [1] = { application_name_1 = 1, application_name_2 = 1 }
@@ -25,7 +26,59 @@ local obj = {
     },
 }
 
---- Retrieve configuration value with support for nested parameters.
+local split_padding = 0.08
+local padding = 0.02
+local window_width_centered = 0.65
+local window_width_skinny = 0.35
+local pip_height = 0.35
+local pip_width = 0.142
+
+--- Predefined geometries
+obj.builtins = {
+    padded_center = hs.geometry({
+        h = (1 - (2 * padding)),
+        w = window_width_centered,
+        x = ((1 - window_width_centered) / 2),
+        y = padding,
+    }),
+
+    padded_left = hs.geometry({
+        h = (1 - (2 * padding)),
+        w = (0.5 - (split_padding + 0.005)),
+        x = split_padding,
+        y = padding,
+    }),
+
+    padded_right = hs.geometry({
+        h = (1 - (2 * padding)),
+        w = (0.5 - split_padding - 0.005),
+        x = (0.5 + 0.005),
+        y = padding,
+    }),
+
+    skinny = hs.geometry({
+        h = (1 - (2 * padding)),
+        w = window_width_skinny,
+        x = ((1 - window_width_skinny) / 2),
+        y = padding,
+    }),
+
+    pip_bottom_right = hs.geometry({
+        h = pip_height,
+        w = pip_width,
+        x = (1 - 0.162),
+        y = ((1 - pip_height) - padding),
+    }),
+
+    pip_top_right = hs.geometry({
+        h = pip_height,
+        w = pip_width,
+        x = padding,
+        y = padding,
+    }),
+}
+
+--- Retrieves configuration value with support for nested parameters.
 local function get_config(...)
     local args = { ... }
     local value = nil
@@ -121,17 +174,19 @@ function obj:move_focused_window_next_geometry(direction)
     local focused_window = hs.window.focusedWindow()
     local focused_application_name = focused_window:application():name()
 
+    local _active_layout = self.layouts[self.layout]
+
     local current_index = get_application_geometry_index(self.layout, focused_application_name)
-    local next_index = next_index_circular(get_config("layouts"), current_index, direction)
+    local next_index = next_index_circular(_active_layout, current_index, direction)
     set_application_geometry_index(self.layout, focused_application_name, next_index)
 
-    local target_geometry = get_config("layouts")[self.layout][next_index]
+    local target_geometry = _active_layout[next_index]
     focused_window:moveToUnit(target_geometry)
 end
 
-function obj:set_layout_new(layout)
+function obj:set_layout(layout)
     self.layout = layout
-    local active_layout = get_config("layouts")[layout]
+    local active_layout = self.layouts[layout]
 
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
@@ -157,7 +212,9 @@ end
 function obj:init()
     hs.window.animationDuration = 0
     hs.window.setFrameCorrectness = true
+
     self.layout = get_config("default_layout")
+    self.layouts = get_config("layouts")
 
     -- Automatic layout application to new/focused windows.
     self.window_filter_all = hs.window.filter.new()
@@ -166,15 +223,14 @@ function obj:init()
     -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
         local ix = get_application_geometry_index(self.layout, app_name)
-        local target_geometry = get_config("layouts")[self.layout][ix]
+        local target_geometry = self.layouts[self.layout][ix]
         _move_to_unit_with_retries(target_geometry, window)
     end)
 
     -- bind layouts to corresponding 1, 2, ..., n
-    for key, _ in pairs(get_config("layouts")) do
+    for key, _ in pairs(self.layouts) do
         hs.hotkey.bind({ "cmd", "ctrl" }, tostring(key), function()
-            obj:set_layout_new(key)
-            -- obj:set_layout(key)
+            obj:set_layout(key)
         end)
     end
 
@@ -193,19 +249,21 @@ function obj:init()
         hs.alert(table.concat(lines, "\n"))
     end
 
-    hs.hotkey.bind({ "cmd", "shift" }, "l", function()
+    local _prefix = get_config("bindings", "prefix")
+
+    hs.hotkey.bind(_prefix, get_config("bindings", "cycle_right"), function()
         self:move_focused_window_next_geometry(1)
     end)
-    hs.hotkey.bind({ "cmd", "shift" }, "h", function()
+    hs.hotkey.bind(_prefix, get_config("bindings", "cycle_left"), function()
         self:move_focused_window_next_geometry(-1)
     end)
-    hs.hotkey.bind({ "cmd", "shift" }, "/", function()
+    hs.hotkey.bind(_prefix, get_config("bindings", "state_alert"), function()
         hs_alert_window_state()
     end)
-    hs.hotkey.bind({ "cmd", "control" }, "-", function()
+    hs.hotkey.bind(_prefix, get_config("bindings", "state_save"), function()
         self:save_state()
     end)
-    hs.hotkey.bind({ "cmd", "control" }, "=", function()
+    hs.hotkey.bind(_prefix, get_config("bindings", "state_restore"), function()
         self:load_state()
     end)
 end
