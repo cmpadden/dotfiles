@@ -87,6 +87,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         exa \
         fd \
         ffmpeg \
+        figlet \
         fzf \
         git \
         httpie \
@@ -147,7 +148,6 @@ if [ "$OS_NAME" = 'Darwin' ]; then
     if [ ! "$SHELL" = "/opt/homebrew/bin/bash" ]; then
         _log 'Changing shell to /opt/homebrew/bin/bash'
         chsh -s /opt/homebrew/bin/bash
-        echo '!'
     fi
 
     if [ ! -f ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
