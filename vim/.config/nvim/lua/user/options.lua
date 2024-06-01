@@ -31,6 +31,6 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevelstart = 99
 
 -- new in 0.8.0!
-vim.opt.ls = 0
-vim.opt.ch = 0
+-- vim.opt.laststatus = 0
+vim.opt.cmdheight = 0
 -- set winbar=%f
