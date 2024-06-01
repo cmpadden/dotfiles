@@ -11,6 +11,21 @@ return {
             {
                 "williamboman/mason-lspconfig.nvim",
                 config = function()
+
+                    -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
+                    vim.diagnostic.config({
+                      virtual_text = false,
+                      signs = true,
+                      underline = true,
+                      update_in_insert = false,
+                      severity_sort = false,
+                    })
+
+                    -- Toggle `virtual_text` on global diagnostics configuration:
+                    -- vim.keymap.set("n", "<leader>td", function()
+                    --     ...
+                    -- end)
+
                     local mason_lspconfig = require("mason-lspconfig")
                     mason_lspconfig.setup({
                         ensure_installed = {
@@ -24,7 +39,7 @@ return {
                             "rust_analyzer", -- Rust
                             "tailwindcss", -- Tailwind
                             "tsserver", -- Typescript
-                            "vuels", -- Vue
+                            "volar",
                         },
                         automatic_installation = true,
                     })
