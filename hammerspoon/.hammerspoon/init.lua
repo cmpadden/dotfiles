@@ -15,7 +15,6 @@ hs.alert.defaultStyle.fadeOutDuration = 2
 require("modules.plugins")
 require("modules.alerts")
 require("modules.caffeine")
-require("modules.draw")
 
 local wm = require("modules.window")
 
