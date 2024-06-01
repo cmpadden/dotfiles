@@ -339,3 +339,9 @@ tldr() {
     done
     resetOutput
 }
+
+
+reload() {
+    # shellcheck source=/dev/null
+    source "${HOME}/.bashrc"
+}
