@@ -35,6 +35,7 @@ alias gcp="git checkout -"
 
 # vim
 if hash nvim 2>/dev/null; then
+    alias v="nvim"
     alias vim="nvim"
     alias vimdiff="nvim -d"
 fi
@@ -63,14 +64,14 @@ else
     alias ls='ls -lhpG'
 fi
 
-# https://github.com/sharkdp/bat
-if hash bat 2>/dev/null; then
-    alias cat="bat \
-        --theme=ansi \
-        --style header,grid \
-        --pager=never \
-        --wrap=never"
-fi
+# # https://github.com/sharkdp/bat
+# if hash bat 2>/dev/null; then
+#     alias cat="bat \
+#         --theme=ansi \
+#         --style header,grid \
+#         --pager=never \
+#         --wrap=never"
+# fi
 
 # # https://github.com/ggreer/the_silver_searcher
 # if hash ag 2>/dev/null; then
@@ -81,9 +82,9 @@ if hash rg 2>/dev/null; then
     alias grep="rg --smart-case"
 fi
 
-if hash ranger 2>/dev/null; then
-    alias r="ranger"
-fi
+# if hash ranger 2>/dev/null; then
+#     alias r="ranger"
+# fi
 
 # source environment variables in `.env`                                                    │
 alias source_env='export $(xargs < .env)'
