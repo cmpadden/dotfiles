@@ -13,9 +13,9 @@ alias docker_kill_all='docker kill $(docker ps -qa)'
 
 alias g="git"
 
-alias gs="git add"
+alias ga="git add"
 alias gc="git checkout"
-alias gs="git status ."
+alias gs="git status --untracked-files=all ."
 alias gd="git diff"
 alias gds="git diff --staged"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
