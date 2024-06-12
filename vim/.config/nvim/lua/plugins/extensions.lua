@@ -2,10 +2,7 @@
 --                                 Extensions                                 --
 --------------------------------------------------------------------------------
 
-return {
-
-    -- https://github.com/tpope/vim-commentary
-    { "tpope/vim-commentary" },
+local obj = {
 
     -- https://github.com/tpope/vim-dadbod
     { "tpope/vim-dadbod" },
@@ -99,10 +96,10 @@ return {
                 logging = true,
                 log_level = vim.log.levels.WARN,
                 filetype = {
-                    python = {
-                        require("formatter.filetypes.python").ruff,
-                        -- require("formatter.filetypes.python").isort,
-                    },
+                    -- python = {
+                    --     require("formatter.filetypes.python").ruff,
+                    --     require("formatter.filetypes.python").isort,
+                    -- },
                     sh = {
                         require("formatter.filetypes.sh").shfmt,
                     },
@@ -165,3 +162,15 @@ return {
         },
     },
 }
+
+-- To install nightly version of Neovim on macOS:
+--
+-- brew install --HEAD neovim
+-- brew reinstall neovim
+--
+if vim.version().major == 0 and vim.version().minor < 10 then
+    -- https://github.com/tpope/vim-commentary (built-in as of v0.10.0)
+    table.insert(obj, { "tpope/vim-commentary" })
+end
+
+return obj

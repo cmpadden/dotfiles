@@ -1,0 +1,18 @@
+{
+  "keyMappings": "# Insert your preferred key mappings here.\n\nunmap d\nunmap u\nmap <c-d> scrollPageDown\nmap <c-u> scrollPageUp\n\nmap dd removeTab\nmap R restoreTab\n\n# these are default bindings\nmap <c-l> moveTabRight\nmap <c-h> moveTabLeft",
+  "settingsVersion": "2.1.2",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://elementl.dagster.cloud/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://asciiflow.com/*"
+    }
+  ]
+}
