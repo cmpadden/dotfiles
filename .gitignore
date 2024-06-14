@@ -16,3 +16,7 @@ qutebrowser/.qutebrowser/bookmarks/urls
 qutebrowser/.qutebrowser/quickmarks
 
 hammerspoon/.hammerspoon/Spoons
+
+gpg/.gnupg/*
+!gpg/.gnupg/gpg-agent.conf
+!gpg/.gnupg/gpg.conf
