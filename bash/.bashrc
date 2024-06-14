@@ -48,12 +48,6 @@ else
     warn 'direnv is not installed'
 fi
 
-# use `bat` as a `cat` alternative for `fzf` file preview
-if command -v bat &>/dev/null; then
-    export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
-fi
-
-
 # https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
 GPG_TTY=$(tty)
 export GPG_TTY
