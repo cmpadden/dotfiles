@@ -2,7 +2,7 @@
 --                                  Personal                                  --
 --------------------------------------------------------------------------------
 
-return {
+local obj = {
     -- https://github.com/cmpadden/pomodoro.nvim
     {
         "cmpadden/pomodoro.nvim",
@@ -10,9 +10,11 @@ return {
             require("pomodoro").setup()
         end,
     },
+}
 
-    -- https://github.com/cmpadden/chatblade.nvim
-    {
+-- https://github.com/cmpadden/chatblade.nvim
+if vim.fn.isdirectory(vim.fn.expand("~/src/chatblade.nvim")) == 1 then
+    table.insert(obj, {
         dir = "~/src/chatblade.nvim",
         keys = {
             { "<leader>x", ":Chatblade<cr><cr>", mode = "v", desc = "Chatblade" },
@@ -29,10 +31,12 @@ return {
             extract = true,
             only = true,
         },
-    },
+    })
+end
 
-    -- https://github.com/PedramNavid/dbtpaluse
-    {
+-- https://github.com/PedramNavid/dbtpaluse
+if vim.fn.isdirectory(vim.fn.expand("~/src/dbtpal")) == 1 then
+    table.insert(obj, {
         dir = "~/src/dbtpal",
         dependencies = {
             "nvim-lua/plenary.nvim",
@@ -56,5 +60,7 @@ return {
 
             require("telescope").load_extension("dbtpal")
         end,
-    },
-}
+    })
+end
+
+return obj
