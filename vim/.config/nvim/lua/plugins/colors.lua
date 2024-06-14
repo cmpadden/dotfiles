@@ -8,15 +8,37 @@ return {
     -- Solution:
     -- > rm /opt/homebrew/lib/nvim/parser/vim.so
 
-    -- https://github.com/tanvirtin/monokai.nvim
+    -- -- https://github.com/tanvirtin/monokai.nvim
+    -- {
+    --     "tanvirtin/monokai.nvim",
+    --     lazy = false,
+    --     priority = 1000,
+    --     init = function()
+    --         require("monokai").setup({ palette = require("monokai").pro })
+    --     end,
+    -- },
+
+    -- https://github.com/nordtheme/vim
     {
-        "tanvirtin/monokai.nvim",
+        "nordtheme/vim",
         lazy = false,
         priority = 1000,
         init = function()
-            require("monokai").setup({ palette = require("monokai").pro })
+            vim.opt.termguicolors = true
+            vim.cmd.colorscheme("nord")
         end,
     },
+
+
+    -- {
+    --     "nyoom-engineering/oxocarbon.nvim",
+    --     lazy = false,
+    --     priority = 1000,
+    --     init = function()
+    --         vim.opt.background = "dark"
+    --         vim.cmd.colorscheme("oxocarbon")
+    --     end,
+    -- },
 
     -- -- https://github.com/EdenEast/nightfox.nvim
     -- {
@@ -73,18 +95,18 @@ return {
     --     end,
     -- },
 
-    --     {
-    --         "jesseleite/nvim-noirbuddy",
-    --         dependencies = {
-    --             { "tjdevries/colorbuddy.nvim" },
-    --         },
-    --         lazy = false,
-    --         priority = 1000,
-    --         config = function()
-    --             require("noirbuddy").setup({
-    --                 -- preset = "slate",
-    --                 preset = "miami-nights",
-    --             })
-    --         end,
+    -- {
+    --     "jesseleite/nvim-noirbuddy",
+    --     dependencies = {
+    --         { "tjdevries/colorbuddy.nvim" },
     --     },
+    --     lazy = false,
+    --     priority = 1000,
+    --     config = function()
+    --         require("noirbuddy").setup({
+    --             -- preset = "slate",
+    --             preset = "miami-nights",
+    --         })
+    --     end,
+    -- },
 }
