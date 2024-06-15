@@ -120,6 +120,9 @@ local obj = {
                     vue = {
                         require("formatter.filetypes.vue").prettier,
                     },
+                    javascript = {
+                        require("formatter.filetypes.typescript").prettier,
+                    },
                     typescript = {
                         require("formatter.filetypes.typescript").prettier,
                     },
