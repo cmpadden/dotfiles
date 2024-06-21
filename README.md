@@ -12,7 +12,7 @@ the home directory.
 Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
 
 ```sh
-$ ./restore.sh
+$ make restore
 
       ___           ___           ___           ___
      /\  \         /\  \         /\  \         /\__\
@@ -33,7 +33,7 @@ $ ./restore.sh
 Install platform agnostic system-wide dependencies using [install.sh](https://github.com/cmpadden/dotfiles/blob/main/install.sh). [Brew]() will be used for macOS, and `pacman` for Arch Linux.
 
 ```sh
-$ ./install.sh
+$ make install
 
       ___           ___           ___           ___           ___
      /\__\         /\  \         /\  \         /\  \         /\  \

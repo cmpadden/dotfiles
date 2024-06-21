@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Install script for personal machines.
-
-###############################################################################
-#                                  Constants                                  #
-###############################################################################
-
-# Used to determine which evironment is being configured: 'Darwin' or 'Linux'
 OS_NAME=$(uname -s)
 
 # ASCII font generated with `figlet -f isometric1 MacOS`
@@ -81,14 +74,13 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         cmake \
         curl \
         direnv \
-        docker \
-        docker-compose \
         duckdb \
         exa \
         fd \
         ffmpeg \
         figlet \
         fzf \
+        gh \
         git \
         httpie \
         imagemagick \
@@ -101,6 +93,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         pass-otp \
         pdfgrep \
         pinentry-mac \
+        pnpm \
         pre-commit \
         pyenv \
         pyenv-virtualenv \
@@ -114,11 +107,12 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         tmux \
         watch \
         withgraphite/tap/graphite \
-        yarn
+        yarn \
+        uv
 
     _log "Installing brew casks"
     brew install --cask \
-        chromium \
+        docker \
         hammerspoon \
         kitty \
         linear-linear \
@@ -136,20 +130,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
     _log "Installing Tmux Plugin Manager"
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-    _log "Setting MacOS settings: InitialKeyRepeat, KeyRepeat"
-    defaults write -g InitialKeyRepeat -int 10
-    defaults write -g KeyRepeat -int 1
-
-    if ! /usr/bin/grep -q '/opt/homebrew/bin/bash' /etc/shells; then
-        _log 'Adding /opt/homebrew/bin/bash to /etc/shells'
-        echo "/opt/homebrew/bin/bash" >> /etc/shells
-    fi
-
-    if [ ! "$SHELL" = "/opt/homebrew/bin/bash" ]; then
-        _log 'Changing shell to /opt/homebrew/bin/bash'
-        chsh -s /opt/homebrew/bin/bash
-    fi
-
+    # NOTE: this threw an error
     if [ ! -f ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
         _log 'Installing Hammerspoon SpoonInstall.spoon'
         curl -O -L https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip
@@ -159,10 +140,6 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     _log 'NOTE: If Chromium.app fails to open, run: xattr -cr /Applications/Chromium.app'
 fi
-
-###############################################################################
-#                                    Linux                                    #
-###############################################################################
 
 if [ "$OS_NAME" = 'Linux' ]; then
 
