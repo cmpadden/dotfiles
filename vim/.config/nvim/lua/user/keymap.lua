@@ -17,6 +17,9 @@ vim.keymap.set("v", "//", 'y/\\V<C-R>"<CR>')
 vim.keymap.set("v", "<leader>y", '"+y')
 vim.keymap.set("n", "<leader>y", '"+y')
 
+-- copy active buffer filename to system clipboard
+vim.keymap.set('n', '<leader>yf', [[:let @+ = expand('%:t')<CR>]], { silent = true })
+
 -- paste from system clipboard
 vim.keymap.set("n", "<leader>p", '"+p')
 vim.keymap.set("n", "<leader>P", '"+P')
