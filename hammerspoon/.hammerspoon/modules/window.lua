@@ -35,6 +35,13 @@ local pip_width = 0.142
 
 --- Predefined geometries
 obj.builtins = {
+    full = hs.geometry({
+        h = 1,
+        w= 1,
+        x = 0,
+        y =0,
+    }),
+
     padded_center = hs.geometry({
         h = (1 - (2 * padding)),
         w = window_width_centered,
@@ -265,6 +272,20 @@ function obj:init()
     end)
     hs.hotkey.bind(_prefix, get_config("bindings", "state_restore"), function()
         self:load_state()
+    end)
+
+    local function moveToScreen(index)
+        local screens = hs.screen.allScreens()
+        hs.window.focusedWindow():moveToScreen(screens[index])
+    end
+
+    -- todo - move to next / previous screen
+    hs.hotkey.bind({ "cmd", "ctrl" }, "h", function()
+        moveToScreen(1)
+    end)
+
+    hs.hotkey.bind({ "cmd", "ctrl" }, "l", function()
+        moveToScreen(2)
     end)
 end
 

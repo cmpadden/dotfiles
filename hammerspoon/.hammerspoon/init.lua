@@ -20,8 +20,8 @@ local wm = require("modules.window")
 
 wm.config.layouts = {
     {
-        wm.builtins.padded_left,
-        wm.builtins.padded_right,
+        wm.builtins.full,
+        wm.builtins.pip_bottom_right,
     },
     {
         wm.builtins.padded_left,
