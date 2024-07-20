@@ -7,8 +7,17 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     # https://macos-defaults.com/dock/autohide.html
     -log "Setting macOS defaults for Dock and Menu Bar"
+
+    # automatically hide dock
     defaults write com.apple.dock "autohide" -bool "true"
+
+    # disable dock animation
     defaults write com.apple.dock "autohide-time-modifier" -float "0"
+
+    # resize dock (default size: 42)
+    defaults write com.apple.dock tilesize -int 35
+
+    # restart dock
     killall Dock
 
     # https://github.com/yannbertrand/macos-defaults/issues/268
