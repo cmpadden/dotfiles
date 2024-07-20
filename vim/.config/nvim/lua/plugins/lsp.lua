@@ -29,16 +29,16 @@ return {
                     local mason_lspconfig = require("mason-lspconfig")
                     mason_lspconfig.setup({
                         ensure_installed = {
-                            "bashls", -- Bash
-                            "eslint", -- Typescript
-                            "html", -- HTML
-                            "jsonls", -- JSON
-                            "lua_ls", -- Lua
-                            "pyright", -- Python
-                            -- "ruff-lsp",      -- Python
-                            "rust_analyzer", -- Rust
-                            "tailwindcss", -- Tailwind
-                            "tsserver", -- Typescript
+                            "bashls",
+                            "eslint",
+                            "html",
+                            "jsonls",
+                            "lua_ls",
+                            "pyright",
+                            "ruff",
+                            "rust_analyzer",
+                            "tailwindcss",
+                            "tsserver",
                             "volar",
                         },
                         automatic_installation = true,
