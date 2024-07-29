@@ -7,11 +7,9 @@ spoon.SpoonInstall:andUse("LookupSelection", { hotkeys = { lexicon = { HYPER, "d
 spoon.SpoonInstall:andUse("AppLauncher", {
     config = { modifiers = HYPER },
     hotkeys = {
-        i = "Chromium",
+        i = "Firefox",
         k = "kitty",
         m = "Mail",
-        n = "Notion",
-        l = "Linear",
         s = "Slack",
     },
 })
