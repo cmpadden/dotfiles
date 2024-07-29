@@ -21,6 +21,7 @@ check_and_source() {
 }
 
 check_and_source "$HOME/.bash/aliases.bash"
+check_and_source "$HOME/.bash/bindings.bash"
 check_and_source "$HOME/.bash/completion.bash"
 check_and_source "$HOME/.bash/colors.bash"
 check_and_source "$HOME/.bash/functions.bash"

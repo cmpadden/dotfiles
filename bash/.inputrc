@@ -52,6 +52,7 @@ $if mode=vi
         Control-l: clear-screen
 $endif
 
+# https://stackoverflow.com/a/60179103
 $if mode=vi
     set show-mode-in-prompt on
     set vi-ins-mode-string \1\e[5 q\2
