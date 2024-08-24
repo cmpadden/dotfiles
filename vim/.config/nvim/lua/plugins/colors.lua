@@ -19,6 +19,19 @@ return {
     -- },
     --
 
+    -- https://github.com/cocopon/iceberg.vim
+    -- https://speakerdeck.com/cocopon/creating-your-lovely-color-scheme
+    {
+        "cocopon/iceberg.vim",
+        lazy = false,
+        priority = 1000,
+        init = function()
+            vim.opt.termguicolors = true
+            vim.cmd.colorscheme("iceberg")
+        end,
+        enabled = false
+    },
+
 
     -- https://github.com/rebelot/kanagawa.nvim
     {
@@ -29,7 +42,7 @@ return {
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("kanagawa-lotus")
         end,
-        enabled = true
+        enabled = false
     },
 
     -- https://github.com/mellow-theme/mellow.nvim
@@ -44,6 +57,7 @@ return {
         enabled = false
     },
 
+    -- https://github.com/Verf/deepwhite.nvim
     {
         "Verf/deepwhite.nvim",
         lazy = false,
@@ -67,6 +81,7 @@ return {
         enabled = false
     },
 
+    -- https://github.com/nyoom-engineering/oxocarbon.nvim   
     {
         "nyoom-engineering/oxocarbon.nvim",
         lazy = false,
@@ -120,10 +135,9 @@ return {
         config = function()
             vim.o.termguicolors = true
             vim.o.background = 'dark'
-            vim.g.zenbones_compat = true
-            vim.cmd.colorscheme("tokyobones")
+            vim.cmd.colorscheme("rosebones")
         end,
-        enabled = false,
+        enabled = true,
     },
 
     {
