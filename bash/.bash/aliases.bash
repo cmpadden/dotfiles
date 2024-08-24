@@ -54,10 +54,9 @@ alias date_short="date +%Y%m%d"
 alias rscp='rsync -aP'
 alias rsmv='rsync -aP --remove-source-files'
 
-# https://github.com/ogham/exa
-if hash exa 2>/dev/null; then
-    alias l='exa -1 --group-directories-first'
-    alias ls='exa -l --classify --group --time-style long-iso --group-directories-first'
+if hash eza 2>/dev/null; then
+    alias l='eza -1 --group-directories-first'
+    alias ls='eza -l --classify --group --time-style long-iso --group-directories-first'
 else
     alias l='ls -1p'
     alias ls='ls -lhpG'
