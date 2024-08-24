@@ -84,57 +84,40 @@ local obj = {
         end,
     },
 
-    -- https://github.com/mhartington/formatter.nvim
+    -- https://github.com/stevearc/conform.nvim
     {
-        "mhartington/formatter.nvim",
-        event = { "BufReadPre", "BufNewFile" },
-        init = function()
-            vim.keymap.set("n", "<leader>f", "<cmd>FormatWrite<cr>")
-        end,
-        opts = function()
-            return {
-                logging = true,
-                log_level = vim.log.levels.WARN,
-                filetype = {
-                    -- python = {
-                    --     require("formatter.filetypes.python").ruff,
-                    --     require("formatter.filetypes.python").isort,
-                    -- },
-                    sh = {
-                        require("formatter.filetypes.sh").shfmt,
-                    },
-                    sql = {
-                        {
-                            exe = "sqlfluff",
-                            args = {
-                                "format",
-                                "--disable-progress-bar",
-                                "--nocolor",
-                                "--dialect snowflake",
-                                "-",
-                            },
-                            stdin = true,
-                            ignore_exitcode = true,
-                        },
-                    },
-                    vue = {
-                        require("formatter.filetypes.vue").prettier,
-                    },
-                    javascript = {
-                        require("formatter.filetypes.typescript").prettier,
-                    },
-                    typescript = {
-                        require("formatter.filetypes.typescript").prettier,
-                    },
-                    lua = {
-                        require("formatter.filetypes.lua").stylua,
-                    },
-                    ["*"] = {
-                        require("formatter.filetypes.any").remove_trailing_whitespace,
-                    },
+        "stevearc/conform.nvim",
+        event = { "BufWritePre" },
+        cmd = { "ConformInfo" },
+        keys = {
+            {
+                "<leader>f",
+                function()
+                    require("conform").format({ async = true })
+                end,
+                mode = "",
+                desc = "Format buffer",
+            },
+        },
+        opts = {
+            formatters_by_ft = {
+                ["*"] = { "codespell", "trim_whitespace" },
+                javascript = { "prettier" },
+                lua = { "stylua" },
+                sh = { "shfmt" },
+                sql = { "sqlfluff" },
+                typescript = { "prettier" },
+                vue = { "prettier" },
+            },
+            default_format_opts = {
+                lsp_format = "fallback",
+            },
+            formatters = {
+                sqlfluff = {
+                    prepend_args = { "--dialect", "snowflake" },
                 },
-            }
-        end,
+            },
+        },
     },
 
     -- Shoutout to Tim!

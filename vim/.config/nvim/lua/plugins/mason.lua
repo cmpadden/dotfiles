@@ -20,8 +20,7 @@ return {
                     },
                 },
                 ensure_installed = {
-                    "black",
-                    "flake8",
+                    "codespell",
                     "prettier",
                     "ruff",
                     "shellcheck",

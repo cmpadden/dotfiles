@@ -89,6 +89,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         neovim \
         node \
         nvm \
+        openssh \
         pass \
         pass-otp \
         pdfgrep \
