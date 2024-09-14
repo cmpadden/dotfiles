@@ -75,7 +75,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         curl \
         direnv \
         duckdb \
-        exa \
+        eza \
         fd \
         ffmpeg \
         figlet \
@@ -158,7 +158,7 @@ if [ "$OS_NAME" = 'Linux' ]; then
         sudo pacman -S --noconfirm \
             bash-completion \
             bat \
-            exa \
+            eza \
             fd \
             fzf \
             git \
