@@ -28,6 +28,9 @@ alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 alias gcp="git checkout -"
 
+alias wip="git commit -m \"wip\" && git push"
+alias pr="gh pr checkout"
+
 ########################################################################################
 #                                       General                                        #
 ########################################################################################
@@ -91,12 +94,11 @@ alias source_env='export $(xargs < .env)'
 #                                        Python                                        #
 ########################################################################################
 
-alias ipy="python -m IPython --matplotlib"
 alias mkpyenv="echo \"layout pyenv 3.11.7 \" > .envrc && direnv allow"
 alias pip='uv pip'
+alias pip-dev="pip install -e .[dev]"
 alias pydoc='python -m pydoc'
-alias python_clear_pip_cache='rm -r ~/Library/Caches/pip'
-alias venvc='python3 -m virtualenv venv'
+alias ipy="ipython"
 
 ########################################################################################
 #                                     Google Cloud                                     #

@@ -9,7 +9,11 @@
 prompt_venv()
 {
     if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
-        printf "%s " "$(basename "$VIRTUAL_ENV")"
+        if [[ -n "$UV_ACTIVE" ]]; then
+            printf "uv venv "
+        else
+            printf "%s " "$(basename "$VIRTUAL_ENV")"
+        fi
     fi
 }
 
