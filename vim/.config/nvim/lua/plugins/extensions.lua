@@ -48,7 +48,27 @@ local obj = {
     {
         "junegunn/goyo.vim",
         config = function()
-            vim.g.goyo_height = "100%"
+            vim.g.goyo_width = "120"
+            vim.keymap.set("n", "<localleader>G", ":Goyo<CR>")
+
+            vim.cmd([[
+            function! s:goyo_enter()
+              :Gitsigns toggle_signs
+              if exists('$TMUX')
+                silent !tmux set status off
+              endif
+            endfunction
+
+            function! s:goyo_leave()
+              :Gitsigns toggle_signs
+              if exists('$TMUX')
+                silent !tmux set status on
+              endif
+            endfunction
+
+            autocmd! User GoyoEnter nested call <SID>goyo_enter()
+            autocmd! User GoyoLeave nested call <SID>goyo_leave()
+            ]])
         end,
     },
 
@@ -64,13 +84,13 @@ local obj = {
     -- https://github.com/lervag/vimtex
     -- { "lervag/vimtex" },
 
-    -- https://github.com/norcalli/nvim-colorizer.lua
-    {
-        "norcalli/nvim-colorizer.lua",
-        config = function()
-            require("colorizer").setup()
-        end,
-    },
+    -- -- https://github.com/norcalli/nvim-colorizer.lua
+    -- {
+    --     "norcalli/nvim-colorizer.lua",
+    --     config = function()
+    --         require("colorizer").setup()
+    --     end,
+    -- },
 
     -- https://github.com/preservim/vim-markdown
     {
@@ -146,6 +166,16 @@ local obj = {
         keys = {
             { "<leader>cn", ":CarbonNow<CR>", mode = "v", silent = true },
         },
+    },
+
+    {
+        "Olical/conjure",
+        ft = { "clojure", "fennel", "python" },
+        lazy = true,
+        init = function()
+            vim.g["conjure#log#hud#enabled"] = false
+            vim.g["conjure#mapping#doc_word"] = false
+        end,
     },
 }
 

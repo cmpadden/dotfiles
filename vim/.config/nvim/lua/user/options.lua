@@ -18,7 +18,8 @@ vim.opt.softtabstop = 0
 -- vim.opt.colorcolumn = "80,88"
 
 vim.opt.textwidth = 100
-vim.opt.colorcolumn = "88,100"
+vim.opt.colorcolumn = "100"
+vim.cmd([[hi ColorColumn ctermbg=0 guibg=#625d7f]])
 
 vim.opt.dictionary = "/usr/share/dict/words"
 
