@@ -22,14 +22,13 @@ local obj = {
     -- https://github.com/ggandor/lightspeed.nvim
     { "ggandor/lightspeed.nvim" },
 
+    -- https://github.com/iamcco/markdown-preview.nvim
     {
         "iamcco/markdown-preview.nvim",
-        build = "cd app && yarn install",
-        cmd = "MarkdownPreview",
-        lazy = false,
-        config = function()
-            -- open the preview window after entering the markdown buffer
-            vim.g.mkdp_auto_start = 0
+        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+        ft = { "markdown" },
+        build = function()
+            vim.fn["mkdp#util#install"]()
         end,
     },
 
@@ -40,7 +39,8 @@ local obj = {
             vim.g.slime_target = "tmux"
             vim.g.slime_default_config = { socket_name = "default", target_pane = "{last}" }
             vim.g.slime_dont_ask_default = 1
-            vim.g.slime_bracketed_paste = 1 -- https://github.com/jpalardy/vim-slime#tmux
+            -- https://github.com/jpalardy/vim-slime#tmux
+            vim.g.slime_bracketed_paste = 1
         end,
     },
 
@@ -81,16 +81,13 @@ local obj = {
         end,
     },
 
-    -- https://github.com/lervag/vimtex
-    -- { "lervag/vimtex" },
-
-    -- -- https://github.com/norcalli/nvim-colorizer.lua
-    -- {
-    --     "norcalli/nvim-colorizer.lua",
-    --     config = function()
-    --         require("colorizer").setup()
-    --     end,
-    -- },
+    -- https://github.com/norcalli/nvim-colorizer.lua
+    {
+        "norcalli/nvim-colorizer.lua",
+        config = function()
+            require("colorizer").setup()
+        end,
+    },
 
     -- https://github.com/preservim/vim-markdown
     {
@@ -101,6 +98,40 @@ local obj = {
         config = function()
             vim.g.vim_markdown_folding_style_pythonic = 1 -- use pythonic folding for vim-markdown
             vim.g.vim_markdown_folding_level = 6 -- default to open folds
+        end,
+    },
+
+    -- https://github.com/williamboman/mason.nvim
+    {
+        "williamboman/mason.nvim",
+        cmd = {
+            "Mason",
+            "MasonInstall",
+            "MasonUninstall",
+            "MasonUninstallAll",
+            "MasonLog",
+        },
+        build = ":MasonUpdate",
+        config = function()
+            require("mason").setup({
+                ui = {
+                    icons = {
+                        package_installed = "✓",
+                        package_pending = "➜",
+                        package_uninstalled = "✗",
+                    },
+                },
+                ensure_installed = {
+                    "codespell",
+                    "prettier",
+                    "ruff",
+                    "shellcheck",
+                    "shfmt",
+                    "sqlfluff",
+                    "stylua",
+                    "vale",
+                },
+            })
         end,
     },
 
@@ -140,7 +171,7 @@ local obj = {
         },
     },
 
-    -- Shoutout to Tim!
+    -- https://github.com/ellisonleao/carbon-now.nvim
     {
         "ellisonleao/carbon-now.nvim",
         cmd = "CarbonNow",
@@ -168,6 +199,7 @@ local obj = {
         },
     },
 
+    -- https://github.com/Olical/conjure
     {
         "Olical/conjure",
         ft = { "clojure", "fennel", "python" },
@@ -177,12 +209,81 @@ local obj = {
             vim.g["conjure#mapping#doc_word"] = false
         end,
     },
+
+    -- https://github.com/junegunn/fzf
+    {
+        "junegunn/fzf",
+        dir = "~/.fzf",
+        build = "./install --bin",
+    },
+
+    -- https://github.com/ibhagwan/fzf-lua
+    {
+        "ibhagwan/fzf-lua",
+        init = function()
+            -- fzf.lua
+            vim.keymap.set("n", "<c-f>f", "<cmd>lua require('fzf-lua').files()<CR>")
+            vim.keymap.set("n", "<c-f>n", "<cmd>lua require('fzf-lua').git_files()<CR>")
+            vim.keymap.set("n", "<c-f>l", "<cmd>lua require('fzf-lua').blines()<CR>")
+            -- vim.keymap.set("n", "<c-f>g", "<cmd>lua require('fzf-lua').live_grep()<CR>")
+            vim.keymap.set("n", "<c-f>g", "<cmd>lua require('fzf-lua').live_grep_native()<CR>")
+            vim.keymap.set("n", "<c-f>h", "<cmd>lua require('fzf-lua').help_tags()<CR>")
+            vim.keymap.set("n", "<c-f>c", "<cmd>lua require('fzf-lua').git_bcommits()<CR>")
+            vim.keymap.set("n", "<c-f>b", "<cmd>lua require('fzf-lua').buffers()<CR>")
+            vim.keymap.set("n", "<c-f>d", "<cmd>lua require('fzf-lua').diagnostics_document()<CR>")
+        end,
+        opts = {
+            winopts = {
+                height = 0.50,
+                width = 0.85,
+            },
+        },
+    },
+
+    -- https://github.com/lewis6991/gitsigns.nvim
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup({
+                on_attach = function(bufnr)
+                    local function map(mode, lhs, rhs, opts)
+                        opts =
+                            vim.tbl_extend("force", { noremap = true, silent = true }, opts or {})
+                        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+                    end
+
+                    -- Navigation
+                    map("n", "]g", "&diff ? ']g' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
+                    map("n", "[g", "&diff ? '[g' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
+
+                    -- Actions
+                    map("n", "<leader>hs", ":Gitsigns stage_hunk<CR>")
+                    map("v", "<leader>hs", ":Gitsigns stage_hunk<CR>")
+                    map("n", "<leader>hr", ":Gitsigns reset_hunk<CR>")
+                    map("v", "<leader>hr", ":Gitsigns reset_hunk<CR>")
+                    map("n", "<leader>hS", "<cmd>Gitsigns stage_buffer<CR>")
+                    map("n", "<leader>hu", "<cmd>Gitsigns undo_stage_hunk<CR>")
+                    map("n", "<leader>hR", "<cmd>Gitsigns reset_buffer<CR>")
+                    map("n", "<leader>hp", "<cmd>Gitsigns preview_hunk<CR>")
+                    map("n", "<leader>hb", '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
+                    map("n", "<leader>tb", "<cmd>Gitsigns toggle_current_line_blame<CR>")
+                    map("n", "<leader>hd", "<cmd>Gitsigns diffthis<CR>")
+                    map("n", "<leader>hD", '<cmd>lua require"gitsigns".diffthis("~")<CR>')
+                    map("n", "<leader>td", "<cmd>Gitsigns toggle_deleted<CR>")
+
+                    -- Text object
+                    map("o", "ih", ":<C-U>Gitsigns select_hunk<CR>")
+                    map("x", "ih", ":<C-U>Gitsigns select_hunk<CR>")
+                end,
+            })
+        end,
+    },
 }
 
 -- To install nightly version of Neovim on macOS:
 --
--- brew install --HEAD neovim
--- brew reinstall neovim
+--     brew install --HEAD neovim
+--     brew reinstall neovim
 --
 if vim.version().major == 0 and vim.version().minor < 10 then
     -- https://github.com/tpope/vim-commentary (built-in as of v0.10.0)
