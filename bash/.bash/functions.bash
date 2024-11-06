@@ -345,3 +345,11 @@ reload() {
     # shellcheck source=/dev/null
     source "${HOME}/.bashrc"
 }
+
+
+function git_llm_commmit() {
+    git diff --cached -U1 --minimal -B --compact-summary --find-copies-harder -w \
+        | head -n 1000 \
+        | llm "<summarize these changes as a concise git commit message, do not mention counts of insertions or deletions>" \
+        | git commit -F -
+}
