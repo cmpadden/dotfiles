@@ -20,7 +20,7 @@ alias gds="git diff --staged"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 alias gfm="git fetch origin main:main"
 alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
-
+alias git_branch_dates="git for-each-ref --sort=-committerdate --format='%(committerdate:relative) - %(refname:short)' refs/heads/"
 alias gcm="git checkout main"
 alias gpm="git pull origin main"
 alias gcma="git checkout master"

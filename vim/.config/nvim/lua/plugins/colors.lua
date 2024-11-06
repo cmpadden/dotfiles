@@ -8,16 +8,53 @@ return {
     -- Solution:
     -- > rm /opt/homebrew/lib/nvim/parser/vim.so
 
-    -- -- https://github.com/tanvirtin/monokai.nvim
-    -- {
-    --     "tanvirtin/monokai.nvim",
-    --     lazy = false,
-    --     priority = 1000,
-    --     init = function()
-    --         require("monokai").setup({ palette = require("monokai").pro })
-    --     end,
-    -- },
-    --
+    -- https://github.com/tanvirtin/monokai.nvim
+    {
+        "tanvirtin/monokai.nvim",
+        lazy = false,
+        init = function()
+            local palette = require("monokai").pro
+            palette.base2 = '#000000'
+            require("monokai").setup({ palette = palette, italics = false })
+        end,
+        enabled = false,
+    },
+
+    -- https://github.com/jesseleite/nvim-noirbuddy
+    {
+        "jesseleite/nvim-noirbuddy",
+        dependencies = {
+            { "tjdevries/colorbuddy.nvim" },
+        },
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require("noirbuddy").setup({
+                preset = "slate",
+                colors = {
+                    background = "#18181A",
+                },
+            })
+        end,
+        enabled = false,
+    },
+
+    -- https://github.com/mcchrish/zenbones.nvim
+    {
+        "mcchrish/zenbones.nvim",
+        dependencies = {
+            "rktjmp/lush.nvim",
+        },
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.o.termguicolors = true
+            vim.o.background = "dark"
+            -- vim.g.rosebones_darkness = "stark"
+            vim.cmd.colorscheme("zenbones")
+        end,
+        enabled = false,
+    },
 
     -- https://github.com/cocopon/iceberg.vim
     -- https://speakerdeck.com/cocopon/creating-your-lovely-color-scheme
@@ -29,9 +66,8 @@ return {
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("iceberg")
         end,
-        enabled = false
+        enabled = false,
     },
-
 
     -- https://github.com/rebelot/kanagawa.nvim
     {
@@ -40,9 +76,9 @@ return {
         priority = 1000,
         init = function()
             vim.opt.termguicolors = true
-            vim.cmd.colorscheme("kanagawa-lotus")
+            vim.cmd.colorscheme("kanagawa-dragon")
         end,
-        enabled = false
+        enabled = true,
     },
 
     -- https://github.com/mellow-theme/mellow.nvim
@@ -51,10 +87,20 @@ return {
         lazy = false,
         priority = 1000,
         init = function()
+            require('kanagawa').setup({
+                transparent = true,
+                colors = {
+                    theme = {
+                        ui = {
+                            bg = "#000000",
+                        }
+                    }
+                }
+            })
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("mellow")
         end,
-        enabled = false
+        enabled = false,
     },
 
     -- https://github.com/Verf/deepwhite.nvim
@@ -66,7 +112,7 @@ return {
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("deepwhite")
         end,
-        enabled = false
+        enabled = false,
     },
 
     -- https://github.com/nordtheme/vim
@@ -78,10 +124,10 @@ return {
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("nord")
         end,
-        enabled = false
+        enabled = false,
     },
 
-    -- https://github.com/nyoom-engineering/oxocarbon.nvim   
+    -- https://github.com/nyoom-engineering/oxocarbon.nvim
     {
         "nyoom-engineering/oxocarbon.nvim",
         lazy = false,
@@ -111,7 +157,7 @@ return {
         name = "catppuccin",
         priority = 1000,
         opt = {
-            flavour = "macchiato"
+            flavour = "macchiato",
         },
         init = function()
             require("catppuccin").setup({
@@ -124,22 +170,7 @@ return {
         enabled = false,
     },
 
-    -- https://github.com/mcchrish/zenbones.nvim
-    {
-        "mcchrish/zenbones.nvim",
-        dependencies = {
-            "rktjmp/lush.nvim",
-        },
-        lazy = false,
-        priority = 1000,
-        config = function()
-            vim.o.termguicolors = true
-            vim.o.background = 'dark'
-            vim.cmd.colorscheme("rosebones")
-        end,
-        enabled = true,
-    },
-
+    -- https://github.com/scottmckendry/cyberdream.nvim
     {
         "scottmckendry/cyberdream.nvim",
         lazy = false,
@@ -147,22 +178,6 @@ return {
         config = function()
             vim.o.background = "dark"
             vim.cmd.colorscheme("cyberdream")
-        end,
-        enabled = false,
-    },
-
-    {
-        "jesseleite/nvim-noirbuddy",
-        dependencies = {
-            { "tjdevries/colorbuddy.nvim" },
-        },
-        lazy = false,
-        priority = 1000,
-        config = function()
-            require("noirbuddy").setup({
-                -- preset = "slate",
-                preset = "miami-nights",
-            })
         end,
         enabled = false,
     },

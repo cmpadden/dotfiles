@@ -20,3 +20,6 @@ hammerspoon/.hammerspoon/Spoons
 gpg/.gnupg/*
 !gpg/.gnupg/gpg-agent.conf
 !gpg/.gnupg/gpg.conf
+
+python/.ipython/profile_default/history.sqlite
+python/.ipython/profile_default/startup/*

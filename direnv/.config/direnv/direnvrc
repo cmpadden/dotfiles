@@ -26,3 +26,22 @@ layout_python-venv() {
     fi
     PATH_add "$VIRTUAL_ENV/bin"
 }
+
+# https://github.com/direnv/direnv/wiki/Python#uv
+
+layout_uv() {
+    if [[ -d ".direnv" ]]; then
+        VIRTUAL_ENV="$(pwd)/.direnv"
+    fi
+
+    if [[ -z $VIRTUAL_ENV || ! -d $VIRTUAL_ENV ]]; then
+        log_status "No virtual environment exists. Executing \`uv venv\` to create one."
+        uv venv .direnv
+        VIRTUAL_ENV="$(pwd)/.direnv"
+    fi
+
+    PATH_add "$VIRTUAL_ENV/bin"
+    export UV_ACTIVE=1
+    export VENV_ACTIVE=1
+    export VIRTUAL_ENV
+}

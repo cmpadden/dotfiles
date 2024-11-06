@@ -19,19 +19,35 @@ require("modules.caffeine")
 local wm = require("modules.window")
 
 wm.config.layouts = {
+    -- ┌-----------─┐
+    -- | [        ] |
+    -- | [        ] |
+    -- └------------┘
     {
         wm.builtins.full,
         wm.builtins.pip_bottom_right,
     },
+    -- ┌-----------─┐
+    -- | [   ][   ] |
+    -- | [   ][   ] |
+    -- └------------┘
     {
         wm.builtins.padded_left,
         wm.builtins.padded_right,
         wm.builtins.pip_bottom_right,
     },
+    -- ┌-----------─┐
+    -- |  [      ]  |
+    -- |  [      ]  |
+    -- └------------┘
     {
         wm.builtins.padded_center,
         wm.builtins.pip_bottom_right,
     },
+    -- ┌-----------─┐
+    -- |    [  ]    |
+    -- |    [  ]    |
+    -- └------------┘
     {
         wm.builtins.skinny,
         wm.builtins.pip_top_right,
