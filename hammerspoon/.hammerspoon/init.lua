@@ -16,6 +16,7 @@ require("modules.plugins")
 require("modules.alerts")
 require("modules.caffeine")
 
+local helpers = require("modules.helpers")
 local wm = require("modules.window")
 
 wm.config.layouts = {
@@ -69,4 +70,4 @@ if not hs.ipc.cliStatus("/opt/homebrew") then
     hs.ipc.cliInstall("/opt/homebrew")
 end
 
-hs.alert.show("Completed load of `main.fnl`")
+helpers:show("Hammerspoon has been loaded.", nil, nil, nil)
