@@ -37,9 +37,9 @@ local pip_width = 0.142
 obj.builtins = {
     full = hs.geometry({
         h = 1,
-        w= 1,
+        w = 1,
         x = 0,
-        y =0,
+        y = 0,
     }),
 
     padded_center = hs.geometry({
@@ -102,9 +102,11 @@ local function get_config(...)
     return value
 end
 
---- Converts a unitrect (relative coordinates) to a rect (absolute coordinates) based on the main screen's frame.
--- --- @param unit_rect hs.geometry A unitrect representing relative coordinates.
--- --- @return hs.geometry A rect representing absolute coordinates.
+-- Converts a unitrect (relative coordinates) to a rect (absolute coordinates) based on the main screen's frame.
+--
+-- @param unit_rect hs.geometry A unitrect representing relative coordinates.
+-- @return hs.geometry A rect representing absolute coordinates.
+--
 local function _unit_rect_to_rect(unit_rect)
     local screen_frame = hs.screen.mainScreen():frame()
     return hs.geometry.rect(
@@ -120,9 +122,14 @@ end
 -- information reference the open github issue:
 --
 -- https://github.com/Hammerspoon/hammerspoon/issues/3624
-local function _move_to_unit_with_retries(geometry, window)
+--
+-- @param geometry (hs.geometry)
+-- @param window (hs.window)
+-- @param retries (int)
+--
+local function _move_to_unit_with_retries(geometry, window, retries)
+    retries = retries or 3
     window:moveToUnit(geometry)
-    local retries = 3
     hs.timer.doUntil(function()
         return retries == 0 or window:frame():equals(_unit_rect_to_rect(geometry):floor())
     end, function()
@@ -161,9 +168,10 @@ end
 -- however, instead we have to do this hacky workaround. See another user with the same
 -- bewilderment: https://devforum.roblox.com/t/wrapping-index-in-an-array/1476197/2
 --
----@param table table table to traverse
----@param index integer current index of table
----@param step integer positive or negative value to iterate over table
+-- @param table table table to traverse
+-- @param index integer current index of table
+-- @param step integer positive or negative value to iterate over table
+--
 local function next_index_circular(table, index, step)
     if #table == 1 then
         return 1
@@ -195,6 +203,7 @@ function obj:set_layout(layout)
     self.layout = layout
     local active_layout = self.layouts[layout]
 
+    -- NOTE: Getting windows on each layout change can be removed if window creation stores window in state
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
         local app_name = window:application():name()
@@ -229,9 +238,18 @@ function obj:init()
     -- Consider usage of `windowCreated` and `windowFocused` for ideal resizing trigger
     -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
-        local ix = get_application_geometry_index(self.layout, app_name)
-        local target_geometry = self.layouts[self.layout][ix]
-        _move_to_unit_with_retries(target_geometry, window)
+        -- Prevent resizing of floating windows
+        --
+        -- http://www.hammerspoon.org/docs/hs.window.html#isStandard
+        --
+        --  > "Standard window" means that this is not an unusual popup window, a modal dialog, a floating window, etc.
+        --
+        if window:isStandard() then
+            hs.alert('Initializing ' .. app_name)
+            local ix = get_application_geometry_index(self.layout, app_name)
+            local target_geometry = self.layouts[self.layout][ix]
+            _move_to_unit_with_retries(target_geometry, window)
+        end
     end)
 
     -- bind layouts to corresponding 1, 2, ..., n
