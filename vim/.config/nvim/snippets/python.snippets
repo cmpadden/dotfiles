@@ -479,8 +479,8 @@ snippet dg
 
 snippet asset
 	@dg.asset
-	def ${0:asset_name}(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-	    ${1}
+	def ${1:asset_name}(context: dg.AssetExecutionContext${2}) -> dg.MaterializeResult:
+	    ${3}
 	    return dg.MaterializeResult(
 	        metadata={
 	        }
@@ -509,3 +509,6 @@ snippet defs
 snippet config
 	class ${1:MyConfig}(dg.Config):
 	    ${2:example_property}: str
+
+snippet info
+	context.log.info("${1}")
