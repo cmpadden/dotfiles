@@ -470,3 +470,42 @@ snippet argparse "parse input arguments"
 snippet b "breakpoint"
 	breakpoint()
 
+####################################################################################################
+#                                             Dagster                                              #
+####################################################################################################
+
+snippet dg
+	import dagster as dg
+
+snippet asset
+	@dg.asset
+	def ${0:asset_name}(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+	    ${1}
+	    return dg.MaterializeResult(
+	        metadata={
+	        }
+	    )
+
+snippet sensor
+	@dg.sensor(
+	    target=${1},
+	    default_status=dg.DefaultSensorStatus.RUNNING,
+	    minimum_interval_seconds=60,
+	)
+	def example_sensor(context: dg.SensorEvaluationContext):
+	    yield dg.RunRequest(
+	        run_config=dg.RunConfig(ops={"${1}": ${2}})
+	    )
+
+
+snippet defs
+	defs = dg.Definitions(
+	    assets=[${1}],
+	    sensors=[${2}],
+	    resources={${3}},
+	    asset_checks=[${4}],
+	)
+
+snippet config
+	class ${1:MyConfig}(dg.Config):
+	    ${2:example_property}: str
