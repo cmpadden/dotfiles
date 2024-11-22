@@ -100,6 +100,7 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         pyenv-virtualenv \
         ranger \
         ripgrep \
+        sad \
         shfmt \
         stow \
         stylua \

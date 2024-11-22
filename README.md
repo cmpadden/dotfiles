@@ -2,12 +2,9 @@
     <img src="https://github.com/cmpadden/dotfiles/assets/5807118/8111f6b9-3460-4a27-a84b-cab7a0c090a6" alt="Logo project" height="160" />
 </div>
 
-## Dependencies
-
-- [GNU Stow](https://www.gnu.org/software/stow/) is used to symbolically link configuration files to
-the home directory.
-
 ## Usage
+
+### Restore
 
 Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
 
@@ -30,7 +27,9 @@ $ make restore
 [y/N] - Restore alacritty?
 ```
 
-Install platform agnostic system-wide dependencies using [install.sh](https://github.com/cmpadden/dotfiles/blob/main/install.sh). [Brew]() will be used for macOS, and `pacman` for Arch Linux.
+### Install
+
+Install platform system-wide packages and applications; [brew](https://brew.sh/) will be used for macOS, and `pacman` for Arch Linux.
 
 ```sh
 $ make install
@@ -51,6 +50,28 @@ $ make install
 22:52:36 - Installing brew packages
 ...
 ```
+
+### Configure
+
+Set system settings and configuration values.
+
+```sh
+$ make configure
+```
+
+### Bootstrap
+
+Systems can be initialized automatically by leveraging the bootstrap script.
+
+
+```sh
+/bin/bash -c "\$(curl -fsSL https://github.com/cmpadden/dotfiles/raw/refs/heads/main/_bootstrap.sh)"
+```
+
+## Dependencies
+
+- [GNU Stow](https://www.gnu.org/software/stow/) is used to symbolically link configuration files to
+the home directory.
 
 ## Tools
 
