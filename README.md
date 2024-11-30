@@ -1,6 +1,4 @@
-<div align="center">
-    <img src="https://github.com/cmpadden/dotfiles/assets/5807118/8111f6b9-3460-4a27-a84b-cab7a0c090a6" alt="Logo project" height="160" />
-</div>
+![Project Banner](.github/banner.png)
 
 ## Usage
 
@@ -10,7 +8,7 @@ For a fully automated installation, the bootstrap script can be piped into `bash
 curl -sSL https://github.com/cmpadden/dotfiles/raw/refs/heads/main/_bootstrap.sh | bash
 ```
 
-Alternatively, each directive: _restore_, _configure_, and _install_ can be called individually.
+Alternatively, each directive: _restore_, _configure_, and _install_ can be called independently.
 
 ### Restore
 
@@ -25,19 +23,6 @@ Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfil
 ```sh
 $ make restore
 
-      ___           ___           ___           ___
-     /\  \         /\  \         /\  \         /\__\
-    /::\  \        \:\  \       /::\  \       /:/ _/_
-   /:/\ \  \        \:\  \     /:/\:\  \     /:/ /\__\
-  _\:\~\ \  \       /::\  \   /:/  \:\  \   /:/ /:/ _/_
- /\ \:\ \ \__\     /:/\:\__\ /:/__/ \:\__\ /:/_/:/ /\__\
- \:\ \:\ \/__/    /:/  \/__/ \:\  \ /:/  / \:\/:/ /:/  /
-  \:\ \:\__\     /:/  /       \:\  /:/  /   \::/_/:/  /
-   \:\/:/  /     \/__/         \:\/:/  /     \:\/:/  /
-    \::/  /                     \::/  /       \::/  /
-     \/__/                       \/__/         \/__/
-
-
 [y/N] - Restore alacritty?
 ```
 
@@ -47,18 +32,6 @@ Install platform system-wide packages and applications; [brew](https://brew.sh/)
 
 ```sh
 $ make install
-
-      ___           ___           ___           ___           ___
-     /\__\         /\  \         /\  \         /\  \         /\  \
-    /::|  |       /::\  \       /::\  \       /::\  \       /::\  \
-   /:|:|  |      /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\ \  \
-  /:/|:|__|__   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   _\:\~\ \  \
- /:/ |::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /\ \:\ \ \__\
- \/__/~~/:/  / \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \:\ \:\ \/__/
-       /:/  /       \::/  /   \:\  \        \:\  /:/  /   \:\ \:\__\
-      /:/  /        /:/  /     \:\  \        \:\/:/  /     \:\/:/  /
-     /:/  /        /:/  /       \:\__\        \::/  /       \::/  /
-     \/__/         \/__/         \/__/         \/__/         \/__/
 
 22:52:36 - Homebrew is already installed
 22:52:36 - Installing brew packages
