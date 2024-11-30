@@ -2,11 +2,22 @@
 #
 # REFERENCES
 #
-#     https://macos-defaults.com/dock/autohide.html
+#     https://macos-defaults.com/
 #
 
-set -e
-set -x
+set -ex
+
+# figlet -f rozzo "Configure"
+cat <<EOF
+
+  e88'Y88                    dP,e, ,e,
+ d888  'Y  e88 88e  888 8e   8b "   "   e88 888 8888 8888 888,8,  ,e e,
+C8888     d888 888b 888 88b 888888 888 d888 888 8888 8888 888 "  d88 88b
+ Y888  ,d Y888 888P 888 888  888   888 Y888 888 Y888 888P 888    888   ,
+  "88,d88  "88 88"  888 888  888   888  "88 888  "88 88"  888     "YeeP"
+                                         ,  88P
+                                        "8",P"
+EOF
 
 if [[ ! "$OSTYPE" = 'darwin'* ]]; then
     exit
@@ -35,6 +46,7 @@ if [ ! '35' = $(defaults read com.apple.dock tilesize) ]; then
     defaults write com.apple.dock tilesize -int 35
 fi
 
+# NOTE: use must log out for these changes to take effect, see:
 # https://github.com/yannbertrand/macos-defaults/issues/268
 if [ '0' = $(defaults read NSGlobalDomain _HIHideMenuBar) ]; then
     defaults write NSGlobalDomain _HIHideMenuBar -bool true

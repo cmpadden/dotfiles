@@ -4,6 +4,20 @@
 
 ## Usage
 
+For a fully automated installation, the bootstrap script can be piped into `bash`:
+
+```sh
+curl -sSL https://github.com/cmpadden/dotfiles/raw/refs/heads/main/_bootstrap.sh | bash
+```
+
+Alternatively, each directive: _restore_, _configure_, and _install_ can be called individually.
+
+### Restore
+
+Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
+
+```sh
+
 ### Restore
 
 Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
@@ -57,15 +71,6 @@ Set system settings and configuration values.
 
 ```sh
 $ make configure
-```
-
-### Bootstrap
-
-Systems can be initialized automatically by leveraging the bootstrap script.
-
-
-```sh
-/bin/bash -c "\$(curl -fsSL https://github.com/cmpadden/dotfiles/raw/refs/heads/main/_bootstrap.sh)"
 ```
 
 ## Dependencies

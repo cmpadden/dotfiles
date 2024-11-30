@@ -2,37 +2,28 @@
 
 OS_NAME=$(uname -s)
 
-# ASCII font generated with `figlet -f isometric1 MacOS`
-# shellcheck disable=SC1004
-ASCII_MACOS='
-      ___           ___           ___           ___           ___
-     /\__\         /\  \         /\  \         /\  \         /\  \
-    /::|  |       /::\  \       /::\  \       /::\  \       /::\  \
-   /:|:|  |      /:/\:\  \     /:/\:\  \     /:/\:\  \     /:/\ \  \
-  /:/|:|__|__   /::\~\:\  \   /:/  \:\  \   /:/  \:\  \   _\:\~\ \  \
- /:/ |::::\__\ /:/\:\ \:\__\ /:/__/ \:\__\ /:/__/ \:\__\ /\ \:\ \ \__\
- \/__/~~/:/  / \/__\:\/:/  / \:\  \  \/__/ \:\  \ /:/  / \:\ \:\ \/__/
-       /:/  /       \::/  /   \:\  \        \:\  /:/  /   \:\ \:\__\
-      /:/  /        /:/  /     \:\  \        \:\/:/  /     \:\/:/  /
-     /:/  /        /:/  /       \:\__\        \::/  /       \::/  /
-     \/__/         \/__/         \/__/         \/__/         \/__/
-'
+# figlet -f rozzo "macos"
+MESSAGE_MACOS=$(cat <<'EOM'
 
-# ASCII font generated with `figlet -f isometric1 Linux`
-# shellcheck disable=SC1004
-ASCII_LINUX='
-      ___                   ___           ___           ___
-     /\__\      ___        /\__\         /\__\         |\__\
-    /:/  /     /\  \      /::|  |       /:/  /         |:|  |
-   /:/  /      \:\  \    /:|:|  |      /:/  /          |:|  |
-  /:/  /       /::\__\  /:/|:|  |__   /:/  /  ___      |:|__|__
- /:/__/     __/:/\/__/ /:/ |:| /\__\ /:/__/  /\__\ ____/::::\__\
- \:\  \    /\/:/  /    \/__|:|/:/  / \:\  \ /:/  / \::::/~~/~
-  \:\  \   \::/__/         |:/:/  /   \:\  /:/  /   ~~|:|~~|
-   \:\  \   \:\__\         |::/  /     \:\/:/  /      |:|  |
-    \:\__\   \/__/         /:/  /       \::/  /       |:|  |
-     \/__/                 \/__/         \/__/         \|__|
-'
+888 888 8e   ,"Y88b  e88'888  e88 88e   dP"Y
+888 888 88b "8" 888 d888  '8 d888 888b C88b
+888 888 888 ,ee 888 Y888   , Y888 888P  Y88D
+888 888 888 "88 888  "88,e8'  "88 88"  d,dP
+
+EOM
+)
+
+# figlet -f rozzo "linux"
+MESSAGE_LINUX=$(cat <<'EOM'
+
+888 ,e,
+888  x  888 8e  8888 8888  Y8b Y8Y
+888 888 888 88b 8888 8888   Y8b Y
+888 888 888 888 Y888 888P  e Y8b
+888 888 888 888  "88 88"  d8b Y8b
+
+EOM
+)
 
 ###############################################################################
 #                                   Helpers                                   #
@@ -52,7 +43,7 @@ function _log() {
 
 if [ "$OS_NAME" = 'Darwin' ]; then
 
-    echo "$ASCII_MACOS"
+    # echo "$_message_macos"
 
     # Install Homewbrew
     if command -v brew >/dev/null; then
@@ -87,7 +78,6 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         jq \
         llm \
         neovim \
-        node \
         nvm \
         openssh \
         pass \
@@ -107,33 +97,43 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         the_silver_searcher \
         tldr \
         tmux \
+        uv \
         watch \
         withgraphite/tap/graphite \
         yarn \
-        uv
+        &>/dev/null
 
     _log "Installing brew casks"
     brew install --cask \
-        docker \
         hammerspoon \
         kitty \
-        linear-linear \
         mpv \
         notion \
-        notion notion-calendar \
+        notion-calendar \
         slack \
-        snowflake-snowsql \
-        spotify \
-        zoom
+        &>/dev/null
+
+        # spotify \
+        # docker \
+        # linear-linear \
+        # snowflake-snowsql \
+        # zoom
 
     _log "Installing LTS version of Node.js"
-    nvm install --lts
 
-    _log "Installing Tmux Plugin Manager"
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-    # NOTE: this threw an error
-    if [ ! -f ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
+    if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+        # shellcheck source=/dev/null
+        source "/opt/homebrew/opt/nvm/nvm.sh"
+        nvm install --lts
+    fi
+
+    if [ ! -d ~/.tmux/plugins/tpm ]; then
+        _log "Installing Tmux Plugin Manager"
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+
+    if [ ! -d ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
         _log 'Installing Hammerspoon SpoonInstall.spoon'
         curl -O -L https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip
         unzip SpoonInstall.spoon.zip
@@ -145,10 +145,9 @@ fi
 
 if [ "$OS_NAME" = 'Linux' ]; then
 
-    echo "$ASCII_LINUX"
+    # echo "$_message_linux"
 
-    # Install core packages with `pacman` (NOTE: one can find a list of
-    # installed packages using `pacman -Qe`)
+    # Install core packages with `pacman` (NOTE: one can find a list of installed packages using `pacman -Qe`)
 
     if command -v pacman >/dev/null; then
 
