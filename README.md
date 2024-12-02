@@ -12,23 +12,18 @@ Alternatively, each directive: _restore_, _configure_, and _install_ can be call
 
 ### Restore
 
-Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
-
-```sh
-
-### Restore
-
-Restore configuration files with [restore.sh](https://github.com/cmpadden/dotfiles/blob/main/restore.sh), and select the desired tools configurations to restore.
+Restore configuration files for selected tools.
 
 ```sh
 $ make restore
 
 [y/N] - Restore alacritty?
+...
 ```
 
 ### Install
 
-Install platform system-wide packages and applications; [brew](https://brew.sh/) will be used for macOS, and `pacman` for Arch Linux.
+Install system packages and applications using [brew](https://brew.sh/) for macOS, and `pacman` for Arch Linux.
 
 ```sh
 $ make install
@@ -40,10 +35,11 @@ $ make install
 
 ### Configure
 
-Set system settings and configuration values.
+Set system configuration values using the `defaults` command on macOS.
 
 ```sh
 $ make configure
+...
 ```
 
 ## Dependencies
