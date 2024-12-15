@@ -28,6 +28,15 @@ alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 alias gcp="git checkout -"
 
+save() {
+    git add .
+    git status
+    read -r -p "Press Enter to commit changes..."
+    git commit --allow-empty-message -m ""
+    read -r -p "Press Enter to push changes..."
+    git push
+}
+
 alias wip="git commit -m \"wip\" && git push"
 alias pr="gh pr checkout"
 
