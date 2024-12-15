@@ -78,7 +78,7 @@ return {
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("kanagawa-dragon")
         end,
-        enabled = true,
+        enabled = false,
     },
 
     -- https://github.com/mellow-theme/mellow.nvim
@@ -146,9 +146,9 @@ return {
         priority = 1000,
         init = function()
             vim.o.termguicolors = true
-            vim.cmd.colorscheme("carbonfox")
+            vim.cmd.colorscheme("terafox")
         end,
-        enabled = false,
+        enabled = true,
     },
 
     -- https://github.com/catppuccin/nvim
