@@ -102,42 +102,6 @@ local function get_config(...)
     return value
 end
 
--- Converts a unitrect (relative coordinates) to a rect (absolute coordinates) based on the main screen's frame.
---
--- @param unit_rect hs.geometry A unitrect representing relative coordinates.
--- @return hs.geometry A rect representing absolute coordinates.
---
-local function _unit_rect_to_rect(unit_rect)
-    local screen_frame = hs.screen.mainScreen():frame()
-    return hs.geometry.rect(
-        screen_frame.x + (unit_rect.x * screen_frame.w),
-        screen_frame.y + (unit_rect.y * screen_frame.h),
-        unit_rect.w * screen_frame.w,
-        unit_rect.h * screen_frame.h
-    )
-end
-
--- Temporary workaround: move windows until we confirm that they are at the frame that
--- we expect. Have a retry of 3 to prevent any unwanted infinite loops. For more
--- information reference the open github issue:
---
--- https://github.com/Hammerspoon/hammerspoon/issues/3624
---
--- @param geometry (hs.geometry)
--- @param window (hs.window)
--- @param retries (int)
---
-local function _move_to_unit_with_retries(geometry, window, retries)
-    retries = retries or 3
-    window:moveToUnit(geometry)
-    hs.timer.doUntil(function()
-        return retries == 0 or window:frame():equals(_unit_rect_to_rect(geometry):floor())
-    end, function()
-        window:moveToUnit(geometry)
-        retries = retries - 1
-    end, 0.25)
-end
-
 local function get_application_geometry_index(layout, application_name)
     if obj.state[layout] == nil then
         obj.state[layout] = {}
@@ -207,9 +171,22 @@ function obj:set_layout(layout)
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
         local app_name = window:application():name()
+
+        -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
+        -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
+        -- resizing the window, as it's required for voice controls, but for now we'll just set it
+        -- once.
+        --
+        -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
+        -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
+        local axApp = hs.axuielement.applicationElement(window:application())
+        if axApp.AXEnhancedUserInterface then
+            axApp.AXEnhancedUserInterface = false
+        end
+
         local ix = get_application_geometry_index(layout, app_name)
         local target_geometry = active_layout[ix]
-        _move_to_unit_with_retries(target_geometry, window)
+        window:moveToUnit(target_geometry)
     end
 end
 
@@ -248,7 +225,7 @@ function obj:init()
             hs.alert('Initializing ' .. app_name)
             local ix = get_application_geometry_index(self.layout, app_name)
             local target_geometry = self.layouts[self.layout][ix]
-            _move_to_unit_with_retries(target_geometry, window)
+            window:moveToUnit(target_geometry)
         end
     end)
 
