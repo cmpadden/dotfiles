@@ -20,6 +20,7 @@ local obj = {
             state_alert = "/",
         },
     },
+    -- Store the most layout index for each application in each layout
     state = {
         -- [1] = { application_name_1 = 1, application_name_2 = 1 }
         -- [2] = { application_name_1 = 1, application_name_2 = 3 }
@@ -102,19 +103,19 @@ local function get_config(...)
     return value
 end
 
+-- Gets the layout index for a given `application_name` and `layout`, defaulting to `1`.
 local function get_application_geometry_index(layout, application_name)
-    if obj.state[layout] == nil then
-        obj.state[layout] = {}
-        obj.state[layout][application_name] = 1
-        return 1
+    local layout_state = obj.state[layout]
+    if layout_state == nil then
+        layout_state = { application_name = 1 }
+        obj.state[layout] = layout_state
     end
 
-    if obj.state[layout][application_name] == nil then
-        obj.state[layout][application_name] = 1
-        return 1
+    if layout_state[application_name] == nil then
+        layout_state[application_name] = 1
     end
 
-    return obj.state[layout][application_name]
+    return layout_state[application_name]
 end
 
 local function set_application_geometry_index(layout, application_name, index)
@@ -170,23 +171,27 @@ function obj:set_layout(layout)
     -- NOTE: Getting windows on each layout change can be removed if window creation stores window in state
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
-        local app_name = window:application():name()
+        -- Non-blocking `moveToUnit` by using timers
+        hs.timer.doAfter(0, function()
+            -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
+            -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
+            -- resizing the window, as it's required for voice controls, but for now we'll just set it
+            -- once.
+            --
+            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
+            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
+            local app_name = window:application():name()
+            local axApp = hs.axuielement.applicationElement(window:application())
+            if axApp.AXEnhancedUserInterface then
+                axApp.AXEnhancedUserInterface = false
+            end
 
-        -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
-        -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
-        -- resizing the window, as it's required for voice controls, but for now we'll just set it
-        -- once.
-        --
-        -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
-        -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
-        local axApp = hs.axuielement.applicationElement(window:application())
-        if axApp.AXEnhancedUserInterface then
-            axApp.AXEnhancedUserInterface = false
-        end
+            -- obj.state[layout][application_name]
 
-        local ix = get_application_geometry_index(layout, app_name)
-        local target_geometry = active_layout[ix]
-        window:moveToUnit(target_geometry)
+            local ix = get_application_geometry_index(layout, app_name)
+            local target_geometry = active_layout[ix]
+            window:moveToUnit(target_geometry)
+        end)
     end
 end
 
@@ -222,7 +227,7 @@ function obj:init()
         --  > "Standard window" means that this is not an unusual popup window, a modal dialog, a floating window, etc.
         --
         if window:isStandard() then
-            hs.alert('Initializing ' .. app_name)
+            hs.alert("Initializing " .. app_name)
             local ix = get_application_geometry_index(self.layout, app_name)
             local target_geometry = self.layouts[self.layout][ix]
             window:moveToUnit(target_geometry)
