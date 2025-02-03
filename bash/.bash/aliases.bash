@@ -57,8 +57,15 @@ if [ -f "$HOME/notes.md.asc" ]; then
     alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
     alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
 else
-    alias notes="nvim ~/notes.md"
+    alias notes="nvim ~/notes/work/index.md"
 fi
+
+alias notes_sync='\
+    pushd ~/notes && \
+    git add . && \
+    git status && \
+    git commit --allow-empty-message -m "" && \
+    git push'
 
 alias date_short="date +%Y%m%d"
 
