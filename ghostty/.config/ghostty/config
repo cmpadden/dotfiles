@@ -1,7 +1,18 @@
-# $ /Applications/Ghostty.app/Contents/MacOS/ghostty +show-config --default --docs | vim
+# Reloading the configuration
+#
+#     cmd+shift+,
+#
+# Full default configuration
+#
+#     ghostty +show-config --default --docs
+#
 
-theme = Terafox
+# /Applications/Ghostty.app/Contents/MacOS/ghostty +list-themes
+# theme = Terafox
+theme = catppuccin-mocha
 
-macos-titlebar-style = hidden
+title = " "
 window-padding-x = 12
 window-padding-y = 12
+
+mouse-hide-while-typing = true

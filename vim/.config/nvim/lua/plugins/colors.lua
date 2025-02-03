@@ -148,7 +148,7 @@ return {
             vim.o.termguicolors = true
             vim.cmd.colorscheme("terafox")
         end,
-        enabled = true,
+        enabled = false,
     },
 
     -- https://github.com/catppuccin/nvim
@@ -161,13 +161,13 @@ return {
         },
         init = function()
             require("catppuccin").setup({
-                flavour = "macchiato", -- latte / frappe / mocha
+                flavour = "mocha", -- latte / frappe / mocha
                 term_colors = true,
                 transparent_background = false,
             })
             vim.cmd.colorscheme("catppuccin")
         end,
-        enabled = false,
+        enabled = true,
     },
 
     -- https://github.com/scottmckendry/cyberdream.nvim
