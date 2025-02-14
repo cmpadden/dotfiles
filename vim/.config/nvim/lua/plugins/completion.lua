@@ -264,7 +264,7 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                                 settings = {
                                     yaml = {
                                         schemas = {
-                                            ["/Users/colton/src/internal/python_modules/dagster-open-platform/.vscode/schema.json"] = "/Users/colton/src/internal/python_modules/dagster-open-platform/**/*.y*ml",
+                                            [".vscode/schema.json"] = "**/*.y*ml",
                                         },
                                     },
                                 },
