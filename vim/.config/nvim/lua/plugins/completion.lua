@@ -57,11 +57,11 @@ return {
                     end,
                 },
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp", priority = 1250 },
-                    { name = "buffer", priority = 1000 },
-                    { name = "luasnip", priority = 750 },
-                    { name = "path", priority = 500 },
-                    { name = "emoji", priority = 250 },
+                    { name = "nvim_lsp", priority = 500 },
+                    { name = "luasnip", priority = 400 },
+                    { name = "path", priority = 300 },
+                    { name = "emoji", priority = 200 },
+                    { name = "buffer", priority = 100 },
                 }),
                 window = {
                     completion = cmp.config.window.bordered(border_opts),
@@ -206,15 +206,15 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                             "html",
                             "jsonls",
                             "lua_ls",
-                            "pyright",
+                            "basedpyright",
                             "ruff",
                             "rust_analyzer",
                             "tailwindcss",
-                            "tsserver",
                             "volar",
                         },
                         automatic_installation = true,
                     })
+
                     -- https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
                     mason_lspconfig.setup_handlers({
 
@@ -231,6 +231,14 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                                 },
                             })
                         end,
+
+                        -- ["rust_analyzer"] = function()
+                        --     require("lspconfig").rust_analyzer.setup({
+                        --         on_attach = require("custom.utils.lsp").on_attach,
+                        --         settings = {},
+                        --     })
+                        -- end,
+
                         -- Next, you can provide a dedicated handler for specific servers.
                         -- For example, a handler override for the `lua_ls`:
                         ["lua_ls"] = function()
@@ -239,6 +247,24 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                                     Lua = {
                                         diagnostics = {
                                             globals = { "vim", "hs" },
+                                        },
+                                    },
+                                },
+                            })
+                        end,
+
+                        ["yamlls"] = function()
+                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+                            require("lspconfig").yamlls.setup({
+                                on_attach = require("custom.utils.lsp").on_attach,
+                                capabilities = capabilities,
+                                flags = {
+                                    debounce_text_changes = 150,
+                                },
+                                settings = {
+                                    yaml = {
+                                        schemas = {
+                                            ["/Users/colton/src/internal/python_modules/dagster-open-platform/.vscode/schema.json"] = "/Users/colton/src/internal/python_modules/dagster-open-platform/**/*.y*ml",
                                         },
                                     },
                                 },
