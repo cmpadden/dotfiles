@@ -57,6 +57,11 @@ if [ '1' = $(defaults read com.apple.finder CreateDesktop) ]; then
     defaults write com.apple.finder CreateDesktop -bool false
 fi
 
+
+if [ ! 'true' = $(defaults read com.apple.mouse.linear) ]; then
+    defaults write NSGlobalDomain com.apple.mouse.linear -bool "true"
+fi
+
 if ! /usr/bin/grep -q '/opt/homebrew/bin/bash' /etc/shells; then
     echo 'Adding /opt/homebrew/bin/bash to /etc/shells'
     echo "/opt/homebrew/bin/bash" >> /etc/shells
@@ -68,6 +73,7 @@ if [ ! "functionKeys" = $(defaults read com.apple.touchbar.agent PresentationMod
     pkill "Touch Bar agent"; killall "ControlStrip";
 fi
 
+
 if [ ! "$SHELL" = "/opt/homebrew/bin/bash" ]; then
     echo 'Changing shell to /opt/homebrew/bin/bash'
     echo "/opt/homebrew/bin/bash" | sudo tee -a /etc/shells
@@ -77,3 +83,10 @@ fi
 # TODO - use conditional callback/finally
 killall Dock
 killall Finder
+
+# TODO - https://github.com/MrOtherGuy/firefox-csshacks/tree/master/chrome/hide_tabs_toolbar_v2.css
+#
+# ~/Library/Application Support/Firefox/Profiles/2zcq9a8d.default-release/chrome
+# $ ls
+# total 8
+# -rw-r--r--@ 1 colton  staff   1.5K Dec 12 09:37 userChrome.css

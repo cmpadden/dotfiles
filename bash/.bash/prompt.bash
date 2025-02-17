@@ -73,7 +73,6 @@ prompt_git_branch()
 # | 90-97   | Set bright foreground color  | aixterm (not in standard)                                              |
 # | 100-107 | Set bright background color  | aixterm (not in standard)                                              |
 
-
 # Applies custom prompt when `xterm-256color` is active (eg. when in tmux)
 #
 # Reference(s):
@@ -83,8 +82,8 @@ prompt_git_branch()
 #  - https://www.shellcheck.net/wiki/SC2025
 #
 if [ "$TERM" == "xterm-256color" ]; then
-    PS1='\[\e[37m\]$(prompt_venv)\[\e[0m\]'
+    PS1='\[\e[33m\]$(prompt_venv)\[\e[0m\]'
     PS1+='\[\e[34m\]$(prompt_git_branch)\[\e[0m\]'
-    PS1+='\[\e[37m\]\w\[\e[0m\]'
+    PS1+='\[\e[33m\]\w\[\e[0m\]'
     PS1+='\n\$ '
 fi

@@ -1,4 +1,4 @@
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 --                                   Colors                                   --
 --------------------------------------------------------------------------------
 
@@ -7,6 +7,44 @@ return {
     -- Error: `invalid node type at position 2765 for language vim`
     -- Solution:
     -- > rm /opt/homebrew/lib/nvim/parser/vim.so
+
+    -- https://github.com/EdenEast/nightfox.nvim
+    {
+        "EdenEast/nightfox.nvim",
+        lazy = false,
+        priority = 1000,
+        -- config = function()
+        --     vim.o.termguicolors = true
+        --     require("nightfox").setup {
+        --         style = "terafox"
+        --     }
+        -- end,
+        init = function()
+            vim.o.termguicolors = true
+            vim.cmd.colorscheme("terafox")
+            -- vim.cmd.colorscheme("dayfox")
+        end,
+        enabled = false,
+    },
+
+    -- https://github.com/catppuccin/nvim
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
+        opt = {
+            flavour = "latte",
+        },
+        init = function()
+            -- require("catppuccin").setup({
+            --     flavour = "macchiato", -- latte / frappe / mocha
+            --     term_colors = true,
+            --     transparent_background = false,
+            -- })
+            vim.cmd.colorscheme("catppuccin")
+        end,
+        enabled = true,
+    },
 
     -- https://github.com/tanvirtin/monokai.nvim
     {
@@ -137,37 +175,6 @@ return {
             vim.cmd.colorscheme("oxocarbon")
         end,
         enabled = false,
-    },
-
-    -- https://github.com/EdenEast/nightfox.nvim
-    {
-        "EdenEast/nightfox.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.o.termguicolors = true
-            vim.cmd.colorscheme("terafox")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/catppuccin/nvim
-    {
-        "catppuccin/nvim",
-        name = "catppuccin",
-        priority = 1000,
-        opt = {
-            flavour = "macchiato",
-        },
-        init = function()
-            require("catppuccin").setup({
-                flavour = "mocha", -- latte / frappe / mocha
-                term_colors = true,
-                transparent_background = false,
-            })
-            vim.cmd.colorscheme("catppuccin")
-        end,
-        enabled = true,
     },
 
     -- https://github.com/scottmckendry/cyberdream.nvim

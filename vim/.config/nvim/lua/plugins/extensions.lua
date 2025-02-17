@@ -155,6 +155,7 @@ local obj = {
                 ["*"] = { "codespell", "trim_whitespace" },
                 javascript = { "prettier" },
                 lua = { "stylua" },
+                rust = { "rustfmt", lsp_format = "fallback" },
                 sh = { "shfmt" },
                 sql = { "sqlfluff" },
                 typescript = { "prettier" },
