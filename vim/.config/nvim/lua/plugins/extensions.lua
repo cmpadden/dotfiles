@@ -89,6 +89,14 @@ local obj = {
         end,
     },
 
+    -- -- https://github.com/norcalli/nvim-colorizer.lua
+    -- {
+    --     "norcalli/nvim-colorizer.lua",
+    --     config = function()
+    --         require("colorizer").setup()
+    --     end,
+    -- },
+
     -- https://github.com/preservim/vim-markdown
     {
         "preservim/vim-markdown",

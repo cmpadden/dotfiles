@@ -57,6 +57,9 @@ if vim.fn.isdirectory(vim.fn.expand("~/src/dbtpal")) == 1 then
             vim.keymap.set("n", "<leader>drp", dbt.run_all)
             vim.keymap.set("n", "<leader>dtf", dbt.test)
             vim.keymap.set("n", "<leader>dm", require("dbtpal.telescope").dbt_picker)
+            vim.keymap.set("n", "<leader>du", require("dbtpal.telescope").dbt_picker_upstream)
+            vim.keymap.set("n", "<leader>dd", require("dbtpal.telescope").dbt_picker_downstream)
+
 
             require("telescope").load_extension("dbtpal")
         end,
