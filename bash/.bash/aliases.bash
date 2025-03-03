@@ -65,7 +65,8 @@ alias notes_sync='\
     git add . && \
     git status && \
     git commit --allow-empty-message -m "" && \
-    git push'
+    git push &&\
+    popd'
 
 alias date_short="date +%Y%m%d"
 
