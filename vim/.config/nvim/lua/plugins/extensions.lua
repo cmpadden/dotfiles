@@ -219,12 +219,12 @@ local obj = {
         end,
     },
 
-    -- https://github.com/junegunn/fzf
-    {
-        "junegunn/fzf",
-        dir = "~/.fzf",
-        build = "./install --bin",
-    },
+    -- -- https://github.com/junegunn/fzf
+    -- {
+    --     "junegunn/fzf",
+    --     dir = "~/.fzf",
+    --     build = "./install --bin",
+    -- },
 
     -- https://github.com/ibhagwan/fzf-lua
     {
