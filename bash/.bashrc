@@ -57,3 +57,6 @@ export GPG_TTY
 check_and_source "$HOME/.cargo/env"
 
 hash nvim 2>/dev/null && export EDITOR="nvim"
+
+# uv
+export PATH="/Users/colton/.local/bin:$PATH"

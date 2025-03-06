@@ -201,12 +201,12 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                     local mason_lspconfig = require("mason-lspconfig")
                     mason_lspconfig.setup({
                         ensure_installed = {
+                            "basedpyright",
                             "bashls",
                             "eslint",
                             "html",
                             "jsonls",
                             "lua_ls",
-                            "basedpyright",
                             "ruff",
                             "rust_analyzer",
                             "tailwindcss",
@@ -215,6 +215,9 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                         automatic_installation = true,
                     })
 
+                    local common_default_capabilities =
+                        require("cmp_nvim_lsp").default_capabilities()
+
                     -- https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
                     mason_lspconfig.setup_handlers({
 
@@ -222,10 +225,9 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                         -- and will be called for each installed server that doesn't have
                         -- a dedicated handler.
                         function(server_name)
-                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
                             require("lspconfig")[server_name].setup({
                                 on_attach = require("custom.utils.lsp").on_attach,
-                                capabilities = capabilities,
+                                capabilities = common_default_capabilities,
                                 flags = {
                                     debounce_text_changes = 150,
                                 },
@@ -243,6 +245,8 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                         -- For example, a handler override for the `lua_ls`:
                         ["lua_ls"] = function()
                             require("lspconfig").lua_ls.setup({
+                                on_attach = require("custom.utils.lsp").on_attach,
+                                capabilities = common_default_capabilities,
                                 settings = {
                                     Lua = {
                                         diagnostics = {
@@ -254,10 +258,9 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                         end,
 
                         ["yamlls"] = function()
-                            local capabilities = require("cmp_nvim_lsp").default_capabilities()
                             require("lspconfig").yamlls.setup({
                                 on_attach = require("custom.utils.lsp").on_attach,
-                                capabilities = capabilities,
+                                capabilities = common_default_capabilities,
                                 flags = {
                                     debounce_text_changes = 150,
                                 },
@@ -265,6 +268,24 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                                     yaml = {
                                         schemas = {
                                             [".vscode/schema.json"] = "**/*.y*ml",
+                                        },
+                                    },
+                                },
+                            })
+                        end,
+
+                        ["basedpyright"] = function()
+                            require("lspconfig").basedpyright.setup({
+                                on_attach = require("custom.utils.lsp").on_attach,
+                                capabilities = common_default_capabilities,
+                                flags = {
+                                    debounce_text_changes = 150,
+                                },
+                                settings = {
+                                    pyright = { autoImportCompletion = true },
+                                    basedpyright = {
+                                        analysis = {
+                                            typeCheckingMode = "basic",
                                         },
                                     },
                                 },
