@@ -282,7 +282,6 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
                                     debounce_text_changes = 150,
                                 },
                                 settings = {
-                                    pyright = { autoImportCompletion = true },
                                     basedpyright = {
                                         analysis = {
                                             typeCheckingMode = "basic",
