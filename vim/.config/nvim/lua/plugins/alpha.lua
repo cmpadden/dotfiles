@@ -1,16 +1,29 @@
-BANNER_1 = {
-    "                                                                                  .-. .-')   ",
-    "                                                                                  \\  ( OO )  ",
-    "  ,--. .--------.      .--------. .-----.         ,--.      ,------.        ,--.   ;-----.\\  ",
-    " /  .' |   __   '      |   __   '/ ,-.   \\       /  .'   ('-| _.---'       /  .'   | .-.  |  ",
-    ".  / -.`--' .  /       `--' .  / '-'  |  |      .  / -.  (OO|(_\\          .  / -.  | '-' /_) ",
-    "| .-.  '   /  /            /  /     .'  /       | .-.  ' /  |  '--.       | .-.  ' | .-. `.  ",
-    "' \\  |  | .  /            .  /    .'  /__       ' \\  |  |\\_)|  .--'       ' \\  |  || |  \\  | ",
-    "\\  `'  / /  /            /  /    |       |      \\  `'  /   \\|  |_)        \\  `'  / | '--'  / ",
-    " `----' `--'            `--'     `-------'       `----'     `--'           `----'  `------'  ",
-}
+-- REFERENCES
+--
+--     https://github.com/goolord/alpha-nvim
+--     https://github.com/LazyVim/LazyVim/blob/592074ad802be2462306d3991024f350571dfab2/lua/lazyvim/plugins/ui.lua#L261C1-L283C9
+--
 
--- https://github.com/goolord/alpha-nvim
+--- Wraps `text` into lines of specified width.
+--
+-- @param text (string): The text to be wrapped.
+-- @param width (number|nil): The maximum line width. Defaults to 50 if nil.
+-- @return (table): A table containing the wrapped lines.
+local function wrap(text, width)
+    width = width or 50
+    local lines = {}
+    for i = 1, #text, width do
+        local line = text:sub(i, i + width - 1)
+        line = vim.trim(line, ' ')
+        table.insert(lines, line)
+    end
+    return lines
+end
+
+
+local BANNER_TEXT =
+"All moments, past, present, and future, always have existed, always will exist. The Tralfamadorians can look at all the different moments just the way we can look at a stretch of the Rocky Mountains, for instance. It is just an illusion we have here on Earth that one moment follows another one, like beads on a string, and that once a moment is gone it is gone forever."
+
 return {
     "goolord/alpha-nvim",
     event = "VimEnter",
@@ -22,25 +35,20 @@ return {
             return
         end
 
-        dashboard.section.header.val = BANNER_1
-        dashboard.section.header.opts.hl = "DashboardHeader"
+        dashboard.section.header.val = wrap(BANNER_TEXT)
+        -- dashboard.section.header.opts.hl = "DashboardHeader"
 
-        dashboard.section.buttons.val = {}
         dashboard.section.buttons.val = {
-            dashboard.button("i", ">  New file", ":ene <BAR> startinsert <CR>"),
-            dashboard.button("f", ">  Find file", ":FzfLua files<CR>"),
+            dashboard.button("i", "New file", ":ene <BAR> startinsert <CR>"),
+            dashboard.button("f", "Find file", ":FzfLua files<CR>"),
             dashboard.button(
                 "s",
-                ">  Settings",
-                ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"
+                "Settings",
+                ":e $MYVIMRC | :cd %:p:h<CR>"
             ),
-            dashboard.button("q", ">  Quit", ":qa<CR>"),
+            dashboard.button("q", "Quit", ":qa<CR>"),
         }
-        dashboard.config.layout[3].val = 5
-        dashboard.config.opts.noautocmd = true
 
-        dashboard.config.layout[1].val = vim.fn.max({ 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) })
-        dashboard.section.footer.opts.hl = "AlphaFooter"
         return dashboard
     end,
     config = function(_, dashboard)
@@ -54,7 +62,6 @@ return {
 
         require("alpha").setup(dashboard.opts)
 
-        -- https://github.com/LazyVim/LazyVim/blob/592074ad802be2462306d3991024f350571dfab2/lua/lazyvim/plugins/ui.lua#L261C1-L283C9
         vim.api.nvim_create_autocmd("User", {
             pattern = "LazyVimStarted",
             callback = function()
