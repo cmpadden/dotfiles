@@ -48,7 +48,8 @@ local obj = {
     {
         "junegunn/goyo.vim",
         config = function()
-            vim.g.goyo_width = "120"
+            vim.g.goyo_height = "100%"
+            vim.g.goyo_width = "88"
             vim.keymap.set("n", "<localleader>G", ":Goyo<CR>")
 
             vim.cmd([[
@@ -69,6 +70,7 @@ local obj = {
             autocmd! User GoyoEnter nested call <SID>goyo_enter()
             autocmd! User GoyoLeave nested call <SID>goyo_leave()
             ]])
+
         end,
     },
 
@@ -219,12 +221,12 @@ local obj = {
         end,
     },
 
-    -- https://github.com/junegunn/fzf
-    {
-        "junegunn/fzf",
-        dir = "~/.fzf",
-        build = "./install --bin",
-    },
+    -- -- https://github.com/junegunn/fzf
+    -- {
+    --     "junegunn/fzf",
+    --     dir = "~/.fzf",
+    --     build = "./install --bin",
+    -- },
 
     -- https://github.com/ibhagwan/fzf-lua
     {
