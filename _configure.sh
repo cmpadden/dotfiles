@@ -71,3 +71,8 @@ fi
 # $ ls
 # total 8
 # -rw-r--r--@ 1 colton  staff   1.5K Dec 12 09:37 userChrome.css
+
+
+# https://gist.github.com/benjifs/054e00deee252b5bb1b88e7afe590794?permalink_comment_id=4782055#gistcomment-4782055
+echo "[INFO] rebinding <caps lock> to <control>"
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}' &>/dev/null
