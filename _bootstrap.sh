@@ -17,7 +17,7 @@ function print_line_delimiter() {
 
 function prompt_yes_no() {
     local message=$1
-    read -r -e -p "[y/N] - ${message}" response
+    read -r -e -p "[y/N] ${message}" response
     if [[ "$response" == [Yy]* ]]; then
         return 0
     else
@@ -51,19 +51,25 @@ CURRENT CONFIGURATION VALUES
     DOTFILES_INSTALL=$DOTFILES_INSTALL
     DOTFILES_RESTORE=$DOTFILES_RESTORE
     DOTFILES_CONFIGURE=$DOTFILES_CONFIGURE
-EOF
 
-print_line_delimiter
+EOF
 
 if ! command -v git > /dev/null 2>&1; then
     echo "Git is not available on this system. Aborting..."
     exit 1
 fi
 
+if [ -f ~/.ssh/id_ed25519 ]; then
+    echo "[INFO] SSH key ~/.ssh/id_ed25519 already exists; skipping key generation..."
+else
+    read -p "Enter e-mail address for \`ssh-keygen\`:" email
+    ssh-keygen -t ed25519 -C "$email"
+fi
+
 if [ ! -d "$DOTFILES_LOCATION" ]; then
     git clone git@github.com:cmpadden/dotfiles.git "$DOTFILES_LOCATION"
 else
-    echo "Directory $DOTFILES_LOCATION already exists. Skipping Git clone..."
+    echo "[INFO] directory $DOTFILES_LOCATION already exists. Skipping Git clone..."
 fi
 
 pushd "$DOTFILES_LOCATION" >/dev/null || exit
