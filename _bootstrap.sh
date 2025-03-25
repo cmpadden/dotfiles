@@ -59,12 +59,17 @@ if ! command -v git > /dev/null 2>&1; then
     exit 1
 fi
 
-if [ -f ~/.ssh/id_ed25519 ]; then
-    echo "[INFO] SSH key ~/.ssh/id_ed25519 already exists; skipping key generation..."
+TARGET_SSH_KEY=~/.ssh/id_ed25519
+
+if [ -f "$TARGET_SSH_KEY" ]; then
+    echo "[INFO] SSH key ${TARGET_SSH_KEY} already exists; skipping key generation..."
 else
     read -p "Enter e-mail address for \`ssh-keygen\`:" email
     ssh-keygen -t ed25519 -C "$email"
 fi
+
+echo "[INFO] ${TARGET_SSH_KEY}.pub has been copied to the clipboard..."
+cat "${TARGET_SSH_KEY}.pub" | pbcopy
 
 if [ ! -d "$DOTFILES_LOCATION" ]; then
     git clone git@github.com:cmpadden/dotfiles.git "$DOTFILES_LOCATION"
