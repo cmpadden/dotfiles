@@ -105,8 +105,9 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     _log "Installing brew casks"
     brew install --cask \
+        firefox \
+        ghostty \
         hammerspoon \
-        kitty \
         mpv \
         notion \
         notion-calendar \
