@@ -33,6 +33,14 @@ vim.cmd([[
   augroup END
 ]])
 
+-- set fold level for markdown files
+vim.cmd([[
+  augroup foldlevelstart_markdown
+    autocmd!
+    autocmd FileType markdown setlocal foldlevel=1
+  augroup END
+]])
+
 -- run Python code
 vim.cmd([[
   augroup pythonMappings
