@@ -6,7 +6,8 @@
 --     https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
 --
 
-local LSP_DEFAULT_CAPABILITIES = require("cmp_nvim_lsp").default_capabilities()
+-- local LSP_DEFAULT_CAPABILITIES = require("cmp_nvim_lsp").default_capabilities()
+
 local LSP_DEFAULT_FLAGS = { debounce_text_changes = 150 }
 
 -- `on_attach` to map keys after language server attaches to the current buffer
@@ -91,6 +92,7 @@ return {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
+        'saghen/blink.cmp',
         {
             "williamboman/mason-lspconfig.nvim",
             config = function()
@@ -118,6 +120,9 @@ return {
                     },
                     automatic_installation = true,
                 })
+
+                -- https://github.com/neovim/nvim-lspconfig/issues/3494
+                local LSP_DEFAULT_CAPABILITIES = require('blink.cmp').get_lsp_capabilities()
 
                 mason_lspconfig.setup_handlers({
 
