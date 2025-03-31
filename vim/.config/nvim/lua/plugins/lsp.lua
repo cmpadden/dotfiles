@@ -1,13 +1,10 @@
 -- REFERENCES
 --
---     https://github.com/hrsh7th/nvim-cmp
 --     https://github.com/neovim/nvim-lspconfig
 --     https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
 --     https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
 --
 
-local LSP_DEFAULT_CAPABILITIES = require("cmp_nvim_lsp").default_capabilities()
-local LSP_DEFAULT_FLAGS = { debounce_text_changes = 150 }
 
 -- `on_attach` to map keys after language server attaches to the current buffer
 -- See `:help vim.lsp.*`
@@ -91,6 +88,7 @@ return {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
+        'saghen/blink.cmp',
         {
             "williamboman/mason-lspconfig.nvim",
             config = function()
@@ -119,22 +117,28 @@ return {
                     automatic_installation = true,
                 })
 
+                -- https://cmp.saghen.dev/installation.html#lsp-capabilities
+                -- https://github.com/neovim/nvim-lspconfig/issues/3494
+                local blink_capabilities = require('blink.cmp').get_lsp_capabilities()
+
+                local default_flags = { debounce_text_changes = 150 }
+
                 mason_lspconfig.setup_handlers({
 
                     -- Default handler for servers that are not explicitly defined
                     function(server_name)
                         require("lspconfig")[server_name].setup({
                             on_attach = default_on_attach,
-                            capabilities = LSP_DEFAULT_CAPABILITIES,
-                            flags = LSP_DEFAULT_FLAGS
+                            capabilities = blink_capabilities,
+                            flags = default_flags
                         })
                     end,
 
                     ["lua_ls"] = function()
                         require("lspconfig").lua_ls.setup({
                             on_attach = default_on_attach,
-                            capabilities = LSP_DEFAULT_CAPABILITIES,
-                            flags = LSP_DEFAULT_FLAGS,
+                            capabilities = blink_capabilities,
+                            flags = default_flags,
                             settings = {
                                 Lua = {
                                     diagnostics = {
@@ -148,8 +152,8 @@ return {
                     ["yamlls"] = function()
                         require("lspconfig").yamlls.setup({
                             on_attach = default_on_attach,
-                            capabilities = LSP_DEFAULT_CAPABILITIES,
-                            flags = LSP_DEFAULT_FLAGS,
+                            capabilities = blink_capabilities,
+                            flags = default_flags,
                             settings = {
                                 yaml = {
                                     -- TODO - dynamically check if schemas are present
@@ -164,8 +168,8 @@ return {
                     ["basedpyright"] = function()
                         require("lspconfig").basedpyright.setup({
                             on_attach = default_on_attach,
-                            capabilities = LSP_DEFAULT_CAPABILITIES,
-                            flags = LSP_DEFAULT_FLAGS,
+                            capabilities = blink_capabilities,
+                            flags = default_flags,
                             settings = {
                                 basedpyright = {
                                     analysis = {
@@ -179,8 +183,8 @@ return {
                     ["ruff"] = function()
                         require("lspconfig").ruff.setup({
                             on_attach = default_on_attach,
-                            capabilities = LSP_DEFAULT_CAPABILITIES,
-                            flags = LSP_DEFAULT_FLAGS,
+                            capabilities = blink_capabilities,
+                            flags = default_flags,
                             -- TODO - detect virtual environment programmatically
                             cmd = { ".direnv/bin/ruff", "server" }
                         })
