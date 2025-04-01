@@ -27,6 +27,7 @@ alias gcma="git checkout master"
 alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 alias gcp="git checkout -"
+alias gb="git checkout -b"
 
 save() {
     git add .
@@ -111,7 +112,7 @@ alias source_env='export $(xargs < .env)'
 #                                        Python                                        #
 ########################################################################################
 
-alias mkpyenv="echo \"layout pyenv 3.11.7 \" > .envrc && direnv allow"
+alias mkpyenv="echo \"layout uv\" > .envrc && direnv allow"
 alias pip='uv pip'
 alias pip-dev="pip install -e .[dev]"
 alias pydoc='python -m pydoc'

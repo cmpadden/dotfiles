@@ -186,7 +186,7 @@ return {
                             capabilities = blink_capabilities,
                             flags = default_flags,
                             -- TODO - detect virtual environment programmatically
-                            cmd = { ".direnv/bin/ruff", "server" }
+                            cmd = { ".venv/bin/ruff", "server" }
                         })
                     end,
                 })
