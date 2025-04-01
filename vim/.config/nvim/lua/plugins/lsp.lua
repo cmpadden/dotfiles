@@ -182,7 +182,7 @@ return {
                             capabilities = LSP_DEFAULT_CAPABILITIES,
                             flags = LSP_DEFAULT_FLAGS,
                             -- TODO - detect virtual environment programmatically
-                            cmd = { ".direnv/bin/ruff", "server" }
+                            cmd = { ".venv/bin/ruff", "server" }
                         })
                     end,
                 })

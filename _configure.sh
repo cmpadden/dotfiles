@@ -66,6 +66,7 @@ else
 fi
 
 # TODO - https://github.com/MrOtherGuy/firefox-csshacks/tree/master/chrome/hide_tabs_toolbar_v2.css
+# TODO - toolkit.legacyUserProfileCustomizations.stylesheets
 #
 # ~/Library/Application Support/Firefox/Profiles/2zcq9a8d.default-release/chrome
 # $ ls
