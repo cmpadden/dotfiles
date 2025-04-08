@@ -36,7 +36,7 @@ layout_uv() {
 
     if [[ -z $VIRTUAL_ENV || ! -d $VIRTUAL_ENV ]]; then
         log_status "No virtual environment exists. Executing \`uv venv\` to create one."
-        uv venv .direnv --python 3.11
+        uv venv --python 3.11
         VIRTUAL_ENV="$(pwd)/.venv"
     fi
     PATH_add "$VIRTUAL_ENV/bin"
