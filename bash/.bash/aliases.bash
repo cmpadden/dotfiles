@@ -59,6 +59,7 @@ if [ -f "$HOME/notes.md.asc" ]; then
     alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
 else
     alias notes="nvim ~/src/notes/work/index.md"
+    alias scratch="nvim ~/src/notes/work/scratch.md"
 fi
 
 alias notes_sync='\
@@ -153,3 +154,5 @@ alias icat="kitty +kitten icat"
 
 alias tar_compress="tar -czvf"
 alias tar_extract="tar -xzvf"
+
+alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
