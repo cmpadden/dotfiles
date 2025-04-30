@@ -1,17 +1,72 @@
 #!/usr/bin/env bash
 
-########################################################################################
-#                                        Docker                                        #
-########################################################################################
+####################################################################################################
+#                                             General                                              #
+####################################################################################################
+
+if hash nvim 2>/dev/null; then
+    alias v="nvim"
+    alias vim="nvim"
+    alias vimdiff="nvim -d"
+fi
+
+if [ -f "$HOME/notes.md.asc" ]; then
+    alias notes="nvim \$HOME/notes.md.asc"
+    alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
+    alias notes-backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
+else
+    alias notes="nvim ~/src/notes/work/index.md"
+    alias scratch="nvim ~/src/notes/work/scratch.md"
+fi
+
+alias notes-sync='\
+    pushd ~/src/notes && \
+    git add . && \
+    git status && \
+    git commit --allow-empty-message -m "" && \
+    git push &&\
+    popd'
+
+alias date-short="date +%Y%m%d"
+
+alias rscp='rsync -aP'
+alias rsmv='rsync -aP --remove-source-files'
+
+if hash eza 2>/dev/null; then
+    alias l='eza -1 --group-directories-first'
+    alias ls='eza -l --no-user --time-style long-iso --group-directories-first'
+else
+    alias l='ls -1p'
+    alias ls='ls -lhpG'
+fi
+
+if hash rg 2>/dev/null; then
+    alias grep="rg --smart-case"
+fi
+
+
+if [ -f ~/Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
+    alias snowsql='~/Applications/SnowSQL.app/Contents/MacOS/snowsql'
+fi
+
+alias tar_compress="tar -czvf"
+alias tar_extract="tar -xzvf"
+
+# source environment variables in `.env` filtering comments
+alias source_env='export $(grep -v ^# .env | xargs)'
+
+####################################################################################################
+#                                              Docker                                              #
+####################################################################################################
 
 alias docker_remove_images='docker rmi -f $(docker images -q)'
 alias docker_kill_all='docker kill $(docker ps -qa)'
 
-######################################################################################## Git                                          #
-########################################################################################
+####################################################################################################
+#                                               Git                                                #
+####################################################################################################
 
 alias g="git"
-
 alias ga="git add"
 alias gc="git checkout"
 alias gs="git status --untracked-files=all ."
@@ -28,6 +83,8 @@ alias gpma="git pull origin master"
 alias gcb="git checkout -b"
 alias gcp="git checkout -"
 alias gb="git checkout -b"
+alias wip="git commit -m \"wip\" && git push"
+alias pr="gh pr checkout"
 
 save() {
     git add .
@@ -38,130 +95,27 @@ save() {
     git push
 }
 
-alias wip="git commit -m \"wip\" && git push"
-alias pr="gh pr checkout"
-
-########################################################################################
-#                                       General                                        #
-########################################################################################
-
-# vim
-if hash nvim 2>/dev/null; then
-    alias v="nvim"
-    alias vim="nvim"
-    alias vimdiff="nvim -d"
-fi
-
-# notes
-if [ -f "$HOME/notes.md.asc" ]; then
-    alias notes="nvim \$HOME/notes.md.asc"
-    alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
-    alias notes_backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
-else
-    alias notes="nvim ~/src/notes/work/index.md"
-    alias scratch="nvim ~/src/notes/work/scratch.md"
-fi
-
-alias notes_sync='\
-    pushd ~/src/notes && \
-    git add . && \
-    git status && \
-    git commit --allow-empty-message -m "" && \
-    git push &&\
-    popd'
-
-alias date_short="date +%Y%m%d"
-
-# rsync
-alias rscp='rsync -aP'
-alias rsmv='rsync -aP --remove-source-files'
-
-if hash eza 2>/dev/null; then
-    alias l='eza -1 --group-directories-first'
-    alias ls='eza -l --no-user --time-style long-iso --group-directories-first'
-else
-    alias l='ls -1p'
-    alias ls='ls -lhpG'
-fi
-
-# # https://github.com/sharkdp/bat
-# if hash bat 2>/dev/null; then
-#     alias cat="bat \
-#         --theme=ansi \
-#         --style header,grid \
-#         --pager=never \
-#         --wrap=never"
-# fi
-
-# # https://github.com/ggreer/the_silver_searcher
-# if hash ag 2>/dev/null; then
-#     alias grep="ag --hidden --ignore .git --ignore node_modules --ignore dist --ignore .direnv"
-# fi
-
-if hash rg 2>/dev/null; then
-    alias grep="rg --smart-case"
-fi
-
-# if hash ranger 2>/dev/null; then
-#     alias r="ranger"
-# fi
-
-# source environment variables in `.env`                                                    │
-alias source_env='export $(xargs < .env)'
-
-########################################################################################
-#                                        Python                                        #
-########################################################################################
+####################################################################################################
+#                                              Python                                              #
+####################################################################################################
 
 alias mkpyenv="echo \"layout uv\" > .envrc && direnv allow"
 alias pip='uv pip'
-alias pip-dev="pip install -e .[dev]"
+alias pipe-dev="pip install -e .[dev]"
 alias pydoc='python -m pydoc'
-alias ipy="ipython"
 
-########################################################################################
-#                                     Google Cloud                                     #
-########################################################################################
+####################################################################################################
+#                                                AI                                                #
+####################################################################################################
 
-# google cloud platform
-alias gcp_project="gcloud info --format='value(config.project)'"
-
-# snowflake
-if [ -f ~/Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
-    alias snowsql='~/Applications/SnowSQL.app/Contents/MacOS/snowsql'
+if hash aider 2>/dev/null; then
+    alias aider="aider --dark-mode --no-gitignore --model sonnet --thinking-tokens 8k"
 fi
 
 if hash chatblade 2>/dev/null; then
     alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
 fi
 
-########################################################################################
-#                                        MacOS                                         #
-########################################################################################
-
-alias books_library="cd ~/Library/Mobile\ Documents/iCloud~com~apple~iBooks/Documents/"
-alias taio="cd ~/Library/Mobile\ Documents/iCloud~app~cyan~taio/Documents"
-
-########################################################################################
-#                                        Kitty                                         #
-########################################################################################
-
-alias icat="kitty +kitten icat"
-
-####################################################################################################
-#                                               Misc                                               #
-####################################################################################################
-
-alias tar_compress="tar -czvf"
-alias tar_extract="tar -xzvf"
-
-alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
-
-########################
-#        Aider         #
-########################
-
-if hash aider 2>/dev/null; then
-    alias aider="aider --dark-mode --no-gitignore --model sonnet --thinking-tokens 8k"
+if hash uvx 2>/dev/null; then
+    alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
 fi
-
