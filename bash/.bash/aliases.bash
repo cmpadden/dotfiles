@@ -156,3 +156,12 @@ alias tar_compress="tar -czvf"
 alias tar_extract="tar -xzvf"
 
 alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
+
+########################
+#        Aider         #
+########################
+
+if hash aider 2>/dev/null; then
+    alias aider="aider --dark-mode --no-gitignore --model sonnet --thinking-tokens 8k"
+fi
+
