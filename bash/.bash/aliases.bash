@@ -78,7 +78,7 @@ alias rsmv='rsync -aP --remove-source-files'
 
 if hash eza 2>/dev/null; then
     alias l='eza -1 --group-directories-first'
-    alias ls='eza -l --classify --group --time-style long-iso --group-directories-first'
+    alias ls='eza -l --no-user --time-style long-iso --group-directories-first'
 else
     alias l='ls -1p'
     alias ls='ls -lhpG'
