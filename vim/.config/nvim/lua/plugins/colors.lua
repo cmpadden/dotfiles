@@ -39,13 +39,19 @@ return {
                     light = 'latte',
                     dark = 'mocha',
                 },
+                color_overrides = {
+                    mocha = {
+                        base = '#121317',
+
+                    },
+                },
                 term_colors = true,
                 no_italic = true,
                 no_bold = true,
                 no_underline = true,
                 integrations = {
                     cmp = true,
-                    gitsigns= true,
+                    gitsigns = true,
                     nvimtree = false,
                     treesitter = true,
                     mini = false,

@@ -10,13 +10,15 @@
 # /Applications/Ghostty.app/Contents/MacOS/ghostty +list-themes
 # theme = Terafox
 theme = catppuccin-mocha
+background = #121317
 
 title = " "
 window-padding-x = 12
 window-padding-y = 12
 
 mouse-hide-while-typing = true
-
-# Confirms that a surface should be closed before closing it. This defaults to
-# true. If set to false, surfaces will close without any confirmation.
 confirm-close-surface = false
+
+macos-titlebar-style = transparent
+macos-window-shadow = false
+macos-icon = xray
