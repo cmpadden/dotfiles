@@ -226,7 +226,7 @@ function obj:init()
         --
         --  > "Standard window" means that this is not an unusual popup window, a modal dialog, a floating window, etc.
         --
-        if window:isStandard() then
+        if window:isStandard() and window:isMaximizable() then
             hs.alert("Initializing " .. app_name)
             local ix = get_application_geometry_index(self.layout, app_name)
             local target_geometry = self.layouts[self.layout][ix]

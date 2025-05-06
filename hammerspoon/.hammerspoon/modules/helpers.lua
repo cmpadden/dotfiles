@@ -16,38 +16,46 @@ obj.assets = {
 
 obj.palette = {
     white = "#FFFFFF",
-    black = "#000000",
-    warn = "#FFF59D",
-    success = "#F6FCDF",
-    error = "#FFCDD2",
+    black = "#121317",
+    -- TODO - light and dark mode variants depending on system setting
+    -- warn = "#FFF59D",
+    -- success = "#F6FCDF",
+    -- error = "#FFCDD2",
+    warn = "#9E9C41",
+    success = "#6A8E23",
+    error = "#B71C1C"
 }
 
 obj.styles = {
     info = {
-        fillColor = { hex = obj.palette.white, alpha = 1.00 },
-        textColor = { hex = obj.palette.black },
-        strokeWidth = 0,
+        fillColor = { hex = obj.palette.black },
+        textColor = { hex = obj.palette.white, alpha = 1.00 },
+        strokeColor = { hex = obj.palette.white, alpha = 0.75 },
+        strokeWidth = 1,
         radius = 0,
         padding = 16,
     },
     success = {
-        fillColor = { hex = obj.palette.success, alpha = 1.00 },
-        textColor = { hex = obj.palette.black },
-        strokeWidth = 0,
+        fillColor = { hex = obj.palette.black },
+        textColor = { hex = obj.palette.success, alpha = 1.00 },
+        strokeColor = { hex = obj.palette.success, alpha = 0.75 },
+        strokeWidth = 1,
         radius = 0,
         padding = 16,
     },
     warn = {
-        fillColor = { hex = obj.palette.warn, alpha = 1.00 },
-        textColor = { hex = obj.palette.black },
-        strokeWidth = 0,
+        fillColor = { hex = obj.palette.black },
+        textColor = { hex = obj.palette.warn, alpha = 1.00 },
+        strokeColor = { hex = obj.palette.warn, alpha = 0.75 },
+        strokeWidth = 1,
         radius = 0,
         padding = 16,
     },
     error = {
-        fillColor = { hex = obj.palette.error, alpha = 1.00 },
-        textColor = { hex = obj.palette.black },
-        strokeWidth = 0,
+        fillColor = { hex = obj.palette.black },
+        textColor = { hex = obj.palette.error, alpha = 1.00 },
+        strokeColor = { hex = obj.palette.error, alpha = 0.75 },
+        strokeWidth = 1,
         radius = 0,
         padding = 16,
     },
@@ -66,9 +74,15 @@ string.center = function(str, width)
     if #str > width then
         return str
     end
-    local padding_width = math.ceil((width - #str) / 2)
-    local padding = string.rep(" ", padding_width)
-    return padding .. str .. padding
+    local padchar = " "
+    local diff = width - #str
+    local padding_width = math.ceil(diff / 2)
+    local padding = string.rep(padchar, padding_width)
+    if  diff % 2 ~= 0 then
+        return padding .. str .. padding
+    end
+    -- additional space character on right when not evenly divisible
+    return padding .. str .. padding ..  padchar
 end
 
 --- Displays alert with `title` and pairs of `attributes`
@@ -76,8 +90,14 @@ end
 --- Parameters:
 --- * title     - Title message of alert
 --- * attributes - Key-value pairs of attributes to present in body of alert
-function obj:show(title, attributes, style, logo)
+function obj:show(title, attributes, style, logo, minimum_text_width)
     style = style or obj.styles.info
+    minimum_text_width = minimum_text_width or 64
+
+    if #title < minimum_text_width then
+        title = string.center(title, minimum_text_width)
+    end
+
     local lines = { title }
     if not (attributes == nil) then
         lines[#lines + 1] = string.rep("-", 80)

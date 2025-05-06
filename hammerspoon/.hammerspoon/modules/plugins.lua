@@ -7,8 +7,8 @@ spoon.SpoonInstall:andUse("LookupSelection", { hotkeys = { lexicon = { HYPER, "d
 spoon.SpoonInstall:andUse("AppLauncher", {
     config = { modifiers = HYPER },
     hotkeys = {
+        g = "ghosty",
         i = "Firefox",
-        k = "kitty",
         m = "Mail",
         s = "Slack",
     },
@@ -40,11 +40,9 @@ spoon.SpoonInstall:andUse("Seal", {
             },
         }
         s.plugins.apps.appSearchPaths = app_search_paths
-        do
-        end
-        (s.plugins.apps):restart()
+        s.plugins.apps:restart()
         return s:refreshAllCommands()
     end,
     hotkeys = { show = { { "cmd" }, "p" } },
-    start = true,
+    start = true
 })
