@@ -23,3 +23,5 @@ gpg/.gnupg/*
 
 python/.ipython/profile_default/history.sqlite
 python/.ipython/profile_default/startup/*
+
+tmux/.config/tmux/plugins
