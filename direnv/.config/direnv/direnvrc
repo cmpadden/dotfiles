@@ -1,47 +1,28 @@
-# https://github.com/direnv/direnv/wiki/Python#venv-stdlib-module
-
-realpath() {
-    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
-}
-
-layout_python-venv() {
-    local python=${1:-python3}
-    [[ $# -gt 0 ]] && shift
-    unset PYTHONHOME
-    if [[ -n $VIRTUAL_ENV ]]; then
-        VIRTUAL_ENV=$(realpath "${VIRTUAL_ENV}")
-    else
-        local python_version
-        python_version=$("$python" -c "import platform; print(platform.python_version())")
-        if [[ -z $python_version ]]; then
-            log_error "Could not detect Python version"
-            return 1
-        fi
-        VIRTUAL_ENV=$PWD/.direnv/python-venv-$python_version
-    fi
-    export VIRTUAL_ENV
-    if [[ ! -d $VIRTUAL_ENV ]]; then
-        log_status "no venv found; creating $VIRTUAL_ENV"
-        "$python" -m venv "$VIRTUAL_ENV"
-    fi
-    PATH_add "$VIRTUAL_ENV/bin"
-}
-
-# https://github.com/direnv/direnv/wiki/Python#uv
-
+# Virtual environment management using `uv`.
+#
+# Defaults to Python 3.12 (eg. `uv venv --python 3.12`).
+#
+# USAGE
+#
+#     $ cat .envrc
+#     layout uv
+#
+#     $ cat .envrc
+#     layout uv 3.13
+# 
 layout_uv() {
+    local version=${1:-3.12}
+
     if [[ -d ".venv" ]]; then
         VIRTUAL_ENV="$(pwd)/.venv"
     fi
 
     if [[ -z $VIRTUAL_ENV || ! -d $VIRTUAL_ENV ]]; then
-        log_status "No virtual environment exists. Executing \`uv venv\` to create one."
-        uv venv --python 3.11
+        log_status "No virtual environment exists. Executing \`uv venv --python ${version}\`."
+        uv venv --python "$version"
         VIRTUAL_ENV="$(pwd)/.venv"
     fi
+
     PATH_add "$VIRTUAL_ENV/bin"
-    export UV_ACTIVE=1
-    export VIRTUAL_ENV
-    export VENV_ACTIVE=1
-    # source "${VIRTUAL_ENV}/bin/activate"
+    . $VIRTUAL_ENV/bin/activate
 }
