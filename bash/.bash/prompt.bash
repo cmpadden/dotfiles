@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-#
 # Gets current working Python virtual environemnt including direnv.
 #
 # Reference(s):
@@ -9,15 +8,12 @@
 prompt_venv()
 {
     if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
-        if [[ -n "$UV_ACTIVE" ]]; then
-            printf "uv "
-        else
-            printf "%s " "$(basename "$VIRTUAL_ENV")"
-        fi
+        local version=$(python -V | awk '{print $2}')
+        local venv="$(basename "$VIRTUAL_ENV")"
+        printf "%s %s " "$venv" "$version"
     fi
 }
 
-#
 # Gets current working Git branch.
 #
 # Reference(s):
