@@ -5,7 +5,6 @@
 --     https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
 --
 
-
 -- `on_attach` to map keys after language server attaches to the current buffer
 -- See `:help vim.lsp.*`
 -- See `:help vim.diagnostic.*`
@@ -82,13 +81,12 @@ local default_on_attach = function(client, bufnr)
     end, opts_buffer)
 end
 
-
 return {
 
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
-        'saghen/blink.cmp',
+        "saghen/blink.cmp",
         {
             "williamboman/mason-lspconfig.nvim",
             config = function()
@@ -117,78 +115,13 @@ return {
                     automatic_installation = true,
                 })
 
-                -- https://cmp.saghen.dev/installation.html#lsp-capabilities
-                -- https://github.com/neovim/nvim-lspconfig/issues/3494
-                local blink_capabilities = require('blink.cmp').get_lsp_capabilities()
-
-                local default_flags = { debounce_text_changes = 150 }
-
-                mason_lspconfig.setup_handlers({
-
-                    -- Default handler for servers that are not explicitly defined
-                    function(server_name)
-                        require("lspconfig")[server_name].setup({
-                            on_attach = default_on_attach,
-                            capabilities = blink_capabilities,
-                            flags = default_flags
-                        })
-                    end,
-
-                    ["lua_ls"] = function()
-                        require("lspconfig").lua_ls.setup({
-                            on_attach = default_on_attach,
-                            capabilities = blink_capabilities,
-                            flags = default_flags,
-                            settings = {
-                                Lua = {
-                                    diagnostics = {
-                                        globals = { "vim", "hs" },
-                                    },
-                                },
-                            },
-                        })
-                    end,
-
-                    ["yamlls"] = function()
-                        require("lspconfig").yamlls.setup({
-                            on_attach = default_on_attach,
-                            capabilities = blink_capabilities,
-                            flags = default_flags,
-                            settings = {
-                                yaml = {
-                                    -- TODO - dynamically check if schemas are present
-                                    schemas = {
-                                        [".vscode/schema.json"] = "**/*.y*ml",
-                                    },
-                                },
-                            },
-                        })
-                    end,
-
-                    ["basedpyright"] = function()
-                        require("lspconfig").basedpyright.setup({
-                            on_attach = default_on_attach,
-                            capabilities = blink_capabilities,
-                            flags = default_flags,
-                            settings = {
-                                basedpyright = {
-                                    analysis = {
-                                        typeCheckingMode = "basic",
-                                    },
-                                },
-                            },
-                        })
-                    end,
-
-                    ["ruff"] = function()
-                        require("lspconfig").ruff.setup({
-                            on_attach = default_on_attach,
-                            capabilities = blink_capabilities,
-                            flags = default_flags,
-                            -- TODO - detect virtual environment programmatically
-                            cmd = { ".venv/bin/ruff", "server" }
-                        })
-                    end,
+                vim.lsp.config("*", {
+                    -- https://cmp.saghen.dev/installation.html#lsp-capabilities
+                    -- https://github.com/neovim/nvim-lspconfig/issues/3494
+                    -- capabilities = vim.lsp.protocol.make_client_capabilities()
+                    capabilities = require("blink.cmp").get_lsp_capabilities(),
+                    flags = { debounce_text_changes = 150 },
+                    on_attach = default_on_attach,
                 })
             end,
         },
