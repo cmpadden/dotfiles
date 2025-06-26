@@ -44,5 +44,5 @@ spoon.SpoonInstall:andUse("Seal", {
         return s:refreshAllCommands()
     end,
     hotkeys = { show = { { "cmd" }, "p" } },
-    start = true
+    start = true,
 })

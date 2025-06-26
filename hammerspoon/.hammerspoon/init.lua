@@ -13,7 +13,7 @@ hs.alert.defaultStyle.fadeInDuration = 0
 hs.alert.defaultStyle.fadeOutDuration = 2
 
 require("modules.plugins")
-require("modules.alerts")
+-- require("modules.alerts")
 require("modules.caffeine")
 
 local helpers = require("modules.helpers")
