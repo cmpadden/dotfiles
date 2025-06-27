@@ -103,28 +103,21 @@ local function get_config(...)
     return value
 end
 
--- Gets the layout index for a given `application_name` and `layout`, defaulting to `1`.
+local function ensure_layout_state(layout)
+    if obj.state[layout] == nil then
+        obj.state[layout] = {}
+    end
+    return obj.state[layout]
+end
+
 local function get_application_geometry_index(layout, application_name)
-    local layout_state = obj.state[layout]
-    if layout_state == nil then
-        layout_state = { application_name = 1 }
-        obj.state[layout] = layout_state
-    end
-
-    if layout_state[application_name] == nil then
-        layout_state[application_name] = 1
-    end
-
-    return layout_state[application_name]
+    local layout_state = ensure_layout_state(layout)
+    return layout_state[application_name] or 1
 end
 
 local function set_application_geometry_index(layout, application_name, index)
-    if obj.state[layout] == nil then
-        obj.state[layout] = {}
-        obj.state[layout][application_name] = index
-        return
-    end
-    obj.state[layout][application_name] = index
+    local layout_state = ensure_layout_state(layout)
+    layout_state[application_name] = index
 end
 
 --- Traverse `table` by `step` wrapping around to the beginning and end of the table.
