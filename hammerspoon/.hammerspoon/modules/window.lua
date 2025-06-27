@@ -3,13 +3,14 @@
 -- Tracking:
 -- - [ ] Multi-monitor support
 -- - [ ] Differing geometries for multiple windows in the same application
--- - [ ] Parameterize animation disable
+-- - [x] Parameterize animation disable
 
 local obj = {
     name = "wm.spoon",
     config = {
         default_layout = 2,
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
+        animation_duration = 0,
         layouts = {},
         bindings = {
             prefix = { "cmd", "shift" },
@@ -203,7 +204,7 @@ function obj:load_state()
 end
 
 function obj:init()
-    hs.window.animationDuration = 0
+    hs.window.animationDuration = get_config("animation_duration")
     hs.window.setFrameCorrectness = true
 
     self.layout = get_config("default_layout")
