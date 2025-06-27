@@ -157,34 +157,36 @@ function obj:move_focused_window_next_geometry(direction)
     focused_window:moveToUnit(target_geometry)
 end
 
+local function disable_ax_enhanced_ui(window)
+    -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
+    -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
+    -- resizing the window, as it's required for voice controls, but for now we'll just set it
+    -- once.
+    --
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
+    local axApp = hs.axuielement.applicationElement(window:application())
+    if axApp.AXEnhancedUserInterface then
+        axApp.AXEnhancedUserInterface = false
+    end
+end
+
+local function move_window_to_layout_position(window, layout, active_layout)
+    local app_name = window:application():name()
+    disable_ax_enhanced_ui(window)
+    
+    local ix = get_application_geometry_index(layout, app_name)
+    local target_geometry = active_layout[ix]
+    window:moveToUnit(target_geometry)
+end
+
 function obj:set_layout(layout)
     self.layout = layout
     local active_layout = self.layouts[layout]
 
-    -- NOTE: Getting windows on each layout change can be removed if window creation stores window in state
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
-        -- Non-blocking `moveToUnit` by using timers
-        hs.timer.doAfter(0, function()
-            -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
-            -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
-            -- resizing the window, as it's required for voice controls, but for now we'll just set it
-            -- once.
-            --
-            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
-            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
-            local app_name = window:application():name()
-            local axApp = hs.axuielement.applicationElement(window:application())
-            if axApp.AXEnhancedUserInterface then
-                axApp.AXEnhancedUserInterface = false
-            end
-
-            -- obj.state[layout][application_name]
-
-            local ix = get_application_geometry_index(layout, app_name)
-            local target_geometry = active_layout[ix]
-            window:moveToUnit(target_geometry)
-        end)
+        move_window_to_layout_position(window, layout, active_layout)
     end
 end
 
