@@ -271,16 +271,16 @@ function obj:show_modern(title, attributes, style_name, icon)
     }
 
     -- Title text - center vertically in available space
-    local title_height = 20  -- Reduced from 22 due to smaller font
+    local title_height = 20 -- Reduced from 22 due to smaller font
     local title_y
     if attributes then
         -- For alerts with attributes, position title near top but with some padding
-        title_y = 14  -- Move slightly lower
+        title_y = 14 -- Move slightly lower
     else
         -- For simple alerts, center the title vertically with slight downward adjustment
-        title_y = (height - title_height) / 2 + 2  -- Move 2px lower
+        title_y = (height - title_height) / 2 + 2 -- Move 2px lower
     end
-    
+
     canvas[3] = {
         type = "text",
         text = title,
@@ -325,9 +325,9 @@ function obj:show_modern(title, attributes, style_name, icon)
     local animation_steps = 15
     local step_duration = obj.alert.animation_duration / animation_steps
     local step = 0
-    
+
     -- Set initial position and opacity
-    canvas:frame({x = x, y = start_y, w = width, h = height})
+    canvas:frame({ x = x, y = start_y, w = width, h = height })
     canvas:alpha(0)
     canvas:show()
 

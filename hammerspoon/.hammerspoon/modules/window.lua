@@ -2,14 +2,15 @@
 --
 -- Tracking:
 -- - [ ] Multi-monitor support
--- - [ ] Differing geometries for multiple windows in the same application
--- - [ ] Parameterize animation disable
+-- - [x] Differing geometries for multiple windows in the same application
+-- - [x] Parameterize animation disable
 
 local obj = {
     name = "wm.spoon",
     config = {
         default_layout = 2,
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
+        animation_duration = 0,
         layouts = {},
         bindings = {
             prefix = { "cmd", "shift" },
@@ -20,10 +21,10 @@ local obj = {
             state_alert = "/",
         },
     },
-    -- Store the most layout index for each application in each layout
+    -- Store the most layout index for each window in each layout
     state = {
-        -- [1] = { application_name_1 = 1, application_name_2 = 1 }
-        -- [2] = { application_name_1 = 1, application_name_2 = 3 }
+        -- [1] = { "window_id_1" = 1, "window_id_2" = 1 }
+        -- [2] = { "window_id_1" = 1, "window_id_2" = 3 }
     },
 }
 
@@ -103,28 +104,46 @@ local function get_config(...)
     return value
 end
 
--- Gets the layout index for a given `application_name` and `layout`, defaulting to `1`.
-local function get_application_geometry_index(layout, application_name)
-    local layout_state = obj.state[layout]
-    if layout_state == nil then
-        layout_state = { application_name = 1 }
-        obj.state[layout] = layout_state
-    end
-
-    if layout_state[application_name] == nil then
-        layout_state[application_name] = 1
-    end
-
-    return layout_state[application_name]
-end
-
-local function set_application_geometry_index(layout, application_name, index)
+local function ensure_layout_state(layout)
     if obj.state[layout] == nil then
         obj.state[layout] = {}
-        obj.state[layout][application_name] = index
-        return
     end
-    obj.state[layout][application_name] = index
+    return obj.state[layout]
+end
+
+local function get_window_geometry_index(layout, window_id)
+    local layout_state = ensure_layout_state(layout)
+    return layout_state[window_id] or 1
+end
+
+local function set_window_geometry_index(layout, window_id, index)
+    local layout_state = ensure_layout_state(layout)
+    layout_state[window_id] = index
+end
+
+--- Generate a unique identifier for a window
+local function get_window_id(window)
+    return string.format("%s_%d", window:application():name(), window:id())
+end
+
+--- Clean up state for windows that no longer exist
+local function cleanup_stale_window_state()
+    local all_windows = hs.window.allWindows()
+    local active_window_ids = {}
+
+    for _, window in ipairs(all_windows) do
+        if window:isStandard() and window:isMaximizable() then
+            active_window_ids[get_window_id(window)] = true
+        end
+    end
+
+    for layout_id, layout_state in pairs(obj.state) do
+        for window_id, _ in pairs(layout_state) do
+            if not active_window_ids[window_id] then
+                layout_state[window_id] = nil
+            end
+        end
+    end
 end
 
 --- Traverse `table` by `step` wrapping around to the beginning and end of the table.
@@ -152,50 +171,53 @@ end
 
 function obj:move_focused_window_next_geometry(direction)
     local focused_window = hs.window.focusedWindow()
-    local focused_application_name = focused_window:application():name()
+    local focused_window_id = get_window_id(focused_window)
 
     local _active_layout = self.layouts[self.layout]
 
-    local current_index = get_application_geometry_index(self.layout, focused_application_name)
+    local current_index = get_window_geometry_index(self.layout, focused_window_id)
     local next_index = next_index_circular(_active_layout, current_index, direction)
-    set_application_geometry_index(self.layout, focused_application_name, next_index)
+    set_window_geometry_index(self.layout, focused_window_id, next_index)
 
     local target_geometry = _active_layout[next_index]
     focused_window:moveToUnit(target_geometry)
+end
+
+local function disable_ax_enhanced_ui(window)
+    -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
+    -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
+    -- resizing the window, as it's required for voice controls, but for now we'll just set it
+    -- once.
+    --
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
+    local axApp = hs.axuielement.applicationElement(window:application())
+    if axApp.AXEnhancedUserInterface then
+        axApp.AXEnhancedUserInterface = false
+    end
+end
+
+local function move_window_to_layout_position(window, layout, active_layout)
+    local window_id = get_window_id(window)
+    disable_ax_enhanced_ui(window)
+
+    local ix = get_window_geometry_index(layout, window_id)
+    local target_geometry = active_layout[ix]
+    window:moveToUnit(target_geometry)
 end
 
 function obj:set_layout(layout)
     self.layout = layout
     local active_layout = self.layouts[layout]
 
-    -- NOTE: Getting windows on each layout change can be removed if window creation stores window in state
     local active_windows = self.window_filter_all:getWindows()
     for _, window in ipairs(active_windows) do
-        -- Non-blocking `moveToUnit` by using timers
-        hs.timer.doAfter(0, function()
-            -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
-            -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
-            -- resizing the window, as it's required for voice controls, but for now we'll just set it
-            -- once.
-            --
-            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
-            -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
-            local app_name = window:application():name()
-            local axApp = hs.axuielement.applicationElement(window:application())
-            if axApp.AXEnhancedUserInterface then
-                axApp.AXEnhancedUserInterface = false
-            end
-
-            -- obj.state[layout][application_name]
-
-            local ix = get_application_geometry_index(layout, app_name)
-            local target_geometry = active_layout[ix]
-            window:moveToUnit(target_geometry)
-        end)
+        move_window_to_layout_position(window, layout, active_layout)
     end
 end
 
 function obj:save_state()
+    cleanup_stale_window_state()
     local path = get_config("state_file_path")
     hs.json.write(self.state, path, true, true)
     hs.alert(string.format("wm.spoon state written to file: %s", path))
@@ -208,7 +230,7 @@ function obj:load_state()
 end
 
 function obj:init()
-    hs.window.animationDuration = 0
+    hs.window.animationDuration = get_config("animation_duration")
     hs.window.setFrameCorrectness = true
 
     self.layout = get_config("default_layout")
@@ -228,9 +250,18 @@ function obj:init()
         --
         if window:isStandard() and window:isMaximizable() then
             hs.alert("Initializing " .. app_name)
-            local ix = get_application_geometry_index(self.layout, app_name)
+            local window_id = get_window_id(window)
+            local ix = get_window_geometry_index(self.layout, window_id)
             local target_geometry = self.layouts[self.layout][ix]
             window:moveToUnit(target_geometry)
+        end
+    end)
+
+    -- Clean up state when windows are closed
+    self.window_filter_all:subscribe(hs.window.filter.windowDestroyed, function(window, app_name)
+        local window_id = get_window_id(window)
+        for layout_id, layout_state in pairs(obj.state) do
+            layout_state[window_id] = nil
         end
     end)
 
@@ -250,8 +281,8 @@ function obj:init()
         local lines = {}
         lines[#lines + 1] = string.format("Active Layout: %s", self.layout)
         lines[#lines + 1] = string.rep("-", 80)
-        for application, geometry_index in pairs(obj.state[self.layout]) do
-            lines[#lines + 1] = string.format("%-40s %40s", application, geometry_index)
+        for window_id, geometry_index in pairs(obj.state[self.layout]) do
+            lines[#lines + 1] = string.format("%-40s %40s", window_id, geometry_index)
         end
         hs.alert(table.concat(lines, "\n"))
     end
