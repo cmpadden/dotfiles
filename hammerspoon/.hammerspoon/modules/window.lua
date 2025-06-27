@@ -2,7 +2,7 @@
 --
 -- Tracking:
 -- - [ ] Multi-monitor support
--- - [ ] Differing geometries for multiple windows in the same application
+-- - [x] Differing geometries for multiple windows in the same application
 -- - [x] Parameterize animation disable
 
 local obj = {
@@ -21,10 +21,10 @@ local obj = {
             state_alert = "/",
         },
     },
-    -- Store the most layout index for each application in each layout
+    -- Store the most layout index for each window in each layout
     state = {
-        -- [1] = { application_name_1 = 1, application_name_2 = 1 }
-        -- [2] = { application_name_1 = 1, application_name_2 = 3 }
+        -- [1] = { "window_id_1" = 1, "window_id_2" = 1 }
+        -- [2] = { "window_id_1" = 1, "window_id_2" = 3 }
     },
 }
 
@@ -111,14 +111,39 @@ local function ensure_layout_state(layout)
     return obj.state[layout]
 end
 
-local function get_application_geometry_index(layout, application_name)
+local function get_window_geometry_index(layout, window_id)
     local layout_state = ensure_layout_state(layout)
-    return layout_state[application_name] or 1
+    return layout_state[window_id] or 1
 end
 
-local function set_application_geometry_index(layout, application_name, index)
+local function set_window_geometry_index(layout, window_id, index)
     local layout_state = ensure_layout_state(layout)
-    layout_state[application_name] = index
+    layout_state[window_id] = index
+end
+
+--- Generate a unique identifier for a window
+local function get_window_id(window)
+    return string.format("%s_%d", window:application():name(), window:id())
+end
+
+--- Clean up state for windows that no longer exist
+local function cleanup_stale_window_state()
+    local all_windows = hs.window.allWindows()
+    local active_window_ids = {}
+
+    for _, window in ipairs(all_windows) do
+        if window:isStandard() and window:isMaximizable() then
+            active_window_ids[get_window_id(window)] = true
+        end
+    end
+
+    for layout_id, layout_state in pairs(obj.state) do
+        for window_id, _ in pairs(layout_state) do
+            if not active_window_ids[window_id] then
+                layout_state[window_id] = nil
+            end
+        end
+    end
 end
 
 --- Traverse `table` by `step` wrapping around to the beginning and end of the table.
@@ -146,13 +171,13 @@ end
 
 function obj:move_focused_window_next_geometry(direction)
     local focused_window = hs.window.focusedWindow()
-    local focused_application_name = focused_window:application():name()
+    local focused_window_id = get_window_id(focused_window)
 
     local _active_layout = self.layouts[self.layout]
 
-    local current_index = get_application_geometry_index(self.layout, focused_application_name)
+    local current_index = get_window_geometry_index(self.layout, focused_window_id)
     local next_index = next_index_circular(_active_layout, current_index, direction)
-    set_application_geometry_index(self.layout, focused_application_name, next_index)
+    set_window_geometry_index(self.layout, focused_window_id, next_index)
 
     local target_geometry = _active_layout[next_index]
     focused_window:moveToUnit(target_geometry)
@@ -173,10 +198,10 @@ local function disable_ax_enhanced_ui(window)
 end
 
 local function move_window_to_layout_position(window, layout, active_layout)
-    local app_name = window:application():name()
+    local window_id = get_window_id(window)
     disable_ax_enhanced_ui(window)
-    
-    local ix = get_application_geometry_index(layout, app_name)
+
+    local ix = get_window_geometry_index(layout, window_id)
     local target_geometry = active_layout[ix]
     window:moveToUnit(target_geometry)
 end
@@ -192,6 +217,7 @@ function obj:set_layout(layout)
 end
 
 function obj:save_state()
+    cleanup_stale_window_state()
     local path = get_config("state_file_path")
     hs.json.write(self.state, path, true, true)
     hs.alert(string.format("wm.spoon state written to file: %s", path))
@@ -224,9 +250,18 @@ function obj:init()
         --
         if window:isStandard() and window:isMaximizable() then
             hs.alert("Initializing " .. app_name)
-            local ix = get_application_geometry_index(self.layout, app_name)
+            local window_id = get_window_id(window)
+            local ix = get_window_geometry_index(self.layout, window_id)
             local target_geometry = self.layouts[self.layout][ix]
             window:moveToUnit(target_geometry)
+        end
+    end)
+
+    -- Clean up state when windows are closed
+    self.window_filter_all:subscribe(hs.window.filter.windowDestroyed, function(window, app_name)
+        local window_id = get_window_id(window)
+        for layout_id, layout_state in pairs(obj.state) do
+            layout_state[window_id] = nil
         end
     end)
 
@@ -246,8 +281,8 @@ function obj:init()
         local lines = {}
         lines[#lines + 1] = string.format("Active Layout: %s", self.layout)
         lines[#lines + 1] = string.rep("-", 80)
-        for application, geometry_index in pairs(obj.state[self.layout]) do
-            lines[#lines + 1] = string.format("%-40s %40s", application, geometry_index)
+        for window_id, geometry_index in pairs(obj.state[self.layout]) do
+            lines[#lines + 1] = string.format("%-40s %40s", window_id, geometry_index)
         end
         hs.alert(table.concat(lines, "\n"))
     end
