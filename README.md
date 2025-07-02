@@ -51,13 +51,13 @@ the home directory.
 
 These are the applications and utilities that I choose to use at the moment, reference the [Appendix](#appendix) to see utilities that were used in the days bygone.
 
-| Name                                       | Tagline                                                                                                                                                                  | Category |
-|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| [Neovim](https://neovim.io)                | Hyperextensible Vim-based text editor                                                                                                                                    | Editor   |
+| Name                                       | Tagline                                                                                                                                                                           | Category |
+|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| [Neovim](https://neovim.io)                | Hyperextensible Vim-based text editor                                                                                                                                             | Editor   |
 | [Bash](https://www.gnu.org/software/bash/) | Bash is the GNU Project's shell—the Bourne Again SHell. This is an sh-compatible shell that incorporates useful features from the Korn shell (ksh) and the C shell (csh) | Shell    |
-| [Kitty](https://sw.kovidgoyal.net/kitty/)  | The fast, feature-rich, GPU based terminal emulator                                                                                                                      | Terminal |
+| [Ghostty](https://ghostty.org/)            | Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration.                                            | Terminal |
 | [Tmux](https://github.com/tmux/tmux)       | Tmux is a terminal multiplexer: it enables a number of terminals to be created, accessed, and controlled from a single screen.                                           | Utility  |
-| [Hammerspoon](https://www.hammerspoon.org) | This is a tool for powerful automation of OS X.                                                                                                                          | Utility  |
+| [Hammerspoon](https://www.hammerspoon.org) | This is a tool for powerful automation of OS X.                                                                                                                                   | Utility  |
 
 ---
 
@@ -72,6 +72,7 @@ These are the applications and utilities that I choose to use at the moment, ref
 | [Alacritty](https://github.com/alacritty/alacritty) | A fast, cross-platform, OpenGL terminal emulator                                                              | Terminal Emulator |
 | [urxvt](https://linux.die.net/man/1/urxvt)          | rxvt-unicode (ouR XVT, unicode) - (a VT102 emulator for the X window system)                                  | Terminal Emulator |
 | [i3wm](https://i3wm.org)                            | improved tiling wm                                                                                            | Window Manager    |
+| [Kitty](https://sw.kovidgoyal.net/kitty/)  | The fast, feature-rich, GPU based terminal emulator                                                                                                                      | Terminal |
 
 </details>
 
