@@ -121,12 +121,10 @@ local function set_window_geometry_index(layout, window_id, index)
     layout_state[window_id] = index
 end
 
---- Generate a unique identifier for a window
 local function get_window_id(window)
     return string.format("%s_%d", window:application():name(), window:id())
 end
 
---- Clean up state for windows that no longer exist
 local function cleanup_stale_window_state()
     local all_windows = hs.window.allWindows()
     local active_window_ids = {}
@@ -143,6 +141,20 @@ local function cleanup_stale_window_state()
                 layout_state[window_id] = nil
             end
         end
+    end
+end
+
+local function disable_ax_enhanced_ui(window)
+    -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
+    -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
+    -- resizing the window, as it's required for voice controls, but for now we'll just set it
+    -- once.
+    --
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
+    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
+    local axApp = hs.axuielement.applicationElement(window:application())
+    if axApp.AXEnhancedUserInterface then
+        axApp.AXEnhancedUserInterface = false
     end
 end
 
@@ -179,23 +191,11 @@ function obj:move_focused_window_next_geometry(direction)
     local next_index = next_index_circular(_active_layout, current_index, direction)
     set_window_geometry_index(self.layout, focused_window_id, next_index)
 
+    disable_ax_enhanced_ui(focused_window)
     local target_geometry = _active_layout[next_index]
     focused_window:moveToUnit(target_geometry)
 end
 
-local function disable_ax_enhanced_ui(window)
-    -- Disabling `AXEnhancedUserInterface` fixes the issue where applications like Firefox
-    -- require multiple retries to resize. Ideally, we would re-set this value to `true` after
-    -- resizing the window, as it's required for voice controls, but for now we'll just set it
-    -- once.
-    --
-    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3224#issuecomment-2155567633
-    -- See: https://github.com/Hammerspoon/hammerspoon/issues/3624
-    local axApp = hs.axuielement.applicationElement(window:application())
-    if axApp.AXEnhancedUserInterface then
-        axApp.AXEnhancedUserInterface = false
-    end
-end
 
 local function move_window_to_layout_position(window, layout, active_layout)
     local window_id = get_window_id(window)
@@ -250,6 +250,7 @@ function obj:init()
         --
         if window:isStandard() and window:isMaximizable() then
             hs.alert("Initializing " .. app_name)
+            disable_ax_enhanced_ui(window)
             local window_id = get_window_id(window)
             local ix = get_window_geometry_index(self.layout, window_id)
             local target_geometry = self.layouts[self.layout][ix]
