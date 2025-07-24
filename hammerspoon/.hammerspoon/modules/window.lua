@@ -65,6 +65,20 @@ obj.builtins = {
         y = padding,
     }),
 
+    full_left = hs.geometry({
+        h = 1,
+        w = 0.5,
+        x = 0,
+        y = 0,
+    }),
+
+    full_right = hs.geometry({
+        h = 1,
+        w = 0.5,
+        x = 0.5,
+        y = 0,
+    }),
+
     skinny = hs.geometry({
         h = (1 - (2 * padding)),
         w = window_width_skinny,

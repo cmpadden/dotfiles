@@ -53,6 +53,14 @@ wm.config.layouts = {
         wm.builtins.skinny,
         wm.builtins.pip_top_right,
     },
+    -- ┌-----------─┐
+    -- |[    ][    ]|
+    -- |[    ][    ]|
+    -- └------------┘
+    {
+        wm.builtins.full_left,
+        wm.builtins.full_right,
+    },
 }
 
 wm:init()
