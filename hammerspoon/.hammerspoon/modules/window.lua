@@ -65,6 +65,20 @@ obj.builtins = {
         y = padding,
     }),
 
+    full_left = hs.geometry({
+        h = 1,
+        w = 0.5,
+        x = 0,
+        y = 0,
+    }),
+
+    full_right = hs.geometry({
+        h = 1,
+        w = 0.5,
+        x = 0.5,
+        y = 0,
+    }),
+
     skinny = hs.geometry({
         h = (1 - (2 * padding)),
         w = window_width_skinny,
@@ -122,7 +136,21 @@ local function set_window_geometry_index(layout, window_id, index)
 end
 
 local function get_window_id(window)
-    return string.format("%s_%d", window:application():name(), window:id())
+    local success, app_name = pcall(function()
+        return window:application():name()
+    end)
+    if not success or not app_name then
+        app_name = "unknown"
+    end
+
+    local success2, window_id = pcall(function()
+        return window:id()
+    end)
+    if not success2 or not window_id then
+        window_id = 0
+    end
+
+    return string.format("%s_%d", app_name, window_id)
 end
 
 local function cleanup_stale_window_state()
@@ -196,24 +224,60 @@ function obj:move_focused_window_next_geometry(direction)
     focused_window:moveToUnit(target_geometry)
 end
 
-
-local function move_window_to_layout_position(window, layout, active_layout)
-    local window_id = get_window_id(window)
-    disable_ax_enhanced_ui(window)
-
-    local ix = get_window_geometry_index(layout, window_id)
-    local target_geometry = active_layout[ix]
-    window:moveToUnit(target_geometry)
-end
-
 function obj:set_layout(layout)
+    print(string.format("=== Setting Layout %d ===", layout))
     self.layout = layout
     local active_layout = self.layouts[layout]
 
-    local active_windows = self.window_filter_all:getWindows()
-    for _, window in ipairs(active_windows) do
-        move_window_to_layout_position(window, layout, active_layout)
+    if not active_layout then
+        print(string.format("ERROR: Layout %d not found in layouts table", layout))
+        return
     end
+
+    print(string.format("Layout %d has %d geometry positions", layout, #active_layout))
+
+    -- Skip all validation and just try to move all windows
+    local all_windows = hs.window.allWindows()
+
+    print(string.format("Found %d total windows, attempting to move all", #all_windows))
+
+    local moved_count = 0
+    for i, window in ipairs(all_windows) do
+        if window and type(window) == "userdata" then
+            -- Try to get app name for logging, but don't filter based on it
+            local app_success, app_name = pcall(function()
+                return window:application():name()
+            end)
+            local display_name = app_success and app_name or "unknown"
+
+            print(string.format("Window %d: %s - attempting to move", i, display_name))
+
+            -- Try to move the window regardless of validation
+            local window_id = get_window_id(window)
+            local ix = get_window_geometry_index(layout, window_id)
+
+            if ix > #active_layout then
+                ix = 1
+                set_window_geometry_index(layout, window_id, ix)
+            end
+
+            local target_geometry = active_layout[ix]
+            if target_geometry then
+                local success, error = pcall(function()
+                    window:moveToUnit(target_geometry)
+                end)
+
+                if success then
+                    print(string.format("  ✓ Successfully moved %s", display_name))
+                    moved_count = moved_count + 1
+                else
+                    print(string.format("  ✗ Failed to move %s: %s", display_name, error))
+                end
+            end
+        end
+    end
+
+    print(string.format("=== Layout Setting Complete - Moved %d windows ===", moved_count))
 end
 
 function obj:save_state()
@@ -229,6 +293,52 @@ function obj:load_state()
     hs.alert(string.format("wm.spoon state loaded from file: %s", path))
 end
 
+function obj:debug_window_filter()
+    print("=== Window Filter Debug ===")
+    print(string.format("Filter object: %s", tostring(self.window_filter_all)))
+
+    local filter_windows = self.window_filter_all:getWindows()
+    local all_windows = hs.window.allWindows()
+
+    print(string.format("Filter returned: %d windows", filter_windows and #filter_windows or 0))
+    print(string.format("hs.window.allWindows returned: %d windows", #all_windows))
+
+    print("All windows from hs.window.allWindows():")
+    for i, window in ipairs(all_windows) do
+        if window and type(window) == "userdata" then
+            local success, is_valid = pcall(function()
+                return window:isValid()
+            end)
+            if success and is_valid then
+                local app_success, app_name = pcall(function()
+                    return window:application():name()
+                end)
+                local is_standard_success, is_standard = pcall(function()
+                    return window:isStandard()
+                end)
+                local is_max_success, is_maximizable = pcall(function()
+                    return window:isMaximizable()
+                end)
+
+                print(
+                    string.format(
+                        "  %d: %s - standard:%s, maximizable:%s",
+                        i,
+                        app_success and app_name or "unknown",
+                        is_standard_success and tostring(is_standard) or "error",
+                        is_max_success and tostring(is_maximizable) or "error"
+                    )
+                )
+            else
+                print(string.format("  %d: INVALID WINDOW", i))
+            end
+        else
+            print(string.format("  %d: NIL or non-userdata", i))
+        end
+    end
+    print("=== Debug Complete ===")
+end
+
 function obj:init()
     hs.window.animationDuration = get_config("animation_duration")
     hs.window.setFrameCorrectness = true
@@ -238,6 +348,7 @@ function obj:init()
 
     -- Automatic layout application to new/focused windows.
     self.window_filter_all = hs.window.filter.new()
+    print(string.format("Window filter initialized: %s", tostring(self.window_filter_all)))
 
     -- Consider usage of `windowCreated` and `windowFocused` for ideal resizing trigger
     -- TODO refactor this so that movement and getting layout is shared
