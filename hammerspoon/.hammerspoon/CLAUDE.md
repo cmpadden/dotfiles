@@ -14,6 +14,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Debug active alerts**: `hs -c "require('modules.helpers'):debug_active_alerts()"`
 - **Manual config reload**: `hs -c "hs.reload()"`
 - **Read console output**: `hs -c 'print(hs.console.getConsole())'`
+- **Read recent console**: `hs -c 'print(hs.console.getConsole())' | tail -10`
+
+### CLI Development Tips
+- **Module reloading**: After editing Lua files, always run `hs -c "hs.reload()"` to reload the configuration
+- **IPC errors are normal**: When reloading, you may see "message port was invalidated" errors - these are expected
+- **Testing modules**: Use `local wm = require('modules.window'); wm:debug_function()` pattern for testing
+- **Crash recovery**: If `hs` command crashes with NSDestinationInvalidException, the operation may still succeed
+- **Print statements**: Debug prints may fail due to IPC issues during reload, but the actual code execution continues
+- **Window access**: `hs.window.allWindows()` may return windows that fail `isValid()` checks - use `pcall()` for safety
 
 ## Architecture Overview
 
