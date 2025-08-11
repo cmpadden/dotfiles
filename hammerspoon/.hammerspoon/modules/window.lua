@@ -213,21 +213,79 @@ end
 
 local function move_window_to_layout_position(window, layout, active_layout)
     local window_id = get_window_id(window)
-    disable_ax_enhanced_ui(window)
-
     local ix = get_window_geometry_index(layout, window_id)
+    
+    print(string.format("  Moving window %s to geometry index %d", window_id, ix))
+    
+    -- Bounds checking for geometry array
+    if ix > #active_layout then
+        print(string.format("  ERROR: Geometry index %d exceeds layout size %d, defaulting to index 1", ix, #active_layout))
+        ix = 1
+        set_window_geometry_index(layout, window_id, ix)
+    end
+    
     local target_geometry = active_layout[ix]
-    window:moveToUnit(target_geometry)
+    
+    if not target_geometry then
+        print(string.format("  ERROR: No geometry found at index %d for layout %d", ix, layout))
+        return
+    end
+    
+    print(string.format("  Target geometry: x=%.3f, y=%.3f, w=%.3f, h=%.3f", 
+        target_geometry.x, target_geometry.y, target_geometry.w, target_geometry.h))
+    
+    disable_ax_enhanced_ui(window)
+    
+    -- Validate window before moving
+    if not window:isValid() then
+        print(string.format("  ERROR: Window %s became invalid before moveToUnit", window_id))
+        return
+    end
+    
+    local success, error = pcall(function()
+        window:moveToUnit(target_geometry)
+    end)
+    
+    if not success then
+        print(string.format("  ERROR: moveToUnit failed for window %s: %s", window_id, error))
+    else
+        print(string.format("  SUCCESS: Moved window %s to layout position %d", window_id, ix))
+    end
 end
 
 function obj:set_layout(layout)
+    print(string.format("=== Setting Layout %d ===", layout))
     self.layout = layout
     local active_layout = self.layouts[layout]
+    
+    if not active_layout then
+        print(string.format("ERROR: Layout %d not found in layouts table", layout))
+        return
+    end
+    
+    print(string.format("Layout %d has %d geometry positions", layout, #active_layout))
 
     local active_windows = self.window_filter_all:getWindows()
-    for _, window in ipairs(active_windows) do
-        move_window_to_layout_position(window, layout, active_layout)
+    
+    if not active_windows then
+        print("ERROR: window_filter_all:getWindows() returned nil")
+        return
     end
+    
+    print(string.format("Found %d active windows to reposition", #active_windows))
+    
+    for i, window in ipairs(active_windows) do
+        if window and window:isValid() then
+            local app_name = window:application():name()
+            local window_id = get_window_id(window)
+            print(string.format("Window %d: %s (ID: %s)", i, app_name, window_id))
+            move_window_to_layout_position(window, layout, active_layout)
+        else
+            print(string.format("Window %d: INVALID or NIL window", i))
+        end
+    end
+    
+    print("=== Layout Setting Complete ===")
 end
 
 function obj:save_state()
