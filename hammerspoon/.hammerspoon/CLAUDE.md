@@ -13,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run specific test**: `hs -c "dofile(hs.configdir .. '/tests/test_basic_alerts.lua').run()"`
 - **Debug active alerts**: `hs -c "require('modules.helpers'):debug_active_alerts()"`
 - **Manual config reload**: `hs -c "hs.reload()"`
+- **Read console output**: `hs -c 'print(hs.console.getConsole())'`
 
 ## Architecture Overview
 
