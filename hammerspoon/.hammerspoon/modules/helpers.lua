@@ -276,6 +276,14 @@ function obj:_reflow_alerts()
             h = alert_data.height,
         })
     end
+
+    local newest_index = #visible_alerts
+    for index, alert_data in ipairs(visible_alerts) do
+        local distance = newest_index - index
+        local target_alpha = 1 - (distance * 0.25)
+        target_alpha = math.max(0.35, math.min(1, target_alpha))
+        obj:_animate_canvas_alpha(alert_data.canvas, target_alpha, obj.alert.animation_duration / 2)
+    end
 end
 
 function obj:_animate_canvas_alpha(canvas, target_alpha, duration, on_complete)
@@ -481,3 +489,4 @@ end
 -- end
 
 return obj
+
