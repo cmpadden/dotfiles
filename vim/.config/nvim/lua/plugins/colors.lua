@@ -8,21 +8,40 @@ return {
     -- Solution:
     -- > rm /opt/homebrew/lib/nvim/parser/vim.so
 
+    -- https://github.com/ellisonleao/gruvbox.nvim
+    {
+        "ellisonleao/gruvbox.nvim",
+        lazy = false,
+        priority = 1000,
+        init = function()
+            require("gruvbox").setup({
+                undercurl = false,
+                underline = false,
+                italic = {
+                    strings = false,
+                    emphasis = false,
+                    comments = true,
+                    operators = false,
+                    folds = false,
+                },
+                invert_selection = false,
+                contrast = "hard",
+            })
+            vim.o.termguicolors = true
+            vim.o.background = "dark"
+            vim.cmd.colorscheme("gruvbox")
+        end,
+        enabled = true,
+    },
+
     -- https://github.com/EdenEast/nightfox.nvim
     {
         "EdenEast/nightfox.nvim",
         lazy = false,
         priority = 1000,
-        -- config = function()
-        --     vim.o.termguicolors = true
-        --     require("nightfox").setup {
-        --         style = "terafox"
-        --     }
-        -- end,
         init = function()
             vim.o.termguicolors = true
             vim.cmd.colorscheme("terafox")
-            -- vim.cmd.colorscheme("dayfox")
         end,
         enabled = false,
     },
@@ -59,7 +78,7 @@ return {
             })
             vim.cmd.colorscheme "catppuccin"
         end,
-        enabled = true,
+        enabled = false,
     },
 
     -- https://github.com/tanvirtin/monokai.nvim
