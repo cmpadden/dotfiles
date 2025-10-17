@@ -13,24 +13,28 @@ local obj = {
 }
 
 -- https://github.com/cmpadden/chatblade.nvim
-if vim.fn.isdirectory(vim.fn.expand("~/src/chatblade.nvim")) == 1 then
+if vim.fn.isdirectory(vim.fn.expand("~/src/llm.nvim")) == 1 then
     table.insert(obj, {
-        dir = "~/src/chatblade.nvim",
+        dir = "~/src/llm.nvim",
         keys = {
-            { "<leader>x", ":Chatblade<cr><cr>", mode = "v", desc = "Chatblade" },
+            { "<leader>x", ":LLM<cr><cr>", mode = "v" },
         },
         cmd = {
-            "Chatblade",
-            "ChatbladeSessionStart",
-            "ChatbladeSessionStop",
-            "ChatbladeSessionDelete",
+            "LLM",
         },
         opts = {
-            prompt = "programmer",
-            raw = true,
-            extract = true,
-            only = true,
-        },
+            -- `llm` flag configuration parameters
+            model             = "claude-3.5-haiku", -- TEXT            Model to use
+            system            = nil,        -- TEXT            System prompt to use
+            continue          = nil,        --                 Continue the most recent conversation.
+            conversation      = nil,        -- TEXT            Continue the conversation with the given ID.
+            template          = nil,        -- TEXT            Template to use
+            param             = nil,        -- <TEXT TEXT>...  Parameters for template
+            option            = nil,        -- <TEXT TEXT>...  key/value options for the model
+
+            -- nvim-specific configuration parameters
+            insert_as_comment = true -- BOOL            Insert the prompt response as a comment
+        }
     })
 end
 

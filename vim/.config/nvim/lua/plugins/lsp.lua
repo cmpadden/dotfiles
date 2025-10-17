@@ -1,88 +1,4 @@
--- REFERENCES
---
---     https://github.com/neovim/nvim-lspconfig
---     https://github.com/williamboman/mason-lspconfig.nvim#automatic-server-setup-advanced-feature
---     https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
---
-
--- `on_attach` to map keys after language server attaches to the current buffer
--- See `:help vim.lsp.*`
--- See `:help vim.diagnostic.*`
-local default_on_attach = function(client, bufnr)
-    local opts = { noremap = true, silent = true }
-
-    -- Avoid using formatting capability for `tsserver`, and instead use `eslint` or
-    -- `prettier`.
-    if client.name == "tsserver" then
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-    end
-
-    -- Global Bindings - Diagnostics
-
-    vim.keymap.set("n", "<space>d", vim.diagnostic.open_float, opts)
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-    vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
-
-    -- Buffer Bindings
-
-    local opts_buffer = { noremap = true, silent = true, buffer = bufnr }
-
-    if client.supports_method("textDocument/declaration") then
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/definition") then
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/hover") then
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/implementation") then
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/signatureHelp") then
-        vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/typeDefinition") then
-        vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/rename") then
-        vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/codeAction") then
-        vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/references") then
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_buffer)
-    end
-
-    if client.supports_method("textDocument/formatting") then
-        vim.keymap.set("n", "<space>f", function()
-            vim.lsp.buf.format({ async = true })
-        end, opts_buffer)
-    end
-
-    -- if client.supports_method("textDocument/workspaceEdit") then
-    vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts_buffer)
-
-    vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts_buffer)
-
-    vim.keymap.set("n", "<space>wl", function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts_buffer)
-end
-
 return {
-
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
@@ -92,14 +8,44 @@ return {
             config = function()
                 vim.diagnostic.config({
                     virtual_text = false,
-                    signs = true,
                     underline = true,
                     update_in_insert = false,
                     severity_sort = false,
+                    -- https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
+                    signs = {
+                        text = {
+                            [vim.diagnostic.severity.ERROR] = '•',
+                            [vim.diagnostic.severity.WARN] = '•',
+                        },
+                    },
                 })
 
-                local mason_lspconfig = require("mason-lspconfig")
-                mason_lspconfig.setup({
+                -- https://cmp.saghen.dev/installation#merging-lsp-capabilities
+                local capabilities = vim.tbl_deep_extend(
+                    'force',
+                    vim.lsp.protocol.make_client_capabilities(),
+                    require('blink.cmp').get_lsp_capabilities({}, false)
+                )
+
+                -- Configurations in `lsp/` are merged with the default configurations with the
+                -- following priority:
+                --
+                --     1. Configuration defined for the '*' name.
+                --     2. Configuration from the result of merging all tables returned by lsp/<name>.lua files in 'runtimepath' for a server of name name.
+                --     3. Configurations defined anywhere else.
+                --
+                vim.lsp.config("*", {
+                    capabilities = capabilities,
+                    on_attach = require("shared").default_on_attach,
+                    flags = { debounce_text_changes = 150 },
+                })
+
+                -- TODO determine why `cmd` in `lsp/ruff.lua` was not being prioritized
+                vim.lsp.config("ruff", {
+                    cmd = { ".venv/bin/ruff", "server" },
+                })
+
+                require("mason-lspconfig").setup({
                     ensure_installed = {
                         "basedpyright",
                         "bashls",
@@ -107,21 +53,10 @@ return {
                         "html",
                         "jsonls",
                         "lua_ls",
-                        "ruff",
                         "rust_analyzer",
                         "tailwindcss",
-                        "volar",
                     },
                     automatic_installation = true,
-                })
-
-                vim.lsp.config("*", {
-                    -- https://cmp.saghen.dev/installation.html#lsp-capabilities
-                    -- https://github.com/neovim/nvim-lspconfig/issues/3494
-                    -- capabilities = vim.lsp.protocol.make_client_capabilities()
-                    capabilities = require("blink.cmp").get_lsp_capabilities(),
-                    flags = { debounce_text_changes = 150 },
-                    on_attach = default_on_attach,
                 })
             end,
         },

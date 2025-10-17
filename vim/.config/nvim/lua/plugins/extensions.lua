@@ -22,16 +22,6 @@ local obj = {
     -- https://github.com/ggandor/lightspeed.nvim
     { "ggandor/lightspeed.nvim" },
 
-    -- https://github.com/iamcco/markdown-preview.nvim
-    {
-        "iamcco/markdown-preview.nvim",
-        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-        ft = { "markdown" },
-        build = function()
-            vim.fn["mkdp#util#install"]()
-        end,
-    },
-
     -- https://github.com/jpalardy/vim-slime
     {
         "jpalardy/vim-slime",
@@ -70,7 +60,6 @@ local obj = {
             autocmd! User GoyoEnter nested call <SID>goyo_enter()
             autocmd! User GoyoLeave nested call <SID>goyo_leave()
             ]])
-
         end,
     },
 
@@ -107,7 +96,7 @@ local obj = {
         },
         config = function()
             vim.g.vim_markdown_folding_style_pythonic = 1 -- use pythonic folding for vim-markdown
-            vim.g.vim_markdown_folding_level = 6 -- default to open folds
+            vim.g.vim_markdown_folding_level = 6          -- default to open folds
         end,
     },
 
