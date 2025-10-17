@@ -57,15 +57,15 @@ vim.cmd([[
   augroup END
 ]])
 
--- softwrap markdown files; we like long lines
+-- -- softwrap markdown files; we like long lines
+-- --
+-- -- References:
+-- -- - https://stackoverflow.com/a/26015800
+-- -- - https://stackoverflow.com/a/26284471
+-- vim.cmd([[
+--   augroup markdownWrap
+--       autocmd!
+--       autocmd FileType markdown set wrap linebreak showbreak=>>>
 --
--- References:
--- - https://stackoverflow.com/a/26015800
--- - https://stackoverflow.com/a/26284471
-vim.cmd([[
-  augroup markdownWrap
-      autocmd!
-      autocmd FileType markdown set wrap linebreak showbreak=>>>
-
-  augroup END
-]])
+--   augroup END
+-- ]])
