@@ -12,10 +12,12 @@ fi
 
 if [ -f "$HOME/notes.md.asc" ]; then
     alias notes="nvim \$HOME/notes.md.asc"
+    # $ tmux split-window -v -p 30 -- nvim ~/src/notes/work/index.md
     alias ns="tmux split-window -h 'nvim \$HOME/notes.md.asc'"
     alias notes-backup='cp "$HOME/notes.md.asc" "$HOME/backups/notes.md.$(date -Iminutes).asc"'
 else
     alias notes="nvim ~/src/notes/work/index.md"
+    alias cd-notes="cd ~/src/notes"
     alias scratch="nvim ~/src/notes/work/scratch.md"
 fi
 
@@ -49,18 +51,18 @@ if [ -f ~/Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
     alias snowsql='~/Applications/SnowSQL.app/Contents/MacOS/snowsql'
 fi
 
-alias tar_compress="tar -czvf"
-alias tar_extract="tar -xzvf"
+alias tar-compress="tar -czvf"
+alias tar-extract="tar -xzvf"
 
 # source environment variables in `.env` filtering comments
-alias source_env='export $(grep -v ^# .env | xargs)'
+alias source-env='export $(grep -v ^# .env | xargs)'
 
 ####################################################################################################
 #                                              Docker                                              #
 ####################################################################################################
 
-alias docker_remove_images='docker rmi -f $(docker images -q)'
-alias docker_kill_all='docker kill $(docker ps -qa)'
+alias docker-remove-images='docker rmi -f $(docker images -q)'
+alias docker-kill-all='docker kill $(docker ps -qa)'
 
 ####################################################################################################
 #                                               Git                                                #
@@ -74,8 +76,8 @@ alias gd="git diff"
 alias gds="git diff --staged"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 alias gfm="git fetch origin main:main"
-alias git_delete_merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
-alias git_branch_dates="git for-each-ref --sort=-committerdate --format='%(committerdate:relative) - %(refname:short)' refs/heads/"
+alias git-delete-merged="git branch --merged | grep -v 'main|master|develop' | xargs git branch -d"
+alias git-branch-dates="git for-each-ref --sort=-committerdate --format='%(committerdate:relative) - %(refname:short)' refs/heads/"
 alias gcm="git checkout main"
 alias gpm="git pull origin main"
 alias gcma="git checkout master"
@@ -103,6 +105,7 @@ alias mkpyenv="echo \"layout uv\" > .envrc && direnv allow"
 alias pip='uv pip'
 alias pipe-dev="pip install -e .[dev]"
 alias pydoc='python -m pydoc'
+alias venv='source .venv/bin/activate'
 
 ####################################################################################################
 #                                                AI                                                #
@@ -113,9 +116,17 @@ if hash aider 2>/dev/null; then
 fi
 
 if hash chatblade 2>/dev/null; then
-    alias gpt_programmer="chatblade -s -i -p programmer --theme github-dark"
+    alias gpt-programmer="chatblade -s -i -p programmer --theme github-dark"
 fi
+
+
+# prevent `claude` from using the environment variable API key
+alias claude="ANTHROPIC_API_KEY= claude"
+alias claude-danger="ANTHROPIC_API_KEY= claude --dangerously-skip-permissions"
 
 if hash uvx 2>/dev/null; then
     alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
+    alias openhands="uvx --python 3.12 --from openhands-ai openhands"
 fi
+
+alias workstack="uvx workstack"

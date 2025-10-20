@@ -69,6 +69,31 @@ prompt_git_branch()
 # | 90-97   | Set bright foreground color  | aixterm (not in standard)                                              |
 # | 100-107 | Set bright background color  | aixterm (not in standard)                                              |
 
+# Basic Path Symbols:
+# - \w - Full working directory path
+# - \W - Current working directory name
+# - \h - Hostname
+# - \u - Username
+# - \$ - Shows # for root, $ for normal users
+# 
+# Special Characters:
+# - \n - Newline
+# - \r - Carriage return
+# - \t - Current time (24-hour HH:MM:SS)
+# - \T - Current time (12-hour)
+# - \@ - Current time with AM/PM
+# 
+# Color/Formatting:
+# - \[ - Start non-printing characters
+# - \] - End non-printing characters
+# - \e[ - Start color/formatting
+# - \033[ - Alternative color start
+# 
+# Other Symbols:
+# - \v - Bash version
+# - \V - Detailed Bash version
+# - \! - Command history number
+
 # Applies custom prompt when `xterm-256color` is active (eg. when in tmux)
 #
 # Reference(s):
@@ -76,10 +101,21 @@ prompt_git_branch()
 #  - https://wiki.archlinux.org/title/Bash/Prompt_customization
 #  - https://stackoverflow.com/a/33206814
 #  - https://www.shellcheck.net/wiki/SC2025
-#
+
+# if [ "$TERM" == "xterm-256color" ]; then
+#     PS1='\[\e[38;5;223m\]$(prompt_venv)\[\e[0m\]'
+#     PS1+='\[\e[38;5;175m\]$(prompt_git_branch)\[\e[0m\]'
+#     PS1+='\[\e[38;5;255m\]\w\[\e[0m\]'
+#     PS1+='\n\$ '
+# fi
+
 if [ "$TERM" == "xterm-256color" ]; then
-    PS1='\[\e[33m\]$(prompt_venv)\[\e[0m\]'
-    PS1+='\[\e[34m\]$(prompt_git_branch)\[\e[0m\]'
-    PS1+='\[\e[33m\]\w\[\e[0m\]'
-    PS1+='\n\$ '
+    # PS1='\[\e[48;2;15;28;30m\e[K\]'  # RGB bg [48;2;R;G;Bm]
+    PS1='\[\e[48;5;16m\e[K\]'  # RGB bg [48;2;R;G;Bm]
+    PS1+='\[\e[38;5;223m\]$(prompt_venv)'
+    PS1+='\[\e[38;5;175m\]$(prompt_git_branch)'
+    # PS1+='\[\e[38;5;255m\]\w\[\e[0m\]'
+    PS1+='\[\e[38;5;255m\]\w\[\e[0m\]'
+    # PS1+='\n\$ '
+    PS1+='\n▸ '
 fi

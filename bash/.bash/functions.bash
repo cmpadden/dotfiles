@@ -353,3 +353,62 @@ function git_llm_commmit() {
         | llm "<summarize these changes as a concise git commit message, do not mention counts of insertions or deletions>" \
         | git commit -F -
 }
+
+
+to-gif() {
+    local in="$1"
+    local out="${in/.mp4/.gif}"
+    # local palette="${in/.mp4/-palette.png}"
+
+    # palette
+    # ffmpeg -i "$in" -vf "setpts=0.5*PTS,fps=15,palettegen" -y "$palette"
+    # ffmpeg -y -i "$in" -i "$palette" -filter_complex "[0:v]setpts=0.5*PTS,fps=15[v];[v][1:v]paletteuse" "$output"
+
+    # scaling
+    # ffmpeg -y -i "$in" -filter_complex "setpts=0.5*PTS,fps=5,scale=1080:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=32[p];[s1][p]paletteuse=dither=bayer" "$out"
+
+    # noscale
+    ffmpeg -y -i "$in" -filter_complex "setpts=0.5*PTS,fps=5,split[s0][s1];[s0]palettegen=max_colors=32[p];[s1][p]paletteuse=dither=bayer" "$out"
+}
+
+dg-worktree() {
+    set -e
+
+    local name="$1"
+    local commit="master"
+
+    if [ -z "$name" ]; then
+        echo "Argument <name> is required in \`dg-worktree <name>\`"
+        return
+    fi
+
+    local source="$DAGSTER_GIT_REPO_DIR"
+    local destination="${DAGSTER_GIT_REPO_DIR/dagster/dagster-${name}}"
+
+    if [ -d "$destination" ]; then
+        echo "Destination already exists ${destination}"
+        return
+    fi
+
+    echo "[*] Source repository: ${source}"
+    echo "[*] Destination worktree: ${destination}"
+    echo "[*] Source commit: ${commit}"
+
+    echo "[*] Creating worktree..."
+    git worktree add "$destination" "$commit" &>/dev/null
+    cd "$destination"
+
+    echo "[*] Setting up Python virtual environment"
+    uv venv &>/dev/null
+    source .venv/bin/activate
+
+    echo "[*] Installing dependencies (make dev_install)"
+    yes | make dev_install &>/dev/null
+
+    echo "[INFO] When finished run the command:"
+    echo
+    echo "cd \$DAGSTER_GIT_REPO_DIR && git worktree remove $destination"
+    echo
+
+    set +e
+}

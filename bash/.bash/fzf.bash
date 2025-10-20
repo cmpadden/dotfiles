@@ -1,5 +1,7 @@
 # fzf layout
-export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+# export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+# export FZF_DEFAULT_OPTS='--tmux bottom,100%,40% --layout=reverse'
+export FZF_DEFAULT_OPTS='--tmux center --layout=reverse'
 
 # Use `fd` as a `find` alternative for `fzf` directory traversal
 if command -v fd &>/dev/null; then

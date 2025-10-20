@@ -1,6 +1,6 @@
 #!/usr/env bash
 
-# only apply customizations to interactive shells
+# only apply customizations on interactive shells
 [[ $- != *i* ]] && return
 
 warn() {
@@ -53,8 +53,8 @@ fi
 GPG_TTY=$(tty)
 export GPG_TTY
 
-# rustup
-check_and_source "$HOME/.cargo/env"
+# # rustup
+# check_and_source "$HOME/.cargo/env"
 
 hash nvim 2>/dev/null && export EDITOR="nvim"
 
