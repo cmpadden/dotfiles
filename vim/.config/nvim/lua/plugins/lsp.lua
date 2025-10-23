@@ -45,8 +45,29 @@ return {
                     cmd = { ".venv/bin/ruff", "server" },
                 })
 
-                -- Force basedpyright to use our custom on_attach since nvim-lspconfig's
-                -- bundled basedpyright.lua overrides it
+                -- Override basedpyright's on_attach to use our custom keybindings.
+                --
+                -- When vim.lsp.config() merges configurations from multiple sources
+                -- (including lsp/<name>.lua files in runtimepath), it processes:
+                --
+                --   1. The '*' wildcard config (defined above)
+                --   2. All lsp/<name>.lua files found in runtimepath (includes both our
+                --      local config and nvim-lspconfig's bundled configs)
+                --   3. Any explicit vim.lsp.config(name, {...}) calls (like this one)
+                --
+                -- PROBLEM:
+                --     nvim-lspconfig's bundled basedpyright.lua defines its own
+                --     on_attach function to create a :LspPyrightOrganizeImports command. Since
+                --     functions cannot be merged (only tables can), one on_attach must win.
+                --     nvim-lspconfig's version overrides both our '*' config and our local
+                --     lsp/basedpyright.lua file's on_attach.
+                --
+                -- SOLUTION:
+                --
+                --     Explicit vim.lsp.config() calls have the highest priority
+                --     and execute last, so this override ensures our custom keybindings (like
+                --     'gr' for references) are properly set up when basedpyright attaches.
+                --
                 vim.lsp.config("basedpyright", {
                     on_attach = require("shared").default_on_attach,
                 })
