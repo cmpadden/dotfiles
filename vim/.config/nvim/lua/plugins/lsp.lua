@@ -45,6 +45,12 @@ return {
                     cmd = { ".venv/bin/ruff", "server" },
                 })
 
+                -- Force basedpyright to use our custom on_attach since nvim-lspconfig's
+                -- bundled basedpyright.lua overrides it
+                vim.lsp.config("basedpyright", {
+                    on_attach = require("shared").default_on_attach,
+                })
+
                 require("mason-lspconfig").setup({
                     ensure_installed = {
                         "basedpyright",
