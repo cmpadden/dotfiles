@@ -1,24 +1,7 @@
--- Pure Neovim 0.11+ LSP configuration
--- This replaces nvim-lspconfig with native vim.lsp.config() API
---
--- Each server is explicitly configured with:
---   - cmd: Command to start the language server
---   - filetypes: Which filetypes trigger auto-start
---   - root_markers: Files/directories that indicate project root
---   - settings: Server-specific configuration
---
--- Benefits:
---   - No plugin conflicts (no nvim-lspconfig bundled configs to override)
---   - Explicit and transparent configuration
---   - Faster startup (fewer plugins)
---   - Modern Neovim 0.11+ APIs
-
 local M = {}
 
--- Get the mason bin directory path
 local mason_bin = vim.fn.stdpath('data') .. '/mason/bin/'
 
--- Get LSP capabilities for blink.cmp completion
 local function get_capabilities()
     return vim.tbl_deep_extend(
         'force',
@@ -27,17 +10,13 @@ local function get_capabilities()
     )
 end
 
--- Base configuration shared across all servers
 local base_config = {
     capabilities = get_capabilities(),
     on_attach = require("shared").default_on_attach,
     flags = { debounce_text_changes = 150 },
 }
 
--- All LSP server configurations
--- Priority order for settings:
---   1. Inline settings defined here
---   2. Settings from lsp/<name>.lua files (merged via require)
+-- Note: While vim.lsp.config() can auto-load lsp/<name>.lua files, we explicitly require() them here.
 M.servers = {
     -- Python: Type checking and diagnostics
     basedpyright = vim.tbl_extend("force", base_config, {
@@ -52,11 +31,9 @@ M.servers = {
             'pyrightconfig.json',
             '.git',
         },
-        -- Load detailed settings from lsp/basedpyright.lua
         settings = require('lsp.basedpyright').settings,
     }),
 
-    -- Bash: Shell script language server
     bashls = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'bash-language-server', 'start' },
         filetypes = { 'bash', 'sh' },
@@ -68,7 +45,6 @@ M.servers = {
         },
     }),
 
-    -- ESLint: JavaScript/TypeScript linting
     eslint = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'vscode-eslint-language-server', '--stdio' },
         filetypes = {
@@ -127,7 +103,6 @@ M.servers = {
         },
     }),
 
-    -- HTML: HTML language features
     html = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'vscode-html-language-server', '--stdio' },
         filetypes = { 'html', 'templ' },
@@ -143,7 +118,6 @@ M.servers = {
         settings = {},
     }),
 
-    -- JSON: JSON language features
     jsonls = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'vscode-json-language-server', '--stdio' },
         filetypes = { 'json', 'jsonc' },
@@ -154,7 +128,6 @@ M.servers = {
         settings = {},
     }),
 
-    -- Lua: Lua language server (configured for Neovim)
     lua_ls = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'lua-language-server' },
         filetypes = { 'lua' },
@@ -168,11 +141,9 @@ M.servers = {
             'selene.yml',
             '.git',
         },
-        -- Load settings from lsp/lua_ls.lua (adds vim, hs globals)
         settings = require('lsp.lua_ls').settings,
     }),
 
-    -- Python: Fast linter and formatter
     ruff = vim.tbl_extend("force", base_config, {
         -- Try project-local ruff first, fallback to mason-installed ruff
         cmd = (function()
@@ -188,7 +159,6 @@ M.servers = {
         settings = {},
     }),
 
-    -- Rust: Rust language server
     rust_analyzer = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'rust-analyzer' },
         filetypes = { 'rust' },
@@ -198,7 +168,6 @@ M.servers = {
         },
     }),
 
-    -- TailwindCSS: Tailwind CSS IntelliSense
     tailwindcss = vim.tbl_extend("force", base_config, {
         cmd = { mason_bin .. 'tailwindcss-language-server', '--stdio' },
         filetypes = {
@@ -290,34 +259,21 @@ M.servers = {
         },
     }),
 
-    -- YAML: YAML language features
-    -- Only configured if lsp/yamlls.lua exists
-    yamlls = (function()
-        local ok, yamlls_config = pcall(require, 'lsp.yamlls')
-        if not ok then
-            return nil
-        end
-        return vim.tbl_extend("force", base_config, {
-            cmd = { mason_bin .. 'yaml-language-server', '--stdio' },
-            filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab' },
-            root_markers = { '.git' },
-            settings = yamlls_config.settings,
-        })
-    end)(),
+    yamlls = vim.tbl_extend("force", base_config, {
+        cmd = { mason_bin .. 'yaml-language-server', '--stdio' },
+        filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab' },
+        root_markers = { '.git' },
+        settings = require('lsp.yamlls').settings,
+    }),
 }
 
--- Register and enable all configured LSP servers
 function M.setup()
-    -- Step 1: Register all server configurations
     for name, config in pairs(M.servers) do
         if config ~= nil then
             vim.lsp.config(name, config)
         end
     end
 
-    -- Step 2: Enable all servers (actually starts them)
-    -- In Neovim 0.11+, vim.lsp.config() only defines the config,
-    -- vim.lsp.enable() actually starts the servers for matching filetypes
     local server_names = {}
     for name, config in pairs(M.servers) do
         if config ~= nil then

@@ -1,22 +1,3 @@
--- Native Neovim 0.11+ LSP configuration
--- Migrated from nvim-lspconfig to use pure vim.lsp.config() API
---
--- Previously used:
---   - neovim/nvim-lspconfig (for preconfigured server settings)
---   - williamboman/mason-lspconfig.nvim (for auto-installation bridge)
---
--- Now uses:
---   - Native vim.lsp.config() for all server configuration
---   - lua/lsp/servers.lua for explicit server definitions
---   - mason.nvim (optional) for installing language servers
---
--- Benefits:
---   - No plugin conflicts or overrides (like the basedpyright on_attach issue)
---   - Explicit, transparent configuration
---   - Faster startup (fewer plugins)
---   - Uses modern Neovim 0.11+ APIs
-
--- Configure diagnostic display
 vim.diagnostic.config({
     virtual_text = false,
     underline = true,
