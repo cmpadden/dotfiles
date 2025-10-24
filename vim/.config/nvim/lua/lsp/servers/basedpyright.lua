@@ -4,7 +4,20 @@
 --     https://docs.basedpyright.com/latest/configuration/config-files/
 --
 
-return {
+local utils = require("lsp.utils")
+
+return vim.tbl_extend("force", utils.base_config, {
+    cmd = { utils.mason_bin .. "basedpyright-langserver", "--stdio" },
+    filetypes = { "python" },
+    root_markers = {
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "requirements.txt",
+        "Pipfile",
+        "pyrightconfig.json",
+        ".git",
+    },
     settings = {
         -- Organize imports functionality provided by `ruff`
         disableOrganizeImports = true,
@@ -84,5 +97,5 @@ return {
                 reportUnknownParameterType = false,
             },
         },
-    }
-}
+    },
+})

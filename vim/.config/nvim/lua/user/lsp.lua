@@ -12,5 +12,5 @@ vim.diagnostic.config({
     },
 })
 
--- Setup all LSP servers from lua/lsp/servers.lua
-require('lsp.servers').setup()
+-- Setup all LSP servers from lua/lsp/init.lua (auto-discovers lua/lsp/servers/*.lua)
+require('lsp').setup()
