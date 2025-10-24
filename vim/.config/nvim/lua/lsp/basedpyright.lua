@@ -1,5 +1,8 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/basedpyright.lua
 -- https://docs.basedpyright.com/latest/configuration/config-files/
+--
+-- Server-specific settings for basedpyright.
+-- This is loaded by lua/lsp/servers.lua and merged with base configuration.
 
 return {
     settings = {

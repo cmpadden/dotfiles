@@ -75,9 +75,10 @@ M.default_on_attach = function(client, bufnr)
         vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts_buffer)
     end
 
-    if client.supports_method("textDocument/references") then
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_buffer)
-    end
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_buffer)
+    -- if client.supports_method("textDocument/references") then
+    --     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_buffer)
+    -- end
 
     if client.supports_method("textDocument/formatting") then
         vim.keymap.set("n", "<space>f", function()

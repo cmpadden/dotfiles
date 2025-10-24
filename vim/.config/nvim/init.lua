@@ -10,6 +10,7 @@ require("user.options")
 require("user.keymap")
 require("user.commands")
 require("user.augroups")
+require("user.lsp-config")
 
 vim.cmd([[
   if filereadable(expand("$HOME") . "/.config/nvim/work.vim")
