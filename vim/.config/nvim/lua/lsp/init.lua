@@ -3,19 +3,18 @@ local M = {}
 -- auto-discover and load all server configurations
 function M.load_servers()
     local servers = {}
-    local servers_path = vim.fn.stdpath('config') .. '/lua/lsp/servers'
 
-    if vim.fn.isdirectory(servers_path) == 0 then
-        vim.notify('LSP servers directory not found: ' .. servers_path, vim.log.levels.ERROR)
+    -- Use nvim's runtime file discovery to find all server configs
+    local server_files = vim.api.nvim_get_runtime_file('lua/lsp/servers/*.lua', true)
+
+    if #server_files == 0 then
+        vim.notify('No LSP server configs found in lua/lsp/servers/', vim.log.levels.WARN)
         return servers
     end
 
-    local files = vim.fn.readdir(servers_path, function(name)
-        return name:match('%.lua$')
-    end)
-
-    for _, file in ipairs(files) do
-        local server_name = file:gsub('%.lua$', '')
+    for _, filepath in ipairs(server_files) do
+        -- Extract server name from filepath (e.g., "lua/lsp/servers/basedpyright.lua" -> "basedpyright")
+        local server_name = vim.fn.fnamemodify(filepath, ':t:r')
         local ok, config = pcall(require, 'lsp.servers.' .. server_name)
 
         if ok then
