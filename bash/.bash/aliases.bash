@@ -121,8 +121,7 @@ fi
 
 
 # prevent `claude` from using the environment variable API key
-alias claude="ANTHROPIC_API_KEY= claude"
-alias claude-danger="ANTHROPIC_API_KEY= claude --dangerously-skip-permissions"
+alias claude="ANTHROPIC_API_KEY= claude --dangerously-skip-permissions"
 
 if hash uvx 2>/dev/null; then
     alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
