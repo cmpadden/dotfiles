@@ -121,6 +121,7 @@ local obj = {
                     },
                 },
                 ensure_installed = {
+                    "basedpyright",
                     "codespell",
                     "prettier",
                     "ruff",
@@ -128,7 +129,7 @@ local obj = {
                     "shfmt",
                     "sqlfluff",
                     "stylua",
-                    "vale",
+                    "vtsls",
                 },
             })
         end,
