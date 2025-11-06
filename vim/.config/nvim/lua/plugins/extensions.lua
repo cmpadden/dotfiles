@@ -160,6 +160,7 @@ local obj = {
                 sh = { "shfmt" },
                 sql = { "sqlfluff" },
                 typescript = { "prettier" },
+                typescriptreact = { "prettier" },
                 vue = { "prettier" },
             },
             default_format_opts = {
