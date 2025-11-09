@@ -1,5 +1,10 @@
 #!/bin/bash
 
+LINUX_INSTALL_X_WINDOWS=1
+LINUX_INSTALL_CORE_APPLICATIONS=1
+LINUX_INSTALL_GRAPHICAL_APPLICATIONS=1
+LINUX_INSTALL_NVIDIA_DRIVERS=1
+
 OS_NAME=$(uname -s)
 
 # figlet -f rozzo "macos"
@@ -36,6 +41,11 @@ function _log() {
     message="$1"
     echo "$(date +"%T") - ${message}"
 }
+
+if [ ! -d ~/.tmux/plugins/tpm ]; then
+    _log "Installing Tmux Plugin Manager"
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
 
 ###############################################################################
 #                                    MacOS                                    #
@@ -129,10 +139,6 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         nvm install --lts
     fi
 
-    if [ ! -d ~/.tmux/plugins/tpm ]; then
-        _log "Installing Tmux Plugin Manager"
-        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    fi
 
     if [ ! -d ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
         _log 'Installing Hammerspoon SpoonInstall.spoon'
@@ -146,34 +152,72 @@ fi
 
 if [ "$OS_NAME" = 'Linux' ]; then
 
-    # echo "$_message_linux"
+    echo "$_message_linux"
+
+    if [[ $EUID -ne 0 ]]; then
+       _log "This script must be run as root. Run \`sudo ./_install.sh\`." 
+       exit 1
+    fi
 
     # Install core packages with `pacman` (NOTE: one can find a list of installed packages using `pacman -Qe`)
-
     if command -v pacman >/dev/null; then
 
-        _log "Refreshing and upgrading system via Pacman"
-        sudo pacman -Syu --noconfirm >/dev/null
+        _log "Upgrading system packages."
+        pacman -Syu --noconfirm >/dev/null
 
-        _log "Installing packages via pacman"
-        sudo pacman -S --noconfirm \
-            bash-completion \
-            bat \
-            eza \
-            fd \
-            fzf \
-            git \
-            jq \
-            neovim \
-            openssh \
-            stow \
-            sudo \
-            the_silver_searcher \
-            tldr \
-            tmux \
-            unzip \
-            zip \
-            &>/dev/null
+        if [ "$LINUX_INSTALL_CORE_APPLICATIONS" -eq 1 ]; then
+            _log "Installing core packages."
+            pacman -S --needed --noconfirm \
+                bash-completion \
+                bat \
+                eza \
+                fd \
+                fzf \
+                git \
+                jq \
+                neovim \
+                openssh \
+                pass \
+                pass-otp \
+                ripgrep \
+                sensors-detect \
+                stow \
+                sudo \
+                tldr \
+                tmux \
+                unzip \
+                zip \
+                2>/dev/null
+        fi
+
+        if [ "$LINUX_INSTALL_NVIDIA_DRIVERS" -eq 1 ]; then
+            _log "Installing \`nvidia\` drivers."
+            # lspci -k -d ::03xx
+            pacman -S --needed --noconfirm \
+                nvidia \
+                >/dev/null 2>&1
+        fi
+
+        if [ "$LINUX_INSTALL_X_WINDOWS" -eq 1 ]; then
+            _log "Installing X windows."
+            pacman -S --needed --noconfirm \
+                i3-wm \
+                i3status \
+                rofi \
+                xclip \
+                xorg-server \
+                xorg-xinit \
+                xorg-xset \
+                >/dev/null 2>&1
+        fi
+
+        if [ "$LINUX_INSTALL_GRAPHICAL_APPLICATIONS" -eq 1 ]; then
+            _log "Installing GUI applications."
+            pacman -S --needed --noconfirm \
+                ghostty \
+                firefox \
+                >/dev/null 2>&1
+        fi
 
     fi
 
