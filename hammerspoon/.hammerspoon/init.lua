@@ -19,6 +19,13 @@ require("modules.caffeine")
 local helpers = require("modules.helpers")
 local wm = require("modules.window")
 
+
+-- Configure applications that should be ignored by window management
+-- Use exact application names as returned by window:application():name()
+wm.config.application_ignore_list = {
+    "zoom.us",
+}
+
 wm.config.layouts = {
     -- ┌-----------─┐
     -- | [        ] |

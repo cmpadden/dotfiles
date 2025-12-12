@@ -12,6 +12,7 @@ local obj = {
         state_file_path = os.getenv("HOME") .. "/.hammerspoon/_wm.spoon.state.json",
         animation_duration = 0,
         layouts = {},
+        application_ignore_list = {},
         bindings = {
             prefix = { "cmd", "shift" },
             cycle_left = "h",
@@ -153,6 +154,35 @@ local function get_window_id(window)
     return string.format("%s_%d", app_name, window_id)
 end
 
+--- Check if a window's application should be ignored by the window manager
+-- @param window hs.window The window to check
+-- @return boolean true if the window should be ignored, false otherwise
+local function should_ignore_window(window)
+    local ignore_list = obj.config.application_ignore_list or {}
+    
+    -- Empty ignore list means nothing is ignored
+    if #ignore_list == 0 then
+        return false
+    end
+    
+    local success, app_name = pcall(function()
+        return window:application():name()
+    end)
+    
+    if not success or not app_name then
+        return false
+    end
+    
+    -- Exact name matching (case-sensitive)
+    for _, ignored_app in ipairs(ignore_list) do
+        if app_name == ignored_app then
+            return true
+        end
+    end
+    
+    return false
+end
+
 local function cleanup_stale_window_state()
     local all_windows = hs.window.allWindows()
     local active_window_ids = {}
@@ -211,6 +241,12 @@ end
 
 function obj:move_focused_window_next_geometry(direction)
     local focused_window = hs.window.focusedWindow()
+    
+    -- Skip if application is in ignore list (silent behavior)
+    if should_ignore_window(focused_window) then
+        return
+    end
+    
     local focused_window_id = get_window_id(focused_window)
 
     local _active_layout = self.layouts[self.layout]
@@ -250,28 +286,33 @@ function obj:set_layout(layout)
             end)
             local display_name = app_success and app_name or "unknown"
 
-            print(string.format("Window %d: %s - attempting to move", i, display_name))
+            -- Check if window should be ignored
+            if should_ignore_window(window) then
+                print(string.format("  ⊘ Ignoring %s (in ignore list)", display_name))
+            else
+                print(string.format("Window %d: %s - attempting to move", i, display_name))
 
-            -- Try to move the window regardless of validation
-            local window_id = get_window_id(window)
-            local ix = get_window_geometry_index(layout, window_id)
+                -- Try to move the window regardless of validation
+                local window_id = get_window_id(window)
+                local ix = get_window_geometry_index(layout, window_id)
 
-            if ix > #active_layout then
-                ix = 1
-                set_window_geometry_index(layout, window_id, ix)
-            end
+                if ix > #active_layout then
+                    ix = 1
+                    set_window_geometry_index(layout, window_id, ix)
+                end
 
-            local target_geometry = active_layout[ix]
-            if target_geometry then
-                local success, error = pcall(function()
-                    window:moveToUnit(target_geometry)
-                end)
+                local target_geometry = active_layout[ix]
+                if target_geometry then
+                    local success, error = pcall(function()
+                        window:moveToUnit(target_geometry)
+                    end)
 
-                if success then
-                    print(string.format("  ✓ Successfully moved %s", display_name))
-                    moved_count = moved_count + 1
-                else
-                    print(string.format("  ✗ Failed to move %s: %s", display_name, error))
+                    if success then
+                        print(string.format("  ✓ Successfully moved %s", display_name))
+                        moved_count = moved_count + 1
+                    else
+                        print(string.format("  ✗ Failed to move %s: %s", display_name, error))
+                    end
                 end
             end
         end
@@ -353,6 +394,12 @@ function obj:init()
     -- Consider usage of `windowCreated` and `windowFocused` for ideal resizing trigger
     -- TODO refactor this so that movement and getting layout is shared
     self.window_filter_all:subscribe(hs.window.filter.windowCreated, function(window, app_name)
+        -- Skip if application is in ignore list
+        if should_ignore_window(window) then
+            print(string.format("⊘ Ignoring new window from %s (in ignore list)", app_name))
+            return
+        end
+        
         -- Prevent resizing of floating windows
         --
         -- http://www.hammerspoon.org/docs/hs.window.html#isStandard

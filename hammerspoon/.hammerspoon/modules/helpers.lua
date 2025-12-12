@@ -17,10 +17,6 @@ obj.assets = {
 obj.palette = {
     white = "#FFFFFF",
     black = "#121317",
-    -- TODO - light and dark mode variants depending on system setting
-    -- warn = "#FFF59D",
-    -- success = "#F6FCDF",
-    -- error = "#FFCDD2",
     warn = "#9E9C41",
     success = "#6A8E23",
     error = "#B71C1C",
@@ -135,19 +131,20 @@ end
 obj.alert = {
     active_alerts = {},
     order = {},
-    display_duration = 3.0,
+    display_duration = 2.0,
     margin = 24,
     spacing = 12,
     width = 360,
     padding = 14,
-    line_height = 20,
-    detail_line_height = 16,
+    line_height = 16,
+    detail_line_height = 8,
     detail_spacing = 8,
     font = ".AppleSystemUIFont",
     title_size = 14,
     detail_size = 12,
     icon_size = 22,
     icon_spacing = 10,
+    text_vertical_offset = -1,
     animation_duration = 0.18,
     animation_steps = 12,
     styles = {
@@ -366,6 +363,8 @@ function obj:show_modern(title, attributes, style_name, icon)
 
     local title_width = obj.alert.width - text_x - obj.alert.padding
 
+    local title_y = obj.alert.padding + (obj.alert.line_height - obj.alert.title_size) / 2 + obj.alert.text_vertical_offset
+
     canvas[#canvas + 1] = {
         type = "text",
         text = title,
@@ -373,11 +372,12 @@ function obj:show_modern(title, attributes, style_name, icon)
         textSize = obj.alert.title_size,
         textColor = resolved_style.textColor,
         textAlignment = "left",
-        frame = { x = text_x, y = obj.alert.padding, w = title_width, h = obj.alert.line_height },
+        frame = { x = text_x, y = title_y, w = title_width, h = obj.alert.line_height },
     }
 
-    local current_y = obj.alert.padding + obj.alert.line_height + obj.alert.detail_spacing
+    local current_y = title_y + obj.alert.line_height + obj.alert.detail_spacing
     for _, attribute_text in ipairs(formatted_attributes) do
+        local attribute_y = current_y + (obj.alert.detail_line_height - obj.alert.detail_size) / 2 + obj.alert.text_vertical_offset
         canvas[#canvas + 1] = {
             type = "text",
             text = attribute_text,
@@ -385,7 +385,7 @@ function obj:show_modern(title, attributes, style_name, icon)
             textSize = obj.alert.detail_size,
             textColor = resolved_style.secondaryTextColor or resolved_style.textColor,
             textAlignment = "left",
-            frame = { x = text_x, y = current_y, w = title_width, h = obj.alert.detail_line_height },
+            frame = { x = text_x, y = attribute_y, w = title_width, h = obj.alert.detail_line_height },
         }
         current_y = current_y + obj.alert.detail_line_height
     end
@@ -489,4 +489,3 @@ end
 -- end
 
 return obj
-
