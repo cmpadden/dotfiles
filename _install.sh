@@ -144,11 +144,13 @@ elif [ "$OS_NAME" = 'Linux' ]; then
             fzf \
             git \
             jq \
+            less \
             neovim \
             openssh \
             pass \
             pass-otp \
             ripgrep \
+            scrot \
             sensors-detect \
             stow \
             sudo \

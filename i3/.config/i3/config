@@ -11,8 +11,8 @@
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-# font pango:monospace 8
-font xft:monospace 10
+font pango:monospace 12
+# font xft:monospace 12
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -20,6 +20,8 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c 061229 -eu --no
 
 # https://www.reddit.com/r/i3wm/comments/fzgxg2/tip_quick_dictionary_lookup_with_i3input_and/
 bindsym Mod4+Shift+d exec i3-input -F 'exec goldendict %s' -P 'Word: '
+
+# bindsym Mod4+v exec clip -o
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -39,14 +41,19 @@ set $right l
 floating_modifier Mod4
 
 # start a terminal
-bindsym Mod4+Shift+Return exec i3-sensible-terminal
+# bindsym Mod4+Shift+Return exec i3-sensible-terminal
+bindsym Mod4+Shift+Return exec ghostty
 
 # kill focused window
 bindsym Mod4+q kill
 
 # start dmenu (a program launcher)
 bindsym Mod4+d exec dmenu_run
-bindsym Mod4+Return exec --no-startup-id rofi -show drun -sidebar-mode
+bindsym Mod4+p exec --no-startup-id rofi -show drun -sidebar-mode
+
+# screenshot
+bindsym Mod4+Shift+4 exec scrot --select
+bindsym Mod4+Shift+5 exec scrot
 
 # change focus
 bindsym Mod4+$left focus left
@@ -100,11 +107,6 @@ set $ws2 "2"
 set $ws3 "3"
 set $ws4 "4"
 set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
 
 # switch to workspace
 bindsym Mod4+1 workspace number $ws1
@@ -112,23 +114,13 @@ bindsym Mod4+2 workspace number $ws2
 bindsym Mod4+3 workspace number $ws3
 bindsym Mod4+4 workspace number $ws4
 bindsym Mod4+5 workspace number $ws5
-bindsym Mod4+6 workspace number $ws6
-bindsym Mod4+7 workspace number $ws7
-bindsym Mod4+8 workspace number $ws8
-bindsym Mod4+9 workspace number $ws9
-bindsym Mod4+0 workspace number $ws10
 
 # move focused container to workspace
-bindsym Mod4+Shift+1 move container to workspace number $ws1
-bindsym Mod4+Shift+2 move container to workspace number $ws2
-bindsym Mod4+Shift+3 move container to workspace number $ws3
-bindsym Mod4+Shift+4 move container to workspace number $ws4
-bindsym Mod4+Shift+5 move container to workspace number $ws5
-bindsym Mod4+Shift+6 move container to workspace number $ws6
-bindsym Mod4+Shift+7 move container to workspace number $ws7
-bindsym Mod4+Shift+8 move container to workspace number $ws8
-bindsym Mod4+Shift+9 move container to workspace number $ws9
-bindsym Mod4+Shift+0 move container to workspace number $ws10
+bindsym Mod4+Control+1 move container to workspace number $ws1
+bindsym Mod4+Control+2 move container to workspace number $ws2
+bindsym Mod4+Control+3 move container to workspace number $ws3
+bindsym Mod4+Control+4 move container to workspace number $ws4
+bindsym Mod4+Control+5 move container to workspace number $ws5
 
 # reload the configuration file
 bindsym Mod4+Shift+c reload
@@ -164,15 +156,18 @@ mode $power_control {
 }
 bindsym Mod4+n mode $power_control
 
+bindsym Mod4+Shift+b bar mode toggle
+
 bar {
-    height 25
+    mode hide
+    height 24
     position top
     status_command i3status
     tray_output primary
     separator_symbol "|"
 
     colors {
-        background #061229
+        background #000000
         statusline #FFFFFF
         separator  #444444
 
@@ -194,4 +189,4 @@ client.urgent           #061229 #061229 #FFFFFF #061229 #061229
 
 # i3-gaps
 for_window [class=".*"] border pixel 4
-gaps inner 10
+gaps inner 16
