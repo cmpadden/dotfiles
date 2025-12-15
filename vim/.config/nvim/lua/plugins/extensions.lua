@@ -88,17 +88,18 @@ local obj = {
     --     end,
     -- },
 
-    -- https://github.com/preservim/vim-markdown
-    {
-        "preservim/vim-markdown",
-        dependencies = {
-            "godlygeek/tabular", -- needed for FormatTable
-        },
-        config = function()
-            vim.g.vim_markdown_folding_style_pythonic = 1 -- use pythonic folding for vim-markdown
-            vim.g.vim_markdown_folding_level = 6          -- default to open folds
-        end,
-    },
+    -- -- https://github.com/preservim/vim-markdown
+    -- {
+    --     "preservim/vim-markdown",
+    --     dependencies = {
+    --         "godlygeek/tabular", -- needed for FormatTable
+    --     },
+    --     config = function()
+    --         -- Disable vim-markdown's broken folding - using custom expression instead
+    --         vim.g.vim_markdown_folding_style_pythonic = 0
+    --         vim.g.vim_markdown_folding_level = 1
+    --     end,
+    -- },
 
     -- https://github.com/williamboman/mason.nvim
     {

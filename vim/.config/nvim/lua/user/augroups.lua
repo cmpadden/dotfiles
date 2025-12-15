@@ -33,13 +33,44 @@ vim.cmd([[
   augroup END
 ]])
 
--- set fold level for markdown files
+-- vimscript function for markdown folding
 vim.cmd([[
-  augroup foldlevelstart_markdown
-    autocmd!
-    autocmd FileType markdown setlocal foldlevel=1
-  augroup END
+  function! MarkdownFoldExpr(lnum)
+    let line = getline(a:lnum)
+    if line =~ '^###### '
+      return '>6'
+    elseif line =~ '^##### '
+      return '>5'
+    elseif line =~ '^#### '
+      return '>4'
+    elseif line =~ '^### '
+      return '>3'
+    elseif line =~ '^## '
+      return '>2'
+    elseif line =~ '^# '
+      return '>1'
+    else
+      return '='
+    endif
+  endfunction
+
+  function! CustomMarkdownFoldText()
+    let line = getline(v:foldstart)
+    let line_count = v:foldend - v:foldstart + 1
+    return line . ' [' . line_count . ']'
+  endfunction
 ]])
+
+-- Set fold expression and level for markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldlevel = 1
+    vim.opt_local.foldexpr = "MarkdownFoldExpr(v:lnum)"
+    vim.opt_local.foldtext = "CustomMarkdownFoldText()"
+  end,
+})
 
 -- run Python code
 vim.cmd([[
