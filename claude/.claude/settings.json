@@ -19,5 +19,10 @@
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754404416830
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.py",
+    "padding": 0
   }
 }
