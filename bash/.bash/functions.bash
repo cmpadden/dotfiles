@@ -412,3 +412,31 @@ dg-worktree() {
 
     set +e
 }
+
+gh-pr-to-buildkite() {
+    local id="$1"
+    local pipeline="${2:dagster/dagster-dagster}"
+    gh pr checkout "$1"
+
+    local branch_existing=$(git branch --show-current)
+    echo "-> Previous branch: ${_branch_existing}"
+
+    local branch_new="colton/$(git branch --show-current)"
+    echo "-> Renaming branch: ${branch_new}"
+    git branch -M "$branch_new"
+
+    echo "-> Pushing branch to remote origin"
+    git push origin "$branch_new"
+
+    local commit="$(git rev-parse HEAD)"
+    echo "-> Using commit sha \`${commit}\`"
+
+    echo "-> Launching buildkite pipeline \`${pipeline}\`"
+    bk build create \
+        --yes \
+        --pipeline "$pipeline" \
+        --branch "$branch_new" \
+        --commit "${commit}" \
+        --message "Validating existing PR \`${id}\` from branch \`${branch_existing}\`" \
+        --ignore-branch-filters
+}
