@@ -415,7 +415,7 @@ dg-worktree() {
 
 gh-pr-to-buildkite() {
     local id="$1"
-    local pipeline="${2:dagster/dagster-dagster}"
+    local pipeline="${2:-dagster/dagster-dagster}"
     gh pr checkout "$1"
 
     local branch_existing=$(git branch --show-current)
