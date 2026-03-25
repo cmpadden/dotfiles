@@ -421,8 +421,8 @@ gh-pr-to-buildkite() {
     local branch_existing=$(git branch --show-current)
     echo "-> Previous branch: ${_branch_existing}"
 
-    local branch_new="colton/$(git branch --show-current)"
     echo "-> Renaming branch: ${branch_new}"
+    local branch_new="colton/$(git branch --show-current)"
     git branch -M "$branch_new"
 
     echo "-> Pushing branch to remote origin"
@@ -439,4 +439,18 @@ gh-pr-to-buildkite() {
         --commit "${commit}" \
         --message "Validating existing PR \`${id}\` from branch \`${branch_existing}\`" \
         --ignore-branch-filters
+}
+
+# Checkout GitHub pull request and open diff in Neovim.
+#
+# USAGE
+#
+#       gh-pr-diff <pull-request-id>
+#
+gh-pr-diff() {
+    local id="$1"
+    local target="${2:-origin/master}"
+    git fetch origin
+    gh pr checkout "$id"
+    nvim -c ":DiffviewOpen ${target}...HEAD"
 }
