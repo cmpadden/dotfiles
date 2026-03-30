@@ -41,7 +41,7 @@ return {
             vim.o.background = "dark"
             vim.cmd.colorscheme("gruvbox")
         end,
-        enabled = true,
+        enabled = false,
     },
 
     -- https://github.com/EdenEast/nightfox.nvim
@@ -133,10 +133,9 @@ return {
         config = function()
             vim.o.termguicolors = true
             vim.o.background = "dark"
-            -- vim.g.rosebones_darkness = "stark"
             vim.cmd.colorscheme("zenbones")
         end,
-        enabled = false,
+        enabled = true,
     },
 
     -- https://github.com/cocopon/iceberg.vim

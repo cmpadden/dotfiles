@@ -5,11 +5,14 @@ return {
         dependencies = {
             "joosepalviste/nvim-ts-context-commentstring",
             "windwp/nvim-ts-autotag",
-            "nvim-treesitter/nvim-treesitter-textobjects",
+            {
+                "nvim-treesitter/nvim-treesitter-textobjects",
+                branch = "main",
+            },
         },
         event = { "BufReadPost", "BufNewFile" },
-        cmd = { "TSUpdateSync" },
-        build = ":TSUpdate",
+        cmd = { "TSUpdate", "TSUpdateSync" },
+        build = ":TSUpdateSync",
         config = function()
             -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#getting-started
             vim.g.skip_ts_context_commentstring_module = true
@@ -158,6 +161,11 @@ return {
                     },
                 },
             })
+
+            -- Neovim 0.12 is still tripping over markdown injection parsing in this config.
+            -- Keep markdown Treesitter highlighting, but disable nested language injections.
+            vim.treesitter.query.set("markdown", "injections", "")
+            vim.treesitter.query.set("markdown_inline", "injections", "")
         end,
     },
 }

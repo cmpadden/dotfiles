@@ -238,10 +238,21 @@ local obj = {
         end,
         opts = {
             winopts = {
-                height = 0.50,
-                width = 0.85,
+                height  = 0.50,
+                width   = 0.85,
+                -- split   = 'belowright vnew',
+                preview = {
+                    title     = false,
+                    layout    = 'vertical',
+                    scrollbar = false,
+                },
             },
         },
+    },
+
+    -- https://github.com/sindrets/diffview.nvim
+    {
+        "sindrets/diffview.nvim"
     },
 
     -- https://github.com/lewis6991/gitsigns.nvim

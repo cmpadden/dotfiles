@@ -31,7 +31,7 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevelstart = 99
 
 -- new in 0.8.0!
