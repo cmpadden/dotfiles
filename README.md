@@ -1,4 +1,8 @@
-![Project Banner](.github/banner.png)
+<div align="center">
+  <h1>dotfiles</h1>
+  <p>Personal macOS / Linux development environment configurations.</p>
+</div>
+
 
 ## Usage
 
@@ -62,7 +66,7 @@ These are the applications and utilities that I choose to use at the moment, ref
 ---
 
 <details>
-<summary>Legacy Utilities</summary>
+<summary>Legacy Tools</summary>
 
 | Name                                                | Tagline                                                                                                       | Category          |
 |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------|-------------------|
