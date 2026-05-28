@@ -119,13 +119,23 @@ if hash chatblade 2>/dev/null; then
     alias gpt-programmer="chatblade -s -i -p programmer --theme github-dark"
 fi
 
-
-# prevent `claude` from using the environment variable API key
-alias claude="ANTHROPIC_API_KEY= claude --dangerously-skip-permissions"
-
 if hash uvx 2>/dev/null; then
     alias llm="uvx --with llm-anthropic llm chat -m claude-3.5-haiku"
     alias openhands="uvx --python 3.12 --from openhands-ai openhands"
 fi
 
-alias workstack="uvx workstack"
+if hash pbcopy 2>/dev/null; then
+    alias copy-git-branch="git rev-parse --abbrev-ref HEAD | pbcopy"
+fi
+
+if hash kubectl 2>/dev/null; then
+    alias k="kubectl"
+fi
+
+alias linear="uvx --from linear-app linear"
+
+# alias claude='claude --allow-dangerously-skip-permissions'
+if hash pi 2>/dev/null; then
+    alias codex="echo 'Did you mean to use \`pi\`?'"
+    alias claude="echo 'Did you mean to use \`pi\`?'"
+fi
