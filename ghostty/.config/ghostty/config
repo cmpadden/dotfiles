@@ -9,10 +9,18 @@
 # List themes
 #
 #     ghostty +list-themes
+#
+# List fonts
+#
+#     ghostty +list-fonts
+#
 
-theme = GruvboxDarkHard
+theme = zenbones_dark
 
-font-size=12
+font-size = 12
+
+# On MacOS: λ brew install --cask font-iosevka
+font-family = "Iosevka Extended"
 
 title = " "
 window-padding-x = 6

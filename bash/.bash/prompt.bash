@@ -97,13 +97,12 @@ RED_RGB="251;73;52"       # #fb4934
 DARK_BG="\e[48;2;${DARK0}m"
 LIGHT_BG="\e[48;2;${LIGHT0}m"
 BLUE_BG="\e[48;2;${BLUE_RGB}m"
-PURPLE_BG="\e[48;2;${PURPLE_RGB}m"
 
 # Foreground colors
 DARK_FG="\e[38;2;${DARK0}m"
 LIGHT_FG="\e[38;2;${LIGHT0}m"
 BRIGHT_FG="\e[38;2;${LIGHT1}m"
-PURPLE_FG="\e[38;2;${PURPLE_RGB}m"
+BLUE_FG="\e[38;2;${BLUE_RGB}m"
 
 # Reset all attributes
 RESET="\e[0m"
@@ -118,10 +117,10 @@ if [ "$TERM" == "xterm-256color" ]; then
     # Using color scheme variables defined above
     # Note: Variables must be outside single quotes to expand properly
     PS1='\['"${DARK_BG}"'\e[K\]'                                # Dark background, clear to EOL
-    PS1+='\['"${PURPLE_FG}"'\]$(prompt_venv)'         # Dark bg, light text for venv
-    PS1+='\['"${PURPLE_BG}${DARK_FG}"'\]$(prompt_git_branch)'   # Light bg, dark text for git
+    PS1+='\['"${BLUE_FG}"'\]$(prompt_venv)'         # Dark bg, light text for venv
+    PS1+='\['"${BLUE_BG}${DARK_FG}"'\]$(prompt_git_branch)'   # Light bg, dark text for git
     PS1+='\['"${RESET}"'\]'                                     # Reset after git branch
-    PS1+='\['"${PURPLE_FG}"'\] \w'                    # Dark bg, light text for working dir
+    PS1+='\['"${DARK_BG}${BLUE_FG}"'\] \w'                    # Dark bg, light text for working dir
     PS1+='\['"${RESET}"'\]'                                     # Reset after path
     PS1+='\n\[\e[1m'"${BRIGHT_FG}"'\] λ \['"${RESET}"'\]'      # Newline, bold bright lambda
 fi
