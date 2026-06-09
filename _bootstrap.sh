@@ -3,9 +3,9 @@
 #
 
 DOTFILES_LOCATION="${DOTFILES_LOCATION:-$HOME/src/dotfiles}"
-DOTFILES_INSTALL="${DOTFILES_INSTALL:-1}"
-DOTFILES_RESTORE="${DOTFILES_RESTORE:-1}"
-DOTFILES_CONFIGURE="${DOTFILES_CONFIGURE:-1}"
+DOTFILES_INSTALL="${DOTFILES_INSTALL:-prompt}"
+DOTFILES_RESTORE="${DOTFILES_RESTORE:-prompt}"
+DOTFILES_CONFIGURE="${DOTFILES_CONFIGURE:-prompt}"
 
 ####################################################################################################
 #                                            UTILITIES                                             #
@@ -25,6 +25,36 @@ function prompt_yes_no() {
     fi
 }
 
+function should_run_step() {
+    local value=$1
+    local message=$2
+
+    case "$value" in
+        1|true|yes|y) return 0 ;;
+        0|false|no|n) return 1 ;;
+        prompt) prompt_yes_no "$message" ;;
+        *)
+            echo "[ERROR] Unsupported value '${value}'. Use 1, 0, or prompt."
+            exit 1
+            ;;
+    esac
+}
+
+function copy_public_key() {
+    local public_key=$1
+
+    if command -v pbcopy >/dev/null 2>&1; then
+        pbcopy < "$public_key"
+        echo "[INFO] ${public_key} has been copied to the clipboard..."
+    elif command -v xclip >/dev/null 2>&1; then
+        xclip -selection clipboard < "$public_key"
+        echo "[INFO] ${public_key} has been copied to the clipboard..."
+    else
+        echo "[INFO] Clipboard utility unavailable. Public key:"
+        cat "$public_key"
+    fi
+}
+
 ####################################################################################################
 #                                            ENTRYPOINT                                            #
 ####################################################################################################
@@ -41,9 +71,9 @@ CONFIGURATION
     Environment variables can be overwritten for desired behavior:
 
     DOTFILES_LOCATION - location where dotfiles are to be stored (default: ~/src/dotfiles)
-    DOTFILES_INSTALL - install applications and packages (default: 1)
-    DOTFILES_RESTORE - whether to restore dotfiles via \`stow\` (default: 1)
-    DOTFILES_CONFIGURE - automatically configure system-wide settings (default: 1)
+    DOTFILES_INSTALL - install applications and packages: 1, 0, or prompt (default: prompt)
+    DOTFILES_RESTORE - whether to restore dotfiles via \`stow\`: 1, 0, or prompt (default: prompt)
+    DOTFILES_CONFIGURE - automatically configure system-wide settings: 1, 0, or prompt (default: prompt)
 
 CURRENT CONFIGURATION VALUES
 
@@ -68,8 +98,7 @@ else
     ssh-keygen -t ed25519 -C "$email"
 fi
 
-echo "[INFO] ${TARGET_SSH_KEY}.pub has been copied to the clipboard..."
-cat "${TARGET_SSH_KEY}.pub" | pbcopy
+copy_public_key "${TARGET_SSH_KEY}.pub"
 
 if [ ! -d "$DOTFILES_LOCATION" ]; then
     git clone git@github.com:cmpadden/dotfiles.git "$DOTFILES_LOCATION"
@@ -79,14 +108,14 @@ fi
 
 pushd "$DOTFILES_LOCATION" >/dev/null || exit
 
-if prompt_yes_no "Install system packages and applications?"; then
+if should_run_step "$DOTFILES_INSTALL" "Install system packages and applications?"; then
     ./_install.sh
 fi
 
-if prompt_yes_no "Restore configuration files?"; then
+if should_run_step "$DOTFILES_RESTORE" "Restore configuration files?"; then
     ./_restore.sh
 fi
 
-if prompt_yes_no "Set system settings?"; then
+if should_run_step "$DOTFILES_CONFIGURE" "Set system settings?"; then
     ./_configure.sh
 fi
