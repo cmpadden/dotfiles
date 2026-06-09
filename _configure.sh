@@ -5,7 +5,7 @@
 #     https://macos-defaults.com/
 #
 
-# set -ex
+set -euo pipefail
 
 # figlet -f rozzo "Configure"
 cat <<EOF
@@ -20,7 +20,8 @@ C8888     d888 888b 888 88b 888888 888 d888 888 8888 8888 888 "  d88 88b
 EOF
 
 if [[ ! "$OSTYPE" = 'darwin'* ]]; then
-    exit
+    echo "[INFO] configure currently supports macOS only"
+    exit 0
 fi
 
 defaults write -g InitialKeyRepeat -int 10
@@ -46,23 +47,27 @@ defaults write com.apple.finder CreateDesktop -bool false
 defaults write NSGlobalDomain com.apple.mouse.linear -bool "true"
 
 # TODO - use conditional callback/finally
-killall Dock
-killall Finder
+killall Dock || true
+killall Finder || true
 
-target_shell='/opt/homebrew/bin/bash'
-if ! /usr/bin/grep -q "$target_shell" /etc/shells; then
-    echo "[INFO] Adding /opt/homebrew/bin/bash to /etc/shells"
-    sudo echo "$target_shell" >> /etc/shells
+if ! command -v brew >/dev/null 2>&1; then
+    echo "[INFO] Homebrew is required to configure the default bash shell; skipping shell setup"
 else
-    echo "[INFO] ${target_shell} is already present in /etc/shells"
-fi
+    target_shell="$(brew --prefix)/bin/bash"
 
-if [ ! "$SHELL" = "$target_shell" ]; then
-    echo "[INFO] setting default shell to ${target_shell} with \`chsh\`"
-    echo "/opt/homebrew/bin/bash" | sudo tee -a /etc/shells
-    chsh -s /opt/homebrew/bin/bash
-else
-    echo "[INFO] ${target_shell} is already set in \$SHELL"
+    if ! /usr/bin/grep -qxF "$target_shell" /etc/shells; then
+        echo "[INFO] Adding ${target_shell} to /etc/shells"
+        echo "$target_shell" | sudo tee -a /etc/shells >/dev/null
+    else
+        echo "[INFO] ${target_shell} is already present in /etc/shells"
+    fi
+
+    if [ ! "$SHELL" = "$target_shell" ]; then
+        echo "[INFO] setting default shell to ${target_shell} with \`chsh\`"
+        chsh -s "$target_shell"
+    else
+        echo "[INFO] ${target_shell} is already set in \$SHELL"
+    fi
 fi
 
 # TODO - https://github.com/MrOtherGuy/firefox-csshacks/tree/master/chrome/hide_tabs_toolbar_v2.css
