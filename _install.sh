@@ -116,76 +116,79 @@ if [ "$OS_NAME" = 'Darwin' ]; then
     fi
 
     _log 'NOTE: If Chromium.app fails to open, run: xattr -cr /Applications/Chromium.app'
-fi
 
-if [ "$OS_NAME" = 'Linux' ]; then
+elif [ "$OS_NAME" = 'Linux' ]; then
 
     echo "$MESSAGE_LINUX"
     if [[ $EUID -ne 0 ]]; then
-       _log "This script must be run as root. Run \`sudo ./_install.sh\`." 
-       exit 1
+        _log "This script must be run as root. Run \`sudo ./_install.sh\`."
+        exit 1
     fi
 
     # Install core packages with `pacman` (NOTE: one can find a list of installed packages using `pacman -Qe`)
-    if command -v pacman >/dev/null; then
-
-        _log "Upgrading system packages."
-        pacman -Syu --noconfirm >/dev/null
-
-        if [ "$LINUX_INSTALL_CORE_APPLICATIONS" -eq 1 ]; then
-            _log "Installing core packages."
-            pacman -S --needed --noconfirm \
-                bash-completion \
-                bat \
-                eza \
-                fd \
-                fzf \
-                git \
-                jq \
-                neovim \
-                openssh \
-                pass \
-                pass-otp \
-                ripgrep \
-                sensors-detect \
-                stow \
-                sudo \
-                tldr \
-                tmux \
-                unzip \
-                zip \
-                2>/dev/null
-        fi
-
-        if [ "$LINUX_INSTALL_NVIDIA_DRIVERS" -eq 1 ]; then
-            _log "Installing \`nvidia\` drivers."
-            # lspci -k -d ::03xx
-            pacman -S --needed --noconfirm \
-                nvidia \
-                >/dev/null 2>&1
-        fi
-
-        if [ "$LINUX_INSTALL_X_WINDOWS" -eq 1 ]; then
-            _log "Installing X windows."
-            pacman -S --needed --noconfirm \
-                i3-wm \
-                i3status \
-                rofi \
-                xclip \
-                xorg-server \
-                xorg-xinit \
-                xorg-xset \
-                >/dev/null 2>&1
-        fi
-
-        if [ "$LINUX_INSTALL_GRAPHICAL_APPLICATIONS" -eq 1 ]; then
-            _log "Installing GUI applications."
-            pacman -S --needed --noconfirm \
-                ghostty \
-                firefox \
-                >/dev/null 2>&1
-        fi
-
+    if ! command -v pacman >/dev/null; then
+        _log "Unsupported Linux package manager. This installer currently supports pacman."
+        exit 1
     fi
 
+    _log "Upgrading system packages."
+    pacman -Syu --noconfirm >/dev/null
+
+    if [ "$LINUX_INSTALL_CORE_APPLICATIONS" -eq 1 ]; then
+        _log "Installing core packages."
+        pacman -S --needed --noconfirm \
+            bash-completion \
+            bat \
+            eza \
+            fd \
+            fzf \
+            git \
+            jq \
+            neovim \
+            openssh \
+            pass \
+            pass-otp \
+            ripgrep \
+            sensors-detect \
+            stow \
+            sudo \
+            tldr \
+            tmux \
+            unzip \
+            zip \
+            2>/dev/null
+    fi
+
+    if [ "$LINUX_INSTALL_NVIDIA_DRIVERS" -eq 1 ]; then
+        _log "Installing \`nvidia\` drivers."
+        # lspci -k -d ::03xx
+        pacman -S --needed --noconfirm \
+            nvidia \
+            >/dev/null 2>&1
+    fi
+
+    if [ "$LINUX_INSTALL_X_WINDOWS" -eq 1 ]; then
+        _log "Installing X windows."
+        pacman -S --needed --noconfirm \
+            i3-wm \
+            i3status \
+            rofi \
+            xclip \
+            xorg-server \
+            xorg-xinit \
+            xorg-xset \
+            >/dev/null 2>&1
+    fi
+
+    if [ "$LINUX_INSTALL_GRAPHICAL_APPLICATIONS" -eq 1 ]; then
+        _log "Installing GUI applications."
+        pacman -S --needed --noconfirm \
+            ghostty \
+            firefox \
+            >/dev/null 2>&1
+    fi
+
+else
+    _log "Unsupported operating system: ${OS_NAME}"
+    exit 1
 fi
