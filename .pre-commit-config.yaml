@@ -16,6 +16,12 @@ repos:
         args: [--config-path, .stylua.toml]
   - repo: local
     hooks:
+      - id: ghostty-validate-config
+        name: ghostty validate config
+        entry: ghostty +validate-config --config-file=ghostty/.config/ghostty/config
+        language: system
+        files: ^ghostty/.config/ghostty/config$
+        pass_filenames: false
       - id: bash-syntax
         name: bash syntax check
         entry: bash -n
