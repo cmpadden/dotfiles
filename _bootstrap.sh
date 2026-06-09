@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
 #
 # Automatically bootstrap your system with dotfiles, package installation, and system configuration.
 #
+set -euo pipefail
 
 DOTFILES_LOCATION="${DOTFILES_LOCATION:-$HOME/src/dotfiles}"
 DOTFILES_INSTALL="${DOTFILES_INSTALL:-prompt}"
@@ -12,7 +14,13 @@ DOTFILES_CONFIGURE="${DOTFILES_CONFIGURE:-prompt}"
 ####################################################################################################
 
 function print_line_delimiter() {
-    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' '='
+    local width=${COLUMNS:-80}
+
+    if [ -z "${COLUMNS:-}" ] && command -v tput >/dev/null 2>&1; then
+        width=$(tput cols 2>/dev/null || echo 80)
+    fi
+
+    printf '%*s\n' "$width" '' | tr ' ' '='
 }
 
 function prompt_yes_no() {
