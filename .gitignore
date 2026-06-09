@@ -24,6 +24,7 @@ gpg/.gnupg/*
 python/.ipython/profile_default/history.sqlite
 python/.ipython/profile_default/startup/*
 
+# Tmux plugins are installed locally by TPM.
 tmux/.config/tmux/plugins
 
 pi/.pi/agent/auth.json

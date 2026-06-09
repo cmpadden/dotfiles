@@ -13,6 +13,6 @@ window_name="$1"
 pane_current_path="$2"
 
 tmux new-window \
-    -n "$name" \
+    -n "$window_name" \
     -c "$pane_current_path" \
     "wt switch --create '$window_name' -x $SHELL"

@@ -60,7 +60,7 @@ function install_tmux_plugin_manager() {
         target_home=$(eval echo "~${target_user}")
     fi
 
-    target_directory="${target_home}/.tmux/plugins/tpm"
+    target_directory="${target_home}/.config/tmux/plugins/tpm"
 
     if [ ! -d "$target_directory" ]; then
         _log "Installing Tmux Plugin Manager to ${target_directory}"
