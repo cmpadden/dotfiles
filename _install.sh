@@ -7,6 +7,7 @@ LINUX_INSTALL_GRAPHICAL_APPLICATIONS="${LINUX_INSTALL_GRAPHICAL_APPLICATIONS:-1}
 LINUX_INSTALL_NVIDIA_DRIVERS="${LINUX_INSTALL_NVIDIA_DRIVERS:-1}"
 
 OS_NAME=$(uname -s)
+SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # figlet -f rozzo "macos"
 MESSAGE_MACOS=$(cat <<'EOM'
@@ -75,70 +76,8 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     # Install core packages and casks (NOTE: one can find a list of top-level packages with `brew
     # leaves`)
-
-    _log "Installing brew packages"
-    brew install \
-        bash \
-        bash-completion \
-        bat \
-        chatblade \
-        cmake \
-        curl \
-        direnv \
-        duckdb \
-        eza \
-        fd \
-        ffmpeg \
-        figlet \
-        fzf \
-        gh \
-        git \
-        httpie \
-        imagemagick \
-        jq \
-        llm \
-        neovim \
-        nvm \
-        openssh \
-        pass \
-        pass-otp \
-        pdfgrep \
-        pinentry-mac \
-        pnpm \
-        pre-commit \
-        pyenv \
-        pyenv-virtualenv \
-        ranger \
-        ripgrep \
-        sad \
-        shfmt \
-        stow \
-        stylua \
-        the_silver_searcher \
-        tldr \
-        tmux \
-        uv \
-        watch \
-        withgraphite/tap/graphite \
-        yarn \
-        &>/dev/null
-
-    _log "Installing brew casks"
-    brew install --cask \
-        firefox \
-        ghostty \
-        hammerspoon \
-        mpv \
-        notion \
-        notion-calendar \
-        slack \
-        &>/dev/null
-
-        # spotify \
-        # docker \
-        # linear-linear \
-        # snowflake-snowsql \
-        # zoom
+    _log "Installing Homebrew bundle"
+    brew bundle --file "$SCRIPT_DIRECTORY/Brewfile"
 
     _log "Installing LTS version of Node.js"
 

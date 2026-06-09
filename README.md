@@ -27,7 +27,7 @@ $ make restore
 
 ### Install
 
-Install system packages and applications using [brew](https://brew.sh/) for macOS, and `pacman` for Arch Linux.
+Install system packages and applications using [brew bundle](https://docs.brew.sh/Brew-Bundle-and-Brewfile) with `Brewfile` for macOS, and `pacman` for Arch Linux.
 
 ```sh
 $ make install
