@@ -1,9 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-LINUX_INSTALL_X_WINDOWS=1
-LINUX_INSTALL_CORE_APPLICATIONS=1
-LINUX_INSTALL_GRAPHICAL_APPLICATIONS=1
-LINUX_INSTALL_NVIDIA_DRIVERS=1
+LINUX_INSTALL_X_WINDOWS="${LINUX_INSTALL_X_WINDOWS:-1}"
+LINUX_INSTALL_CORE_APPLICATIONS="${LINUX_INSTALL_CORE_APPLICATIONS:-1}"
+LINUX_INSTALL_GRAPHICAL_APPLICATIONS="${LINUX_INSTALL_GRAPHICAL_APPLICATIONS:-1}"
+LINUX_INSTALL_NVIDIA_DRIVERS="${LINUX_INSTALL_NVIDIA_DRIVERS:-1}"
 
 OS_NAME=$(uname -s)
 
@@ -42,10 +43,19 @@ function _log() {
     echo "$(date +"%T") - ${message}"
 }
 
-if [ ! -d ~/.tmux/plugins/tpm ]; then
-    _log "Installing Tmux Plugin Manager"
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-fi
+function install_tmux_plugin_manager() {
+    if [[ $EUID -eq 0 ]]; then
+        _log "Skipping Tmux Plugin Manager install while running as root"
+        return
+    fi
+
+    if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+        _log "Installing Tmux Plugin Manager"
+        git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    fi
+}
+
+install_tmux_plugin_manager
 
 ###############################################################################
 #                                    MacOS                                    #
@@ -53,7 +63,7 @@ fi
 
 if [ "$OS_NAME" = 'Darwin' ]; then
 
-    # echo "$_message_macos"
+    echo "$MESSAGE_MACOS"
 
     # Install Homewbrew
     if command -v brew >/dev/null; then
@@ -152,8 +162,7 @@ fi
 
 if [ "$OS_NAME" = 'Linux' ]; then
 
-    echo "$_message_linux"
-
+    echo "$MESSAGE_LINUX"
     if [[ $EUID -ne 0 ]]; then
        _log "This script must be run as root. Run \`sudo ./_install.sh\`." 
        exit 1
