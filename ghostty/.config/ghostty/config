@@ -1,34 +1,62 @@
-# Reloading the configuration
-#
-#     cmd+shift+,
-#
-# Full default configuration
+# Full default configuration with documentation:
 #
 #     ghostty +show-config --default --docs
 #
-# List themes
+# List themes:
 #
 #     ghostty +list-themes
 #
-# List fonts
+# List fonts:
 #
 #     ghostty +list-fonts
 #
 
+# Keep Ghostty focused on rendering; tmux owns sessions, tabs, panes, and layout.
 theme = zenbones_dark
 
+# Keep typography explicit so the terminal looks the same on every machine.
+# On macOS: `brew install --cask font-iosevka`
+font-family = "Iosevka Extended"
 font-size = 12
 
-# On MacOS: λ brew install --cask font-iosevka
-font-family = "Iosevka Extended"
-
+# Keep the native window title visually quiet; tmux/shell prompts provide context.
 title = " "
+
+# Use a small amount of padding for readability without giving up much space.
 window-padding-x = 6
 window-padding-y = 6
 
+# Do not restore Ghostty windows/tabs/splits; tmux is responsible for session restore.
+window-save-state = never
+
+# Avoid Ghostty resize UI since tmux and the shell already make size changes obvious.
+resize-overlay = never
+
+# Keep the cursor area uncluttered while typing.
 mouse-hide-while-typing = true
+
+# Do not prompt when closing a surface; tmux protects long-running sessions.
 confirm-close-surface = false
 
-macos-titlebar-style = transparent
+# Disable Ghostty shell integration because its prompt/title/window features overlap with tmux.
+shell-integration = none
+
+# Remove default Ghostty bindings for tabs, splits, prompt jumping, etc.; tmux owns those.
+keybind = clear
+
+# Add back only app-level bindings that are still useful outside tmux.
+keybind = super+c=copy_to_clipboard
+keybind = super+v=paste_from_clipboard
+keybind = super+comma=open_config
+keybind = super+shift+comma=reload_config
+keybind = super+q=quit
+keybind = super+enter=toggle_fullscreen
+
+# Hide the titlebar for a minimal single-surface terminal; tmux handles tabs/window naming.
+macos-titlebar-style = hidden
+
+# Disable the macOS shadow for lighter, flatter window chrome.
 macos-window-shadow = false
+
+# Keep the preferred macOS app icon variant.
 macos-icon = xray
