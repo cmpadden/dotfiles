@@ -10,35 +10,26 @@
 #       312:user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 #
 
-FIREFOX_PROFILES_ROOT_DIRECTORY=~/Library/Application\ Support/Firefox/Profiles/
+set -euo pipefail
 
-for path in "$FIREFOX_PROFILES_ROOT_DIRECTORY"*; do
+SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+USER_CHROME_SOURCE="${SCRIPT_DIRECTORY}/firefox/userChrome.css"
+FIREFOX_PROFILES_ROOT_DIRECTORY="${HOME}/Library/Application Support/Firefox/Profiles"
+
+if [ ! -f "$USER_CHROME_SOURCE" ]; then
+    echo "[ERROR] Missing source file: ${USER_CHROME_SOURCE}"
+    exit 1
+fi
+
+if [ ! -d "$FIREFOX_PROFILES_ROOT_DIRECTORY" ]; then
+    echo "[INFO] Firefox profiles directory does not exist: ${FIREFOX_PROFILES_ROOT_DIRECTORY}"
+    exit 0
+fi
+
+for path in "${FIREFOX_PROFILES_ROOT_DIRECTORY}"/*; do
     if [ -d "$path" ]; then
         mkdir -p "$path/chrome"
-        cat > "$path/chrome/userChrome.css" <<- EOM
-/* Hide horizontal tabs at the top of the window #1349 */
-
-#main-window[tabsintitlebar="true"]:not([extradragspace="true"]) #TabsToolbar {
-  opacity: 0;
-  pointer-events: none;
-}
-
-#main-window:not([tabsintitlebar="true"]) #TabsToolbar {
-    visibility: collapse !important;
-}
-
-/* Hide the "Tree Style Tab" header at the top of the sidebar #1397 */
-
-#sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
-  display: none;
-}
-EOM
-    echo "Updated $path/chrome/userChrome.css"
+        cp "$USER_CHROME_SOURCE" "$path/chrome/userChrome.css"
+        echo "Updated $path/chrome/userChrome.css"
     fi
 done
-
-
-
-
-
-
