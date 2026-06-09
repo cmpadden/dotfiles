@@ -5,10 +5,6 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.27.2
     hooks:
@@ -29,3 +25,13 @@ repos:
         entry: shfmt -d
         language: system
         types: [shell]
+      - id: ruff-check
+        name: ruff check
+        entry: uvx ruff check
+        language: system
+        types: [python]
+      - id: ty-check
+        name: ty check
+        entry: uvx ty check
+        language: system
+        types: [python]
