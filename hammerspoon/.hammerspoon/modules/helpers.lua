@@ -209,7 +209,9 @@ local function calculate_alert_height(attributes)
     local height = (obj.alert.padding * 2) + obj.alert.line_height
 
     if attribute_count > 0 then
-        height = height + obj.alert.detail_spacing + (attribute_count * obj.alert.detail_line_height)
+        height = height
+            + obj.alert.detail_spacing
+            + (attribute_count * obj.alert.detail_line_height)
     end
 
     return height
@@ -363,7 +365,9 @@ function obj:show_modern(title, attributes, style_name, icon)
 
     local title_width = obj.alert.width - text_x - obj.alert.padding
 
-    local title_y = obj.alert.padding + (obj.alert.line_height - obj.alert.title_size) / 2 + obj.alert.text_vertical_offset
+    local title_y = obj.alert.padding
+        + (obj.alert.line_height - obj.alert.title_size) / 2
+        + obj.alert.text_vertical_offset
 
     canvas[#canvas + 1] = {
         type = "text",
@@ -377,7 +381,9 @@ function obj:show_modern(title, attributes, style_name, icon)
 
     local current_y = title_y + obj.alert.line_height + obj.alert.detail_spacing
     for _, attribute_text in ipairs(formatted_attributes) do
-        local attribute_y = current_y + (obj.alert.detail_line_height - obj.alert.detail_size) / 2 + obj.alert.text_vertical_offset
+        local attribute_y = current_y
+            + (obj.alert.detail_line_height - obj.alert.detail_size) / 2
+            + obj.alert.text_vertical_offset
         canvas[#canvas + 1] = {
             type = "text",
             text = attribute_text,
@@ -385,7 +391,12 @@ function obj:show_modern(title, attributes, style_name, icon)
             textSize = obj.alert.detail_size,
             textColor = resolved_style.secondaryTextColor or resolved_style.textColor,
             textAlignment = "left",
-            frame = { x = text_x, y = attribute_y, w = title_width, h = obj.alert.detail_line_height },
+            frame = {
+                x = text_x,
+                y = attribute_y,
+                w = title_width,
+                h = obj.alert.detail_line_height,
+            },
         }
         current_y = current_y + obj.alert.detail_line_height
     end

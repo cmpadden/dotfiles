@@ -13,7 +13,7 @@ def get_git_branch(current_dir):
             ["git", "-C", current_dir, "branch", "--show-current"],
             capture_output=True,
             text=True,
-            timeout=1
+            timeout=1,
         )
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
@@ -29,7 +29,7 @@ def get_git_status(current_dir):
             ["git", "-C", current_dir, "status", "--porcelain"],
             capture_output=True,
             text=True,
-            timeout=1
+            timeout=1,
         )
         if result.returncode == 0:
             return "?" if result.stdout.strip() else ""
@@ -78,13 +78,15 @@ def main():
         DARK0 = "40;35;33"  # #282828 - main dark background
 
         # Gruvbox accent colors with dark0 text
-        PURPLE_BG = f"\033[48;2;211;134;155;38;2;{DARK0}m"  # #d3869b purple bg, dark text
-        ORANGE_BG = f"\033[48;2;254;128;25;38;2;{DARK0}m"   # #fe8019 orange bg, dark text
-        YELLOW_BG = f"\033[48;2;250;189;47;38;2;{DARK0}m"   # #fabd2f yellow bg, dark text
-        GREEN_BG = f"\033[48;2;184;187;38;38;2;{DARK0}m"    # #b8bb26 green bg, dark text
-        BLUE_BG = f"\033[48;2;131;165;152;38;2;{DARK0}m"    # #83a598 blue bg, dark text
-        AQUA_BG = f"\033[48;2;142;192;124;38;2;{DARK0}m"    # #8ec07c aqua bg, dark text
-        RED_BG = f"\033[48;2;251;73;52;38;2;{DARK0}m"       # #fb4934 red bg, dark text
+        PURPLE_BG = (
+            f"\033[48;2;211;134;155;38;2;{DARK0}m"  # #d3869b purple bg, dark text
+        )
+        YELLOW_BG = (
+            f"\033[48;2;250;189;47;38;2;{DARK0}m"  # #fabd2f yellow bg, dark text
+        )
+        BLUE_BG = f"\033[48;2;131;165;152;38;2;{DARK0}m"  # #83a598 blue bg, dark text
+        AQUA_BG = f"\033[48;2;142;192;124;38;2;{DARK0}m"  # #8ec07c aqua bg, dark text
+        RED_BG = f"\033[48;2;251;73;52;38;2;{DARK0}m"  # #fb4934 red bg, dark text
 
         RESET = "\033[0m"
 

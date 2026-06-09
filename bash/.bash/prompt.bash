@@ -57,8 +57,7 @@ CONF_SHOW_HR=false
 # Reference(s):
 #   https://github.com/direnv/direnv/wiki/Python#restoring-the-ps1
 #
-prompt_venv()
-{
+prompt_venv() {
     if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
         local version=$(python -V | awk '{print $2}')
         local venv="$(basename "$VIRTUAL_ENV")"
@@ -71,27 +70,26 @@ prompt_venv()
 # Reference(s):
 #   https://www.shellhacks.com/show-git-branch-terminal-command-prompt/
 #
-prompt_git_branch()
-{
+prompt_git_branch() {
     if git rev-parse --git-dir >/dev/null 2>&1; then
         printf " %s " "$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
     fi
 }
 
 # Base RGB color values - Gruvbox dark theme
-DARK0="40;35;33"         # #282828 - main dark background
-LIGHT0="235;219;178"     # #ebdbb2 - main light foreground
-LIGHT1="251;241;199"     # #fbf1c7 - bright foreground
-WHITE_RGB="255;255;255"  # #ffffff - pure white for accents
+DARK0="40;35;33"        # #282828 - main dark background
+LIGHT0="235;219;178"    # #ebdbb2 - main light foreground
+LIGHT1="251;241;199"    # #fbf1c7 - bright foreground
+WHITE_RGB="255;255;255" # #ffffff - pure white for accents
 
 # Gruvbox accent colors (for optional use in prompt customization)
-PURPLE_RGB="211;134;155"  # #d3869b
-ORANGE_RGB="254;128;25"   # #fe8019
-YELLOW_RGB="250;189;47"   # #fabd2f
-GREEN_RGB="184;187;38"    # #b8bb26
-BLUE_RGB="131;165;152"    # #83a598
-AQUA_RGB="142;192;124"    # #8ec07c
-RED_RGB="251;73;52"       # #fb4934
+PURPLE_RGB="211;134;155" # #d3869b
+ORANGE_RGB="254;128;25"  # #fe8019
+YELLOW_RGB="250;189;47"  # #fabd2f
+GREEN_RGB="184;187;38"   # #b8bb26
+BLUE_RGB="131;165;152"   # #83a598
+AQUA_RGB="142;192;124"   # #8ec07c
+RED_RGB="251;73;52"      # #fb4934
 
 # Background colors
 DARK_BG="\e[48;2;${DARK0}m"
@@ -116,11 +114,11 @@ fi
 if [ "$TERM" == "xterm-256color" ]; then
     # Using color scheme variables defined above
     # Note: Variables must be outside single quotes to expand properly
-    PS1='\['"${DARK_BG}"'\e[K\]'                                # Dark background, clear to EOL
-    PS1+='\['"${BLUE_FG}"'\]$(prompt_venv)'         # Dark bg, light text for venv
-    PS1+='\['"${BLUE_BG}${DARK_FG}"'\]$(prompt_git_branch)'   # Light bg, dark text for git
-    PS1+='\['"${RESET}"'\]'                                     # Reset after git branch
-    PS1+='\['"${DARK_BG}${BLUE_FG}"'\] \w'                    # Dark bg, light text for working dir
-    PS1+='\['"${RESET}"'\]'                                     # Reset after path
-    PS1+='\n\[\e[1m'"${BRIGHT_FG}"'\] λ \['"${RESET}"'\]'      # Newline, bold bright lambda
+    PS1='\['"${DARK_BG}"'\e[K\]'                            # Dark background, clear to EOL
+    PS1+='\['"${BLUE_FG}"'\]$(prompt_venv)'                 # Dark bg, light text for venv
+    PS1+='\['"${BLUE_BG}${DARK_FG}"'\]$(prompt_git_branch)' # Light bg, dark text for git
+    PS1+='\['"${RESET}"'\]'                                 # Reset after git branch
+    PS1+='\['"${DARK_BG}${BLUE_FG}"'\] \w'                  # Dark bg, light text for working dir
+    PS1+='\['"${RESET}"'\]'                                 # Reset after path
+    PS1+='\n\[\e[1m'"${BRIGHT_FG}"'\] λ \['"${RESET}"'\]'   # Newline, bold bright lambda
 fi

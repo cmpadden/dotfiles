@@ -13,6 +13,7 @@ repos:
     rev: v2.1.0
     hooks:
       - id: stylua-system
+        args: [--config-path, .stylua.toml]
   - repo: local
     hooks:
       - id: bash-syntax
@@ -22,9 +23,14 @@ repos:
         types: [shell]
       - id: shfmt
         name: shfmt
-        entry: shfmt -d
+        entry: shfmt -d -i 4
         language: system
         types: [shell]
+      - id: ruff-format
+        name: ruff format
+        entry: uvx ruff format
+        language: system
+        types: [python]
       - id: ruff-check
         name: ruff check
         entry: uvx ruff check
@@ -35,3 +41,4 @@ repos:
         entry: uvx ty check
         language: system
         types: [python]
+        exclude: ^(python/.ipython/|qutebrowser/|ranger/)

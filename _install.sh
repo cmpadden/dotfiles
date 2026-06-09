@@ -10,7 +10,8 @@ OS_NAME=$(uname -s)
 SCRIPT_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # figlet -f rozzo "macos"
-MESSAGE_MACOS=$(cat <<'EOM'
+MESSAGE_MACOS=$(
+    cat <<'EOM'
 
 888 888 8e   ,"Y88b  e88'888  e88 88e   dP"Y
 888 888 88b "8" 888 d888  '8 d888 888b C88b
@@ -21,7 +22,8 @@ EOM
 )
 
 # figlet -f rozzo "linux"
-MESSAGE_LINUX=$(cat <<'EOM'
+MESSAGE_LINUX=$(
+    cat <<'EOM'
 
 888 ,e,
 888  x  888 8e  8888 8888  Y8b Y8Y
@@ -97,13 +99,11 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     _log "Installing LTS version of Node.js"
 
-
     if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
         # shellcheck source=/dev/null
         source "/opt/homebrew/opt/nvm/nvm.sh"
         nvm install --lts
     fi
-
 
     if [ ! -d "$HOME/.hammerspoon/Spoons/SpoonInstall.spoon" ]; then
         _log 'Installing Hammerspoon SpoonInstall.spoon'

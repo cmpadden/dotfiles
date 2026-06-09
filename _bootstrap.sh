@@ -38,13 +38,13 @@ function should_run_step() {
     local message=$2
 
     case "$value" in
-        1|true|yes|y) return 0 ;;
-        0|false|no|n) return 1 ;;
-        prompt) prompt_yes_no "$message" ;;
-        *)
-            echo "[ERROR] Unsupported value '${value}'. Use 1, 0, or prompt."
-            exit 1
-            ;;
+    1 | true | yes | y) return 0 ;;
+    0 | false | no | n) return 1 ;;
+    prompt) prompt_yes_no "$message" ;;
+    *)
+        echo "[ERROR] Unsupported value '${value}'. Use 1, 0, or prompt."
+        exit 1
+        ;;
     esac
 }
 
@@ -52,10 +52,10 @@ function copy_public_key() {
     local public_key=$1
 
     if command -v pbcopy >/dev/null 2>&1; then
-        pbcopy < "$public_key"
+        pbcopy <"$public_key"
         echo "[INFO] ${public_key} has been copied to the clipboard..."
     elif command -v xclip >/dev/null 2>&1; then
-        xclip -selection clipboard < "$public_key"
+        xclip -selection clipboard <"$public_key"
         echo "[INFO] ${public_key} has been copied to the clipboard..."
     else
         echo "[INFO] Clipboard utility unavailable. Public key:"
@@ -69,7 +69,7 @@ function copy_public_key() {
 
 print_line_delimiter
 
-cat << EOF
+cat <<EOF
 USAGE
 
     /bin/bash -c "\$(curl -fsSL https://github.com/cmpadden/dotfiles/raw/refs/heads/main/_bootstrap.sh)"
@@ -92,7 +92,7 @@ CURRENT CONFIGURATION VALUES
 
 EOF
 
-if ! command -v git > /dev/null 2>&1; then
+if ! command -v git >/dev/null 2>&1; then
     echo "Git is not available on this system. Aborting..."
     exit 1
 fi

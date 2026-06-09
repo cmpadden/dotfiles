@@ -46,7 +46,6 @@ if hash rg 2>/dev/null; then
     alias grep="rg --smart-case"
 fi
 
-
 if [ -f ~/Applications/SnowSQL.app/Contents/MacOS/snowsql ]; then
     alias snowsql='~/Applications/SnowSQL.app/Contents/MacOS/snowsql'
 fi

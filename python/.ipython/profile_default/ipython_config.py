@@ -1,3 +1,4 @@
+# ruff: noqa: F821
 # Configuration file for ipython.
 
 # ------------------------------------------------------------------------------
@@ -187,7 +188,7 @@
 # c.InteractiveShell.color_info = True
 
 # Set the color scheme (NoColor, Neutral, Linux, or LightBG).
-c.InteractiveShell.colors = 'NoColor'
+c.InteractiveShell.colors = "NoColor"
 
 ##
 # c.InteractiveShell.debug = False

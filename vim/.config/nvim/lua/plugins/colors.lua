@@ -65,13 +65,12 @@ return {
             require("catppuccin").setup({
                 flavour = "auto",
                 background = {
-                    light = 'latte',
-                    dark = 'mocha',
+                    light = "latte",
+                    dark = "mocha",
                 },
                 color_overrides = {
                     mocha = {
-                        base = '#121317',
-
+                        base = "#121317",
                     },
                 },
                 term_colors = true,
@@ -84,9 +83,9 @@ return {
                     nvimtree = false,
                     treesitter = true,
                     mini = false,
-                }
+                },
             })
-            vim.cmd.colorscheme "catppuccin"
+            vim.cmd.colorscheme("catppuccin")
         end,
         enabled = false,
     },
@@ -97,7 +96,7 @@ return {
         lazy = false,
         init = function()
             local palette = require("monokai").pro
-            palette.base2 = '#000000'
+            palette.base2 = "#000000"
             require("monokai").setup({ palette = palette, italics = false })
         end,
         enabled = false,
@@ -169,15 +168,15 @@ return {
         lazy = false,
         priority = 1000,
         init = function()
-            require('kanagawa').setup({
+            require("kanagawa").setup({
                 transparent = true,
                 colors = {
                     theme = {
                         ui = {
                             bg = "#000000",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             })
             vim.opt.termguicolors = true
             vim.cmd.colorscheme("mellow")

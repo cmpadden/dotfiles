@@ -24,17 +24,17 @@ if vim.fn.isdirectory(vim.fn.expand("~/src/llm.nvim")) == 1 then
         },
         opts = {
             -- `llm` flag configuration parameters
-            model             = "claude-3.5-haiku", -- TEXT            Model to use
-            system            = nil,        -- TEXT            System prompt to use
-            continue          = nil,        --                 Continue the most recent conversation.
-            conversation      = nil,        -- TEXT            Continue the conversation with the given ID.
-            template          = nil,        -- TEXT            Template to use
-            param             = nil,        -- <TEXT TEXT>...  Parameters for template
-            option            = nil,        -- <TEXT TEXT>...  key/value options for the model
+            model = "claude-3.5-haiku", -- TEXT            Model to use
+            system = nil, -- TEXT            System prompt to use
+            continue = nil, --                 Continue the most recent conversation.
+            conversation = nil, -- TEXT            Continue the conversation with the given ID.
+            template = nil, -- TEXT            Template to use
+            param = nil, -- <TEXT TEXT>...  Parameters for template
+            option = nil, -- <TEXT TEXT>...  key/value options for the model
 
             -- nvim-specific configuration parameters
-            insert_as_comment = true -- BOOL            Insert the prompt response as a comment
-        }
+            insert_as_comment = true, -- BOOL            Insert the prompt response as a comment
+        },
     })
 end
 
@@ -63,7 +63,6 @@ if vim.fn.isdirectory(vim.fn.expand("~/src/dbtpal")) == 1 then
             vim.keymap.set("n", "<leader>dm", require("dbtpal.telescope").dbt_picker)
             -- vim.keymap.set("n", "<leader>du", require("dbtpal.telescope").dbt_picker_upstream)
             -- vim.keymap.set("n", "<leader>dd", require("dbtpal.telescope").dbt_picker_downstream)
-
 
             require("telescope").load_extension("dbtpal")
         end,

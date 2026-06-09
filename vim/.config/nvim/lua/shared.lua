@@ -97,4 +97,3 @@ M.default_on_attach = function(client, bufnr)
 end
 
 return M
-

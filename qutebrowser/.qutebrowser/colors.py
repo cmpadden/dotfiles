@@ -82,12 +82,12 @@ def apply_base16(c):
 
     base00 = "#061229"
     base01 = "#2a3448"
-    base02 = "#4d5666"
-    base03 = "#717885"
+    base02 = "#4d5666"  # noqa: F841
+    base03 = "#717885"  # noqa: F841
     base04 = "#9a99a3"
     base05 = "#b8bbc2"
-    base06 = "#dbdde0"
-    base07 = "#ffffff"
+    base06 = "#dbdde0"  # noqa: F841
+    base07 = "#ffffff"  # noqa: F841
     base08 = "#d07346"
     base09 = "#f0a000"
     base0A = "#fbd461"
@@ -95,7 +95,7 @@ def apply_base16(c):
     base0C = "#72b9bf"
     base0D = "#5299bf"
     base0E = "#9989cc"
-    base0F = "#b08060"
+    base0F = "#b08060"  # noqa: F841
 
     # Text color of the completion widget. May be a single color to use for
     # all columns or a list of three colors, one for each column.
@@ -381,7 +381,7 @@ def apply(c, scheme="dracula", options={}):
     """
 
     if scheme not in SCHEMES:
-        raise ValueError(f"scheme should be one of: " + ", ".join(SCHEMES.keys()))
+        raise ValueError(f"scheme should be one of: {', '.join(SCHEMES.keys())}")
 
     palette = SCHEMES[scheme]
 

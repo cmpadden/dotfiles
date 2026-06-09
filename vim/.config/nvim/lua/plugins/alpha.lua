@@ -14,15 +14,14 @@ local function wrap(text, width)
     local lines = {}
     for i = 1, #text, width do
         local line = text:sub(i, i + width - 1)
-        line = vim.trim(line, ' ')
+        line = vim.trim(line, " ")
         table.insert(lines, line)
     end
     return lines
 end
 
-
 local BANNER_TEXT =
-"All moments, past, present, and future, always have existed, always will exist. The Tralfamadorians can look at all the different moments just the way we can look at a stretch of the Rocky Mountains, for instance. It is just an illusion we have here on Earth that one moment follows another one, like beads on a string, and that once a moment is gone it is gone forever."
+    "All moments, past, present, and future, always have existed, always will exist. The Tralfamadorians can look at all the different moments just the way we can look at a stretch of the Rocky Mountains, for instance. It is just an illusion we have here on Earth that one moment follows another one, like beads on a string, and that once a moment is gone it is gone forever."
 
 return {
     "goolord/alpha-nvim",
@@ -41,11 +40,7 @@ return {
         dashboard.section.buttons.val = {
             dashboard.button("i", "New file", ":ene <BAR> startinsert <CR>"),
             dashboard.button("f", "Find file", ":FzfLua files<CR>"),
-            dashboard.button(
-                "s",
-                "Settings",
-                ":e $MYVIMRC | :cd %:p:h<CR>"
-            ),
+            dashboard.button("s", "Settings", ":e $MYVIMRC | :cd %:p:h<CR>"),
             dashboard.button("q", "Quit", ":qa<CR>"),
         }
 

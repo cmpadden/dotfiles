@@ -6,11 +6,11 @@ vim.diagnostic.config({
     -- https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = '•',
-            [vim.diagnostic.severity.WARN] = '•',
+            [vim.diagnostic.severity.ERROR] = "•",
+            [vim.diagnostic.severity.WARN] = "•",
         },
     },
 })
 
 -- Setup all LSP servers from lua/lsp/init.lua (auto-discovers lua/lsp/servers/*.lua)
-require('lsp').setup()
+require("lsp").setup()

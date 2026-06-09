@@ -63,13 +63,13 @@ vim.cmd([[
 
 -- Set fold expression and level for markdown files
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function()
-    vim.opt_local.foldmethod = "expr"
-    vim.opt_local.foldlevel = 1
-    vim.opt_local.foldexpr = "MarkdownFoldExpr(v:lnum)"
-    vim.opt_local.foldtext = "CustomMarkdownFoldText()"
-  end,
+    pattern = "markdown",
+    callback = function()
+        vim.opt_local.foldmethod = "expr"
+        vim.opt_local.foldlevel = 1
+        vim.opt_local.foldexpr = "MarkdownFoldExpr(v:lnum)"
+        vim.opt_local.foldtext = "CustomMarkdownFoldText()"
+    end,
 })
 
 -- run Python code
@@ -103,10 +103,10 @@ vim.cmd([[
 
 -- todo: consider `.editorconfig`
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"javascript", "typescript", "javascriptreact", "typescriptreact"},
-  callback = function()
-    vim.opt_local.tabstop = 2
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.expandtab = true
-  end
+    pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+    callback = function()
+        vim.opt_local.tabstop = 2
+        vim.opt_local.shiftwidth = 2
+        vim.opt_local.expandtab = true
+    end,
 })

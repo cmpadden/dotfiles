@@ -7,44 +7,44 @@
 --     https://cmp.saghen.dev/recipes.html#border
 
 return {
-    'saghen/blink.cmp',
+    "saghen/blink.cmp",
     dependencies = {
         "moyiz/blink-emoji.nvim",
-        { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+        { "L3MON4D3/LuaSnip", version = "v2.*" },
     },
-    version = '1.*',
+    version = "1.*",
     prebuilt_binaries = {
-        download = true
+        download = true,
     },
     opts = {
         keymap = {
-            preset = 'default',
-            ['<C-l>'] = { 'select_and_accept' }, -- default <C-y>
+            preset = "default",
+            ["<C-l>"] = { "select_and_accept" }, -- default <C-y>
         },
         appearance = {
-            nerd_font_variant = 'mono'
+            nerd_font_variant = "mono",
         },
         completion = {
-            menu = { border = 'single' },
-            documentation = { auto_show = true, window = { border = 'single' } },
+            menu = { border = "single" },
+            documentation = { auto_show = true, window = { border = "single" } },
         },
         cmdline = {
             keymap = {
-                preset = 'cmdline',
-                ['<C-l>'] = { 'select_and_accept' },
-                ['<C-n>'] = { 'show_and_insert', 'select_next', 'fallback' },
+                preset = "cmdline",
+                ["<C-l>"] = { "select_and_accept" },
+                ["<C-n>"] = { "show_and_insert", "select_next", "fallback" },
             },
         },
         snippets = {
-            preset = 'luasnip'
+            preset = "luasnip",
         },
         sources = {
             default = {
-                'snippets',
-                'lsp',
-                'path',
-                'emoji',
-                'buffer',
+                "snippets",
+                "lsp",
+                "path",
+                "emoji",
+                "buffer",
             },
             providers = {
                 emoji = {
@@ -63,7 +63,7 @@ return {
                 },
             },
         },
-        fuzzy = { implementation = "prefer_rust_with_warning" }
+        fuzzy = { implementation = "prefer_rust_with_warning" },
     },
-    opts_extend = { "sources.default" }
+    opts_extend = { "sources.default" },
 }

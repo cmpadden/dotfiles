@@ -5,23 +5,23 @@ function M.load_servers()
     local servers = {}
 
     -- Use nvim's runtime file discovery to find all server configs
-    local server_files = vim.api.nvim_get_runtime_file('lua/lsp/servers/*.lua', true)
+    local server_files = vim.api.nvim_get_runtime_file("lua/lsp/servers/*.lua", true)
 
     if #server_files == 0 then
-        vim.notify('No LSP server configs found in lua/lsp/servers/', vim.log.levels.WARN)
+        vim.notify("No LSP server configs found in lua/lsp/servers/", vim.log.levels.WARN)
         return servers
     end
 
     for _, filepath in ipairs(server_files) do
         -- Extract server name from filepath (e.g., "lua/lsp/servers/basedpyright.lua" -> "basedpyright")
-        local server_name = vim.fn.fnamemodify(filepath, ':t:r')
-        local ok, config = pcall(require, 'lsp.servers.' .. server_name)
+        local server_name = vim.fn.fnamemodify(filepath, ":t:r")
+        local ok, config = pcall(require, "lsp.servers." .. server_name)
 
         if ok then
             servers[server_name] = config
         else
             vim.notify(
-                string.format('Failed to load LSP server config: %s\n%s', server_name, config),
+                string.format("Failed to load LSP server config: %s\n%s", server_name, config),
                 vim.log.levels.WARN
             )
         end

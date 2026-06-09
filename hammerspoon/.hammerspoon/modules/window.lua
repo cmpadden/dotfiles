@@ -159,27 +159,27 @@ end
 -- @return boolean true if the window should be ignored, false otherwise
 local function should_ignore_window(window)
     local ignore_list = obj.config.application_ignore_list or {}
-    
+
     -- Empty ignore list means nothing is ignored
     if #ignore_list == 0 then
         return false
     end
-    
+
     local success, app_name = pcall(function()
         return window:application():name()
     end)
-    
+
     if not success or not app_name then
         return false
     end
-    
+
     -- Exact name matching (case-sensitive)
     for _, ignored_app in ipairs(ignore_list) do
         if app_name == ignored_app then
             return true
         end
     end
-    
+
     return false
 end
 
@@ -241,12 +241,12 @@ end
 
 function obj:move_focused_window_next_geometry(direction)
     local focused_window = hs.window.focusedWindow()
-    
+
     -- Skip if application is in ignore list (silent behavior)
     if should_ignore_window(focused_window) then
         return
     end
-    
+
     local focused_window_id = get_window_id(focused_window)
 
     local _active_layout = self.layouts[self.layout]
@@ -399,7 +399,7 @@ function obj:init()
             print(string.format("⊘ Ignoring new window from %s (in ignore list)", app_name))
             return
         end
-        
+
         -- Prevent resizing of floating windows
         --
         -- http://www.hammerspoon.org/docs/hs.window.html#isStandard
