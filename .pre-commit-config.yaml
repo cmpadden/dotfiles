@@ -41,4 +41,4 @@ repos:
         entry: uvx ty check
         language: system
         types: [python]
-        exclude: ^(python/.ipython/|qutebrowser/|ranger/)
+        exclude: ^(_archive/|python/.ipython/|qutebrowser/|ranger/)

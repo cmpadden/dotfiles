@@ -25,6 +25,11 @@ if ! command -v stow >/dev/null 2>&1; then
 fi
 
 for file in *; do
+    # Top-level directories prefixed with '_' are archival and not stow targets.
+    if [[ "$file" == _* ]]; then
+        continue
+    fi
+
     if [ -d "$file" ]; then
         read -r -e -p "[y/N] - Restore ${file}? " response
         if [[ "$response" == [Yy]* ]]; then

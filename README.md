@@ -68,6 +68,8 @@ These are the applications and utilities that I choose to use at the moment, ref
 <details>
 <summary>Legacy Tools</summary>
 
+Previously used tools are kept in `_archive/`.
+
 | Name                                                | Tagline                                                                                                       | Category          |
 |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------|-------------------|
 | [Vim](https://www.vim.org)                          | Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient. | Editor            |
@@ -75,7 +77,6 @@ These are the applications and utilities that I choose to use at the moment, ref
 | [Fish](https://fishshell.com)                       | Fish is a smart and user-friendly command line shell for Linux, macOS, and the rest of the family.            | Shell             |
 | [Alacritty](https://github.com/alacritty/alacritty) | A fast, cross-platform, OpenGL terminal emulator                                                              | Terminal Emulator |
 | [urxvt](https://linux.die.net/man/1/urxvt)          | rxvt-unicode (ouR XVT, unicode) - (a VT102 emulator for the X window system)                                  | Terminal Emulator |
-| [i3wm](https://i3wm.org)                            | improved tiling wm                                                                                            | Window Manager    |
 | [Kitty](https://sw.kovidgoyal.net/kitty/)  | The fast, feature-rich, GPU based terminal emulator                                                                                                                      | Terminal |
 
 </details>
