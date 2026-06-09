@@ -1,19 +1,37 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 22.3.0
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.27.2
     hooks:
-    -   id: black
--   repo: https://github.com/zricethezav/gitleaks
-    rev: v8.2.0
+      - id: gitleaks
+  - repo: https://github.com/JohnnyMorganz/StyLua
+    rev: v2.1.0
     hooks:
-    -   id: gitleaks
-- repo: https://github.com/JohnnyMorganz/StyLua
-  rev: v0.20.0
-  hooks:
-    - id: stylua-system
+      - id: stylua-system
+  - repo: local
+    hooks:
+      - id: bash-syntax
+        name: bash syntax check
+        entry: bash -n
+        language: system
+        types: [shell]
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -d
+        language: system
+        types: [shell]
+      - id: ruff-check
+        name: ruff check
+        entry: uvx ruff check
+        language: system
+        types: [python]
+      - id: ty-check
+        name: ty check
+        entry: uvx ty check
+        language: system
+        types: [python]
