@@ -44,14 +44,30 @@ function _log() {
 }
 
 function install_tmux_plugin_manager() {
+    local target_user=${SUDO_USER:-${USER:-}}
+    local target_home=$HOME
+    local target_directory
+
     if [[ $EUID -eq 0 ]]; then
-        _log "Skipping Tmux Plugin Manager install while running as root"
-        return
+        if [ -z "$target_user" ] || [ "$target_user" = "root" ]; then
+            _log "Skipping Tmux Plugin Manager install while running as root"
+            return
+        fi
+
+        target_home=$(eval echo "~${target_user}")
     fi
 
-    if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-        _log "Installing Tmux Plugin Manager"
-        git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    target_directory="${target_home}/.tmux/plugins/tpm"
+
+    if [ ! -d "$target_directory" ]; then
+        _log "Installing Tmux Plugin Manager to ${target_directory}"
+        if [[ $EUID -eq 0 ]]; then
+            sudo -u "$target_user" mkdir -p "$(dirname "$target_directory")"
+            sudo -u "$target_user" git clone https://github.com/tmux-plugins/tpm "$target_directory"
+        else
+            mkdir -p "$(dirname "$target_directory")"
+            git clone https://github.com/tmux-plugins/tpm "$target_directory"
+        fi
     fi
 }
 
