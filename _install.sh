@@ -150,11 +150,14 @@ if [ "$OS_NAME" = 'Darwin' ]; then
     fi
 
 
-    if [ ! -d ~/.hammerspoon/Spoons/SpoonInstall.spoon ]; then
+    if [ ! -d "$HOME/.hammerspoon/Spoons/SpoonInstall.spoon" ]; then
         _log 'Installing Hammerspoon SpoonInstall.spoon'
-        curl -O -L https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip
-        unzip SpoonInstall.spoon.zip
-        open SpoonInstall.spoon
+        tmp_directory=$(mktemp -d)
+        trap 'rm -rf "$tmp_directory"' EXIT
+
+        mkdir -p "$HOME/.hammerspoon/Spoons"
+        curl -fsSL -o "$tmp_directory/SpoonInstall.spoon.zip" https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip
+        unzip -q "$tmp_directory/SpoonInstall.spoon.zip" -d "$HOME/.hammerspoon/Spoons"
     fi
 
     _log 'NOTE: If Chromium.app fails to open, run: xattr -cr /Applications/Chromium.app'
