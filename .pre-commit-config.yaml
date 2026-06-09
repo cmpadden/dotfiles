@@ -13,6 +13,7 @@ repos:
     rev: v2.1.0
     hooks:
       - id: stylua-system
+        args: [--config-path, .stylua.toml]
   - repo: local
     hooks:
       - id: bash-syntax
