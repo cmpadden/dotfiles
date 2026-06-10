@@ -12,7 +12,7 @@
 #
 
 # Keep Ghostty focused on rendering; tmux owns sessions, tabs, panes, and layout.
-theme = zenbones_dark
+theme = Zenbones Dark
 
 # Keep typography explicit so the terminal looks the same on every machine.
 # On macOS: `brew install --cask font-iosevka`
