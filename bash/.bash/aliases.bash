@@ -56,6 +56,10 @@ alias tar-extract="tar -xzvf"
 # source environment variables in `.env` filtering comments
 alias source-env='export $(grep -v ^# .env | xargs)'
 
+if hash xdg-open 2>/dev/null; then
+    alias open="xdg-open"
+fi
+
 ####################################################################################################
 #                                              Docker                                              #
 ####################################################################################################

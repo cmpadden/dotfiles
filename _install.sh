@@ -175,9 +175,20 @@ elif [ "$OS_NAME" = 'Linux' ]; then
             i3-wm \
             i3lock \
             i3status \
+            polkit \
             rofi \
+            grim \
+            slurp \
+            sway \
+            swayidle \
+            swaylock \
+            wofi \
+            wl-clipboard \
             xclip \
+            xdg-desktop-portal-gtk \
+            xdg-desktop-portal-wlr \
             xss-lock \
+            xorg-xwayland \
             xorg-server \
             xorg-xinit \
             xorg-xset \

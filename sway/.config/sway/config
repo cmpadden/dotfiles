@@ -1,0 +1,167 @@
+# Sway config file.
+#
+# This mirrors the i3 config where possible, with Wayland-native replacements
+# for launcher, screenshot, lock, and IPC commands.
+
+font pango:monospace 12
+
+# swayidle listens for loginctl lock-session and locks before suspend.
+exec_always sh -c 'pgrep -x swayidle >/dev/null || exec swayidle -w lock "swaylock -f -c 061229" before-sleep "swaylock -f -c 061229"'
+
+# Quick dictionary lookup with a Wayland-native dmenu prompt.
+bindsym Mod4+Shift+d exec sh -c 'word=$(printf "" | wofi --dmenu --prompt "Word:") && [ -n "$word" ] && exec goldendict "$word"'
+
+# Use pactl to adjust volume in PulseAudio/PipeWire Pulse.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Use these keys for focus, movement, and resize directions when reaching for
+# the arrows is not convenient.
+set $up k
+set $down j
+set $left h
+set $right l
+
+# Use Mouse+Mod4 to drag floating windows to their wanted position.
+floating_modifier Mod4
+
+# Start a terminal.
+bindsym Mod4+Shift+Return exec ghostty
+
+# Kill focused window.
+bindsym Mod4+q kill
+
+# Launchers.
+bindsym Mod4+d exec wofi --show run
+bindsym Mod4+p exec wofi --show drun
+
+# Screenshots.
+bindsym Mod4+Shift+4 exec sh -c 'mkdir -p "$HOME/Pictures/Screenshots" && grim -g "$(slurp)" "$HOME/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"'
+bindsym Mod4+Shift+5 exec sh -c 'mkdir -p "$HOME/Pictures/Screenshots" && grim "$HOME/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"'
+
+# Change focus.
+bindsym Mod4+$left focus left
+bindsym Mod4+$down focus down
+bindsym Mod4+$up focus up
+bindsym Mod4+$right focus right
+
+# Move focused window.
+bindsym Mod4+Shift+$left move left
+bindsym Mod4+Shift+$down move down
+bindsym Mod4+Shift+$up move up
+bindsym Mod4+Shift+$right move right
+
+# Split in vertical orientation.
+bindsym Mod4+v split v
+
+# Enter fullscreen mode for the focused container.
+bindsym Mod4+f fullscreen toggle
+
+# Change container layout.
+bindsym Mod4+e layout toggle split
+
+# Toggle tiling / floating.
+bindsym Mod4+Shift+space floating toggle
+
+# Change focus between tiling / floating windows.
+bindsym Mod4+space focus mode_toggle
+
+# Focus the parent container.
+bindsym Mod4+a focus parent
+
+# Move the currently focused window to the scratchpad.
+bindsym Mod4+Shift+minus move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+bindsym Mod4+minus scratchpad show
+
+# Define names for default workspaces for which we configure key bindings later on.
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+
+# Switch to workspace.
+bindsym Mod4+1 workspace number $ws1
+bindsym Mod4+2 workspace number $ws2
+bindsym Mod4+3 workspace number $ws3
+bindsym Mod4+4 workspace number $ws4
+bindsym Mod4+5 workspace number $ws5
+
+# Move focused container to workspace.
+bindsym Mod4+Control+1 move container to workspace number $ws1
+bindsym Mod4+Control+2 move container to workspace number $ws2
+bindsym Mod4+Control+3 move container to workspace number $ws3
+bindsym Mod4+Control+4 move container to workspace number $ws4
+bindsym Mod4+Control+5 move container to workspace number $ws5
+
+# Reload the configuration file.
+bindsym Mod4+Shift+c reload
+# Restart Sway in-place.
+bindsym Mod4+Shift+r reload
+# Exit Sway.
+bindsym Mod4+Shift+e exec "swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit Sway? This will end your Wayland session.' -b 'Yes, exit Sway' 'swaymsg exit'"
+
+# Resize window.
+mode "resize" {
+        bindsym $left       resize shrink width 10 px or 10 ppt
+        bindsym $down       resize grow height 10 px or 10 ppt
+        bindsym $up         resize shrink height 10 px or 10 ppt
+        bindsym $right      resize grow width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+bindsym Mod4+r mode "resize"
+
+# Power control mode.
+set $power_control "[l]ock log[o]ut [r]eboot [p]oweroff"
+mode $power_control {
+    bindsym l exec loginctl lock-session; mode "default"
+    bindsym o exec swaymsg exit; mode "default"
+    bindsym p exec systemctl poweroff; mode "default"
+    bindsym r exec systemctl reboot; mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym Mod4+n mode $power_control
+
+bindsym Mod4+Shift+b bar mode toggle
+
+bar {
+    mode hide
+    height 24
+    position top
+    status_command i3status
+    tray_output primary
+    separator_symbol "|"
+
+    colors {
+        background #000000
+        statusline #FFFFFF
+        separator  #444444
+
+        # CLASS            BORDER  BG      FG
+        focused_workspace  #061229 #061229 #FFFFFF
+        active_workspace   #061229 #061229 #444444
+        inactive_workspace #061229 #061229 #444444
+        urgent_workspace   #061229 #061229 #FF0000
+        binding_mode       #061229 #061229 #444444
+    }
+}
+
+# CLASS                 BORDER  BG      FG      INDIC   CHILD
+client.focused          #061229 #444444 #FFFFFF #444444 #444444
+client.focused_inactive #061229 #061229 #444444 #061229 #061229
+client.placeholder      #061229 #061229 #444444 #061229 #061229
+client.unfocused        #061229 #061229 #444444 #061229 #061229
+client.urgent           #061229 #061229 #FFFFFF #061229 #061229
+
+default_border pixel 4
+default_floating_border pixel 4
+gaps inner 16
