@@ -3,7 +3,32 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         dependencies = {
-            "joosepalviste/nvim-ts-context-commentstring",
+            {
+                "joosepalviste/nvim-ts-context-commentstring",
+                init = function()
+                    -- Disable the legacy nvim-treesitter module before this plugin loads.
+                    vim.g.skip_ts_context_commentstring_module = true
+                end,
+                opts = {
+                    enable_autocmd = false,
+                },
+                config = function(_, opts)
+                    require("ts_context_commentstring").setup(opts)
+
+                    local original_get_option = vim.filetype._get_option
+                        or vim.filetype.get_option
+                    vim.filetype._get_option = original_get_option
+
+                    vim.filetype.get_option = function(filetype, option)
+                        if option ~= "commentstring" then
+                            return original_get_option(filetype, option)
+                        end
+
+                        return require("ts_context_commentstring.internal").calculate_commentstring()
+                            or original_get_option(filetype, option)
+                    end
+                end,
+            },
             "windwp/nvim-ts-autotag",
             {
                 "nvim-treesitter/nvim-treesitter-textobjects",
@@ -14,9 +39,6 @@ return {
         cmd = { "TSUpdate", "TSUpdateSync" },
         build = ":TSUpdateSync",
         config = function()
-            -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring#getting-started
-            vim.g.skip_ts_context_commentstring_module = true
-
             require("nvim-treesitter.configs").setup({
                 enable_autocmd = false,
             })
