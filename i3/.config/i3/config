@@ -16,7 +16,7 @@ font pango:monospace 12
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c 061229 -eu --nofork
+exec_always --no-startup-id sh -c 'pgrep -x xss-lock >/dev/null || exec xss-lock --transfer-sleep-lock -- i3lock -c 061229 -e --nofork'
 
 # https://www.reddit.com/r/i3wm/comments/fzgxg2/tip_quick_dictionary_lookup_with_i3input_and/
 bindsym Mod4+Shift+d exec i3-input -F 'exec goldendict %s' -P 'Word: '

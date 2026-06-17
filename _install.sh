@@ -173,9 +173,11 @@ elif [ "$OS_NAME" = 'Linux' ]; then
         _log "Installing X windows."
         pacman -S --needed --noconfirm \
             i3-wm \
+            i3lock \
             i3status \
             rofi \
             xclip \
+            xss-lock \
             xorg-server \
             xorg-xinit \
             xorg-xset \
