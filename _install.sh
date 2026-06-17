@@ -187,6 +187,7 @@ elif [ "$OS_NAME" = 'Linux' ]; then
         pacman -S --needed --noconfirm \
             ghostty \
             firefox \
+            ttc-iosevka \
             >/dev/null 2>&1
     fi
 
