@@ -97,7 +97,7 @@ java_decompile() {
 }
 
 notify() {
-    # MacOS notifications (useful for things like sleep 5 && notify)
+    # Desktop notifications (useful for things like sleep 5 && notify)
     local title="Shell Notification"
     local text="!"
     if [ "$#" -eq 1 ]; then
@@ -106,7 +106,15 @@ notify() {
         title="$1"
         text="$2"
     fi
-    osascript -e "display notification \"$text\" with title \"$title\""
+
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send "$title" "$text"
+    elif command -v osascript >/dev/null 2>&1; then
+        osascript -e "display notification \"$text\" with title \"$title\""
+    else
+        echo "notify: no supported notification command found" >&2
+        return 1
+    fi
 }
 
 serve() {

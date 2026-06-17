@@ -1,0 +1,59 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Iosevka Extended", "Iosevka", monospace;
+    font-size: 16px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: #000000;
+    color: #ffffff;
+}
+
+#workspaces button {
+    color: #ffffff;
+    padding: 0 8px;
+}
+
+#workspaces button label {
+    color: #ffffff;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background: #061229;
+    color: #ffffff;
+}
+
+#workspaces button.focused label,
+#workspaces button.active label {
+    color: #ffffff;
+}
+
+#workspaces button.urgent {
+    background: #061229;
+    color: #ff0000;
+}
+
+#workspaces button.urgent label {
+    color: #ff0000;
+}
+
+#mode {
+    background: #061229;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0 8px;
+}
+
+#window,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#battery,
+#clock {
+    color: #ffffff;
+    padding: 0 8px;
+}

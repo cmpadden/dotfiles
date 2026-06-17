@@ -150,7 +150,6 @@ elif [ "$OS_NAME" = 'Linux' ]; then
             pass \
             pass-otp \
             ripgrep \
-            scrot \
             sensors-detect \
             stow \
             sudo \
@@ -170,28 +169,23 @@ elif [ "$OS_NAME" = 'Linux' ]; then
     fi
 
     if [ "$LINUX_INSTALL_X_WINDOWS" -eq 1 ]; then
-        _log "Installing X windows."
+        _log "Installing Wayland desktop."
         pacman -S --needed --noconfirm \
-            i3-wm \
-            i3lock \
-            i3status \
-            polkit \
-            rofi \
             grim \
+            imv \
+            libnotify \
+            mako \
+            polkit \
             slurp \
             sway \
             swayidle \
             swaylock \
+            waybar \
             wofi \
             wl-clipboard \
-            xclip \
             xdg-desktop-portal-gtk \
             xdg-desktop-portal-wlr \
-            xss-lock \
             xorg-xwayland \
-            xorg-server \
-            xorg-xinit \
-            xorg-xset \
             >/dev/null 2>&1
     fi
 

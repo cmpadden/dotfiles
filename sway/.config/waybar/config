@@ -1,0 +1,46 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 28,
+    "spacing": 12,
+    "mode": "hide",
+    "start_hidden": true,
+    "modifier-reset": "release",
+    "ipc": true,
+    "id": "bar-0",
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "clock"],
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}"
+    },
+    "sway/window": {
+        "max-length": 80
+    },
+    "pulseaudio": {
+        "format": "VOL {volume}%",
+        "format-muted": "MUTED"
+    },
+    "network": {
+        "format-wifi": "W:{signalStrength}% {essid}",
+        "format-ethernet": "E:{ipaddr}",
+        "format-disconnected": ""
+    },
+    "cpu": {
+        "format": "CPU {usage}%"
+    },
+    "memory": {
+        "format": "RAM {used:0.1f}G/{total:0.1f}G"
+    },
+    "battery": {
+        "format": "{status} {capacity}%",
+        "format-charging": "CHR {capacity}%",
+        "format-full": "FULL {capacity}%",
+        "format-not-charging": "BAT {capacity}%"
+    },
+    "clock": {
+        "format": "{:%a, %d %b %y %I:%M %p}"
+    }
+}
