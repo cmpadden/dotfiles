@@ -20,6 +20,7 @@ set $up k
 set $down j
 set $left h
 set $right l
+set $workspace_margin 480
 
 # Use Mouse+Mod4 to drag floating windows to their wanted position.
 floating_modifier Mod4
@@ -61,6 +62,9 @@ bindsym $mod+Shift+f fullscreen toggle
 
 # Change container layout.
 bindsym $mod+e layout toggle split
+
+# Toggle wide workspace margins.
+bindsym $mod+m gaps horizontal all toggle $workspace_margin
 
 # Toggle tiling / floating.
 bindsym $mod+Shift+space floating toggle
@@ -150,4 +154,5 @@ client.urgent           #061229 #061229 #FFFFFF #061229 #061229
 
 default_border pixel 4
 default_floating_border pixel 4
-gaps inner 16
+gaps horizontal $workspace_margin
+exec_always swaymsg gaps horizontal all set $workspace_margin
