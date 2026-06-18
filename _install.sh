@@ -143,6 +143,7 @@ elif [ "$OS_NAME" = 'Linux' ]; then
             fd \
             fzf \
             git \
+            github-cli \
             jq \
             less \
             neovim \
