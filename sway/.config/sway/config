@@ -1,6 +1,12 @@
 font pango:monospace 12
 set $mod Mod4
 
+set $gnome-schema org.gnome.desktop.interface
+exec_always {
+    gsettings set $gnome-schema color-scheme prefer-dark
+    gsettings set $gnome-schema gtk-theme Adwaita-dark
+}
+
 # swayidle listens for loginctl lock-session and locks before suspend.
 exec_always sh -c 'pgrep -x swayidle >/dev/null || exec swayidle -w lock "swaylock -f -c 061229" before-sleep "swaylock -f -c 061229"'
 exec_always sh -c 'pgrep -x mako >/dev/null || exec mako'

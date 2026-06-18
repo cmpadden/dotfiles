@@ -12,16 +12,8 @@ OS_NAME=$(uname -s)
 function configure_linux_dark_mode() {
     echo "[INFO] configuring Linux dark mode defaults"
 
-    if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -qx 'org.gnome.desktop.interface'; then
-        gsettings set org.gnome.desktop.interface color-scheme prefer-dark || true
-        gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark || true
-    else
-        echo "[INFO] gsettings schema org.gnome.desktop.interface unavailable; skipping"
-    fi
-
     if command -v dbus-update-activation-environment >/dev/null 2>&1; then
         dbus-update-activation-environment --systemd \
-            GTK_THEME=Adwaita:dark \
             GTK2_RC_FILES=/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc \
             || true
     fi
