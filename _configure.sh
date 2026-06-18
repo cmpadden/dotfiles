@@ -7,6 +7,28 @@
 
 set -euo pipefail
 
+OS_NAME=$(uname -s)
+
+function configure_linux_dark_mode() {
+    echo "[INFO] configuring Linux dark mode defaults"
+
+    if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas | grep -qx 'org.gnome.desktop.interface'; then
+        gsettings set org.gnome.desktop.interface color-scheme prefer-dark || true
+        gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark || true
+    else
+        echo "[INFO] gsettings schema org.gnome.desktop.interface unavailable; skipping"
+    fi
+
+    if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+        dbus-update-activation-environment --systemd \
+            GTK_THEME=Adwaita:dark \
+            GTK2_RC_FILES=/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc \
+            || true
+    fi
+
+    echo "[INFO] restart the graphical session for all applications to inherit dark mode defaults"
+}
+
 # figlet -f rozzo "Configure"
 cat <<EOF
 
@@ -19,8 +41,13 @@ C8888     d888 888b 888 88b 888888 888 d888 888 8888 8888 888 "  d88 88b
                                         "8",P"
 EOF
 
-if [[ ! "$OSTYPE" = 'darwin'* ]]; then
-    echo "[INFO] configure currently supports macOS only"
+if [ "$OS_NAME" = 'Linux' ]; then
+    configure_linux_dark_mode
+    exit 0
+fi
+
+if [ ! "$OS_NAME" = 'Darwin' ]; then
+    echo "[INFO] unsupported operating system: ${OS_NAME}"
     exit 0
 fi
 
