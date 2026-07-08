@@ -164,9 +164,17 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     _log "Installing LTS version of Node.js"
 
-    if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
-        # shellcheck source=/dev/null
-        source "/opt/homebrew/opt/nvm/nvm.sh"
+    nvm_script="$(brew --prefix nvm)/nvm.sh"
+    if [ -s "$nvm_script" ]; then
+        export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+        mkdir -p "$NVM_DIR"
+
+        # nvm.sh is intended for interactive shells and is not safe under `set -u`.
+        set +u
+        # shellcheck disable=SC1090
+        source "$nvm_script"
+        set -u
+
         nvm install --lts
     fi
 
