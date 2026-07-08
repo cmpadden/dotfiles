@@ -8,6 +8,7 @@ DOTFILES_LOCATION="${DOTFILES_LOCATION:-$HOME/src/dotfiles}"
 DOTFILES_INSTALL="${DOTFILES_INSTALL:-prompt}"
 DOTFILES_RESTORE="${DOTFILES_RESTORE:-prompt}"
 DOTFILES_CONFIGURE="${DOTFILES_CONFIGURE:-prompt}"
+OS_NAME=$(uname -s)
 
 ####################################################################################################
 #                                            UTILITIES                                             #
@@ -25,7 +26,14 @@ function print_line_delimiter() {
 
 function prompt_yes_no() {
     local message=$1
-    read -r -e -p "[y/N] ${message}" response
+    local response
+
+    if [ -r /dev/tty ]; then
+        read -r -e -p "[y/N] ${message}" response </dev/tty
+    else
+        read -r -e -p "[y/N] ${message}" response
+    fi
+
     if [[ "$response" == [Yy]* ]]; then
         return 0
     else
@@ -63,6 +71,24 @@ function copy_public_key() {
     fi
 }
 
+function ensure_macos_developer_tools() {
+    if [ "$OS_NAME" != 'Darwin' ] || xcode-select -p >/dev/null 2>&1; then
+        return
+    fi
+
+    echo "[ERROR] macOS Command Line Tools are required before bootstrapping dotfiles."
+    echo "[INFO] They provide git and the build tools used by Homebrew."
+
+    if prompt_yes_no "Open Apple's Command Line Tools installer now? "; then
+        xcode-select --install || true
+        echo "[INFO] After the installation finishes, rerun _bootstrap.sh."
+    else
+        echo "[INFO] Install them later with: xcode-select --install"
+    fi
+
+    exit 1
+}
+
 ####################################################################################################
 #                                            ENTRYPOINT                                            #
 ####################################################################################################
@@ -91,6 +117,8 @@ CURRENT CONFIGURATION VALUES
     DOTFILES_CONFIGURE=$DOTFILES_CONFIGURE
 
 EOF
+
+ensure_macos_developer_tools
 
 if ! command -v git >/dev/null 2>&1; then
     echo "Git is not available on this system. Aborting..."
