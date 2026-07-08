@@ -52,14 +52,11 @@ keybind = super+shift+comma=reload_config
 keybind = super+q=quit
 keybind = super+enter=toggle_fullscreen
 
-# Hide Linux/GTK titlebars and borders for a minimal single-surface terminal.
-window-decoration = none
+# Keep the native macOS titlebar visible.
+macos-titlebar-style = transparent
 
-# Hide the titlebar for a minimal single-surface terminal; tmux handles tabs/window naming.
-macos-titlebar-style = hidden
-
-# Disable the macOS shadow for lighter, flatter window chrome.
-macos-window-shadow = false
+# Keep the native macOS window shadow.
+macos-window-shadow = true
 
 # Keep the preferred macOS app icon variant.
 macos-icon = xray
