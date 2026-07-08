@@ -46,6 +46,18 @@ function _log() {
     echo "$(date +"%T") - ${message}"
 }
 
+function load_homebrew_environment() {
+    if command -v brew >/dev/null; then
+        return
+    fi
+
+    if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+}
+
 function install_tmux_plugin_manager() {
     local target_user=${SUDO_USER:-${USER:-}}
     local target_home=$HOME
@@ -84,12 +96,21 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     echo "$MESSAGE_MACOS"
 
-    # Install Homewbrew
+    load_homebrew_environment
+
+    # Install Homebrew
     if command -v brew >/dev/null; then
         _log "Homebrew is already installed"
     else
         _log "Installing Homebrew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        load_homebrew_environment
+    fi
+
+    if ! command -v brew >/dev/null; then
+        _log "Homebrew was installed, but brew is not available in this shell."
+        _log "Open a new terminal or add Homebrew to PATH, then rerun ./_install.sh."
+        exit 1
     fi
 
     # Install core packages and casks (NOTE: one can find a list of top-level packages with `brew
