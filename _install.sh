@@ -58,6 +58,48 @@ function load_homebrew_environment() {
     fi
 }
 
+function prompt_yes_no() {
+    local message=$1
+    local response
+
+    if [ -r /dev/tty ]; then
+        read -r -e -p "[y/N] ${message}" response </dev/tty
+    else
+        read -r -e -p "[y/N] ${message}" response || response=
+    fi
+
+    [[ "$response" == [Yy]* ]]
+}
+
+function homebrew_formula_is_trusted() {
+    local formula=$1
+    local trust_file
+
+    if [ -n "${XDG_CONFIG_HOME:-}" ]; then
+        trust_file="${XDG_CONFIG_HOME}/homebrew/trust.json"
+    else
+        trust_file="${HOME}/.homebrew/trust.json"
+    fi
+
+    [ -f "$trust_file" ] && /usr/bin/grep -Fq "\"${formula}\"" "$trust_file"
+}
+
+function ensure_homebrew_formula_trust() {
+    local formula=$1
+
+    if homebrew_formula_is_trusted "$formula"; then
+        return
+    fi
+
+    _log "Homebrew requires explicit trust before loading ${formula}."
+    if prompt_yes_no "Trust ${formula} for Homebrew? "; then
+        brew trust --formula "$formula"
+    else
+        _log "Skipping ${formula}. Trust it later with: brew trust --formula ${formula}"
+        exit 1
+    fi
+}
+
 function install_tmux_plugin_manager() {
     local target_user=${SUDO_USER:-${USER:-}}
     local target_home=$HOME
@@ -112,6 +154,8 @@ if [ "$OS_NAME" = 'Darwin' ]; then
         _log "Open a new terminal or add Homebrew to PATH, then rerun ./_install.sh."
         exit 1
     fi
+
+    ensure_homebrew_formula_trust "withgraphite/tap/graphite"
 
     # Install core packages and casks (NOTE: one can find a list of top-level packages with `brew
     # leaves`)
