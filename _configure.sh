@@ -8,6 +8,8 @@
 set -euo pipefail
 
 OS_NAME=$(uname -s)
+DOTFILES_WALLPAPER_COLOR="${DOTFILES_WALLPAPER_COLOR:-#005959}"
+DOTFILES_WALLPAPER_PATH="${DOTFILES_WALLPAPER_PATH:-$HOME/Pictures/dotfiles/wallpaper.png}"
 
 function load_homebrew_environment() {
     if command -v brew >/dev/null 2>&1; then
@@ -33,6 +35,31 @@ function configure_linux_dark_mode() {
     echo "[INFO] restart the graphical session for all applications to inherit dark mode defaults"
 }
 
+function configure_macos_wallpaper() {
+    local wallpaper_path=$1
+    local wallpaper_color=$2
+
+    if ! command -v magick >/dev/null 2>&1; then
+        echo "[INFO] ImageMagick is required to generate a solid-color wallpaper; skipping wallpaper setup"
+        return
+    fi
+
+    mkdir -p "$(dirname "$wallpaper_path")"
+    magick -size 1x1 "xc:${wallpaper_color}" "$wallpaper_path"
+
+    osascript - "$wallpaper_path" <<'APPLESCRIPT'
+on run argv
+    set wallpaperPath to POSIX file (item 1 of argv)
+    tell application "System Events"
+        set picture of every desktop to wallpaperPath
+    end tell
+end run
+APPLESCRIPT
+
+    echo "[INFO] set macOS desktop wallpaper color to ${wallpaper_color}"
+    echo "[INFO] macOS uses the user desktop wallpaper for the locked-session background"
+}
+
 # figlet -f rozzo "Configure"
 cat <<EOF
 
@@ -54,6 +81,8 @@ if [ ! "$OS_NAME" = 'Darwin' ]; then
     echo "[INFO] unsupported operating system: ${OS_NAME}"
     exit 0
 fi
+
+load_homebrew_environment
 
 defaults write -g InitialKeyRepeat -int 10
 
@@ -77,11 +106,11 @@ defaults write com.apple.finder CreateDesktop -bool false
 
 defaults write NSGlobalDomain com.apple.mouse.linear -bool "true"
 
+configure_macos_wallpaper "$DOTFILES_WALLPAPER_PATH" "$DOTFILES_WALLPAPER_COLOR"
+
 # TODO - use conditional callback/finally
 killall Dock || true
 killall Finder || true
-
-load_homebrew_environment
 
 if ! command -v brew >/dev/null 2>&1; then
     echo "[INFO] Homebrew is required to configure the default bash shell; skipping shell setup"
