@@ -97,13 +97,14 @@ if ! command -v git >/dev/null 2>&1; then
     exit 1
 fi
 
-TARGET_SSH_KEY=~/.ssh/id_ed25519
+TARGET_SSH_KEY="${TARGET_SSH_KEY:-$HOME/.ssh/id_ed25519}"
 
 if [ -f "$TARGET_SSH_KEY" ]; then
     echo "[INFO] SSH key ${TARGET_SSH_KEY} already exists; skipping key generation..."
 else
-    read -p "Enter e-mail address for \`ssh-keygen\`:" email
-    ssh-keygen -t ed25519 -C "$email"
+    mkdir -p "$(dirname "$TARGET_SSH_KEY")"
+    read -r -p "Enter e-mail address for \`ssh-keygen\`: " email </dev/tty
+    ssh-keygen -t ed25519 -C "$email" -f "$TARGET_SSH_KEY"
 fi
 
 copy_public_key "${TARGET_SSH_KEY}.pub"
