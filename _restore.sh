@@ -33,11 +33,8 @@ for file in *; do
     if [ -d "$file" ]; then
         read -r -e -p "[y/N] - Restore ${file}? " response
         if [[ "$response" == [Yy]* ]]; then
-            if stow -n -v -t "$HOME" "$file"; then
-                stow -v -t "$HOME" "$file"
-            else
-                echo "[ERROR] Stow dry-run failed for ${file}; skipping."
-            fi
+            # Keep failures local to this package instead of letting `set -e` stop the restore.
+            stow -v -t "$HOME" "$file" || echo "[ERROR] Stow failed for ${file}; skipping."
         fi
     fi
 done
