@@ -9,6 +9,18 @@ set -euo pipefail
 
 OS_NAME=$(uname -s)
 
+function load_homebrew_environment() {
+    if command -v brew >/dev/null 2>&1; then
+        return
+    fi
+
+    if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+}
+
 function configure_linux_dark_mode() {
     echo "[INFO] configuring Linux dark mode defaults"
 
@@ -69,10 +81,15 @@ defaults write NSGlobalDomain com.apple.mouse.linear -bool "true"
 killall Dock || true
 killall Finder || true
 
+load_homebrew_environment
+
 if ! command -v brew >/dev/null 2>&1; then
     echo "[INFO] Homebrew is required to configure the default bash shell; skipping shell setup"
 else
     target_shell="$(brew --prefix)/bin/bash"
+    target_user="${SUDO_USER:-${USER:-}}"
+    target_user_record="/Users/${target_user}"
+    current_shell="$(dscl . -read "$target_user_record" UserShell 2>/dev/null | awk '{print $2}' || true)"
 
     if ! /usr/bin/grep -qxF "$target_shell" /etc/shells; then
         echo "[INFO] Adding ${target_shell} to /etc/shells"
@@ -81,11 +98,18 @@ else
         echo "[INFO] ${target_shell} is already present in /etc/shells"
     fi
 
-    if [ ! "$SHELL" = "$target_shell" ]; then
-        echo "[INFO] setting default shell to ${target_shell} with \`chsh\`"
-        chsh -s "$target_shell"
+    if [ ! "$current_shell" = "$target_shell" ]; then
+        echo "[INFO] setting default shell for ${target_user} to ${target_shell} with \`chsh\`"
+        chsh -s "$target_shell" "$target_user"
+
+        current_shell="$(dscl . -read "$target_user_record" UserShell 2>/dev/null | awk '{print $2}' || true)"
+        if [ ! "$current_shell" = "$target_shell" ]; then
+            echo "[ERROR] Login shell is still ${current_shell:-unknown}; expected ${target_shell}."
+            echo "[INFO] Try running manually: chsh -s ${target_shell} ${target_user}"
+            exit 1
+        fi
     else
-        echo "[INFO] ${target_shell} is already set in \$SHELL"
+        echo "[INFO] ${target_shell} is already set as the login shell"
     fi
 fi
 
