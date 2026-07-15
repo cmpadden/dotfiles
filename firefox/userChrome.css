@@ -19,3 +19,9 @@
 #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
   display: none;
 }
+
+/* Hide Firefox's native sidebar launcher while keeping Sidebery visible. */
+
+#sidebar-main {
+  display: none !important;
+}
