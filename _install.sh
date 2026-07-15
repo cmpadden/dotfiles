@@ -164,18 +164,10 @@ if [ "$OS_NAME" = 'Darwin' ]; then
 
     _log "Installing LTS version of Node.js"
 
-    nvm_script="$(brew --prefix nvm)/nvm.sh"
-    if [ -s "$nvm_script" ]; then
-        export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-        mkdir -p "$NVM_DIR"
-
-        # nvm.sh is intended for interactive shells and is not safe under `set -u`.
-        set +u
-        # shellcheck disable=SC1090
-        source "$nvm_script"
-        set -u
-
-        nvm install --lts
+    if command -v fnm >/dev/null 2>&1; then
+        eval "$(fnm env --shell bash)"
+        fnm install --lts
+        fnm default lts-latest
     fi
 
     if [ ! -d "$HOME/.hammerspoon/Spoons/SpoonInstall.spoon" ]; then
