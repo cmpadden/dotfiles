@@ -33,3 +33,9 @@ for path in "${FIREFOX_PROFILES_ROOT_DIRECTORY}"/*; do
         echo "Updated $path/chrome/userChrome.css"
     fi
 done
+
+echo
+echo "To enable custom userChrome.css styles:"
+echo "  1. Open about:config in Firefox."
+echo "  2. Search for toolkit.legacyUserProfileCustomizations.stylesheets."
+echo "  3. Set the preference to true."
