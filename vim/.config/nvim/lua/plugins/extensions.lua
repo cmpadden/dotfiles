@@ -154,15 +154,16 @@ local obj = {
         opts = {
             formatters_by_ft = {
                 ["*"] = { "codespell", "trim_whitespace" },
-                javascript = { "prettier" },
+                javascript = { "oxfmt" },
+                javascriptreact = { "oxfmt" },
                 lua = { "stylua" },
-                markdown = { "prettier" },
+                markdown = { "oxfmt" },
                 rust = { "rustfmt", lsp_format = "fallback" },
                 sh = { "shfmt" },
                 sql = { "sqlfluff" },
-                typescript = { "prettier" },
-                typescriptreact = { "prettier" },
-                vue = { "prettier" },
+                typescript = { "oxfmt" },
+                typescriptreact = { "oxfmt" },
+                vue = { "oxfmt" },
             },
             default_format_opts = {
                 lsp_format = "fallback",

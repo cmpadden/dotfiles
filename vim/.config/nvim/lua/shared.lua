@@ -80,11 +80,14 @@ M.default_on_attach = function(client, bufnr)
     --     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_buffer)
     -- end
 
-    if client.supports_method("textDocument/formatting") then
-        vim.keymap.set("n", "<space>f", function()
-            vim.lsp.buf.format({ async = true })
-        end, opts_buffer)
-    end
+    -- Formatting is owned by Conform's global `<leader>f` mapping. Because
+    -- `<leader>` is Space, enabling this buffer-local `<space>f` mapping would
+    -- override Conform whenever an attached LSP supports formatting.
+    -- if client.supports_method("textDocument/formatting") then
+    --     vim.keymap.set("n", "<space>f", function()
+    --         vim.lsp.buf.format({ async = true })
+    --     end, opts_buffer)
+    -- end
 
     -- if client.supports_method("textDocument/workspaceEdit") then
     vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts_buffer)
