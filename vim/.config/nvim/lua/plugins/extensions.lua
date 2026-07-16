@@ -121,19 +121,40 @@ local obj = {
                         package_uninstalled = "✗",
                     },
                 },
-                ensure_installed = {
-                    "basedpyright",
-                    "codespell",
-                    "prettier",
-                    "ruff",
-                    "shellcheck",
-                    "shfmt",
-                    "sqlfluff",
-                    "stylua",
-                    "vtsls",
-                },
             })
         end,
+    },
+
+    -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        opts = {
+            ensure_installed = {
+                -- LSP servers configured in lua/lsp/servers/
+                "basedpyright",
+                "bash-language-server",
+                "eslint-lsp",
+                "html-lsp",
+                "json-lsp",
+                "lua-language-server",
+                "ruff",
+                "rust-analyzer",
+                "tailwindcss-language-server",
+                "vtsls",
+                "yaml-language-server",
+
+                -- Formatters and linters
+                "codespell",
+                "oxfmt",
+                "prettier",
+                "shellcheck",
+                "shfmt",
+                "sqlfluff",
+                "stylua",
+            },
+            run_on_start = true,
+        },
     },
 
     -- https://github.com/stevearc/conform.nvim
