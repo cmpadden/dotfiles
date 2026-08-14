@@ -35,6 +35,9 @@ resize-overlay = never
 # Keep the cursor area uncluttered while typing.
 mouse-hide-while-typing = true
 
+# Open detected URLs with Command-click.
+link-url = true
+
 # Do not prompt when closing a surface; tmux protects long-running sessions.
 confirm-close-surface = false
 
