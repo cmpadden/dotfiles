@@ -28,6 +28,9 @@ python/.ipython/profile_default/startup/*
 tmux/.config/tmux/plugins
 
 pi/.pi/agent/auth.json
+pi/.pi/agent/models-store.json
 pi/.pi/agent/sessions/
+pi/.pi/agent/trust.json
+pi/.pi/agent/npm/node_modules/
 pi/.pi/agent/git/*
 !pi/.pi/agent/git/.gitignore
