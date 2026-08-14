@@ -22,6 +22,7 @@
 
 /* Hide Firefox's native sidebar launcher while keeping Sidebery visible. */
 
-#sidebar-main {
+/* Firefox 153 changed this from #sidebar-main to a <sidebar-main> element. */
+sidebar-main {
   display: none !important;
 }
