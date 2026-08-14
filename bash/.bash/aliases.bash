@@ -146,3 +146,19 @@ if hash pi 2>/dev/null; then
     alias codex="echo 'Did you mean to use \`pi\`?'"
     alias claude="echo 'Did you mean to use \`pi\`?'"
 fi
+
+wt-prune() {
+    git fetch origin || return
+
+    wt --config-set 'list.json-schema=2' list --format=json |
+        jq -j '
+          .items[]
+          | select(.worktree? and (.worktree.main | not) and (.worktree.current | not))
+          | select(.display.state == "integrated" or .display.state == "empty")
+          | select(([.worktree.changes.staged, .worktree.changes.modified, .worktree.changes.untracked, .worktree.changes.renamed, .worktree.changes.deleted, .worktree.changes.conflicted] | any) | not)
+          | (.branch // .worktree.path), "\u0000"
+        ' |
+        while IFS= read -r -d '' target; do
+            wt -y remove --foreground "$target"
+        done
+}
