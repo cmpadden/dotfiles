@@ -58,5 +58,4 @@ export GPG_TTY
 
 hash nvim 2>/dev/null && export EDITOR="nvim"
 
-# uv
-export PATH="/Users/colton/.local/bin:$PATH"
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
