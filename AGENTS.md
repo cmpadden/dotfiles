@@ -19,6 +19,8 @@ make format  # format shell, Lua, and Python files
 
 Pre-commit checks YAML, whitespace, secrets, Ghostty configuration, shell syntax and formatting, Lua formatting, and Python formatting, linting, and type checking.
 
+Before committing, audit the staged diff for credentials, tokens, private URLs, machine-specific state, and other sensitive information. Do not rely solely on automated secret detection.
+
 ## Commits
 
 Prefer commit subjects in the form `<scope>: <imperative summary>`. Use the affected tool or package as the scope for its configuration changes. Use `chore` for repository-level maintenance, such as contributor guidance, CI, or repository metadata. For example:
