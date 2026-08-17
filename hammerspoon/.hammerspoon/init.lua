@@ -80,8 +80,8 @@ hs.hotkey.bind({ "cmd", "shift" }, "b", function()
     hs.osascript.applescript(applescript_toggle_menubar)
 end)
 
-if not hs.ipc.cliStatus("/opt/homebrew") then
-    hs.ipc.cliInstall("/opt/homebrew")
-end
+-- Loading hs.ipc starts the message port used by the persistent Hammerspoon CLI.
+-- The CLI itself is installed separately, so do not recheck/reinstall it on reload.
+require("hs.ipc")
 
 helpers:show("Hammerspoon has been loaded.", nil, nil, nil)
