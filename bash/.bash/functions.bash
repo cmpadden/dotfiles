@@ -18,7 +18,7 @@ extract() {
         *.zip) unzip "$1" ;;
         *.Z) uncompress "$1" ;;
         *.7z) 7z x "$1" ;;
-        *.dmg) hdiutul mount "$1" ;; # mount OS X disk images
+        *.dmg) hdiutil mount "$1" ;; # mount macOS disk images
         *) echo "'$1' cannot be extracted via >ex<" ;;
         esac
     else
@@ -59,18 +59,29 @@ htod() {
 }
 
 atoh() {
-    # convert ASCII to hexcode
-    python2 -c "print '$1'.encode(\"hex\")"
+    # Convert ASCII to hex.
+    printf '%s' "$1" | od -An -tx1 | tr -d ' \n'
+    printf '\n'
 }
 
 htoa() {
-    # convert hexcode to ASCII
-    python2 -c "print '$1'.decode(\"hex\")"
+    # Convert hex to ASCII.
+    if command -v xxd >/dev/null 2>&1; then
+        printf '%s' "$1" | xxd -r -p
+    else
+        echo 'htoa requires xxd' >&2
+        return 1
+    fi
 }
 
 repeatn() {
-    # repeat `x` `n` number of times
-    python -c "print 'x' * $1"
+    # Repeat `x` n times.
+    local count="$1"
+    while [ "$count" -gt 0 ]; do
+        printf x
+        count=$((count - 1))
+    done
+    printf '\n'
 }
 
 java_decompile() {
@@ -149,52 +160,6 @@ EOF
 
 }
 
-fd() {
-    # FZF change directories
-    local dir
-    dir=$(find "${1:-.}" -type d 2>/dev/null | fzf +m) && cd "$dir" || exit
-}
-
-fkill() {
-    # FZF kill process
-    local pid
-    if [ "$UID" != "0" ]; then
-        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
-    else
-        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
-    fi
-
-    if [ "x$pid" != "x" ]; then
-        echo "$pid" | xargs kill "-${1:-9}"
-    fi
-}
-
-fgb() {
-    # FZF checkout git branches, w/ remote branches
-    local branches branch
-    branches=$(git branch --all | grep -v HEAD) &&
-        branch=$(echo "$branches" | fzf-tmux -d $((2 + $(wc -l <<<"$branches"))) +m) &&
-        git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
-}
-
-fpass() {
-    # FZF password-store
-    local stores store
-    stores=$(find "$HOME/.password-store/" -name "*.gpg" | sed 's/^.*-store\/\/\(.*\)\.gpg/\1/g')
-    store=$(echo "$stores" | fzf +m)
-    pass -c "$store"
-}
-
-fbrew() {
-    # FZF homebrew
-    local prog
-    prog=$(brew search | fzf +m)
-    echo "$prog"
-    if [ -n "$prog" ]; then
-        brew install "$prog"
-    fi
-}
-
 color_codes() {
     for i in {0..255}; do
         printf "%3d \x1b[48;5;%sm   \e[0m " "$i" "$i"
@@ -219,19 +184,6 @@ true_color_test() {
     }
     printf "\n";
     }'
-}
-
-fpy() {
-    # fzf for search pydocs
-    if [[ "$#" == 0 ]]; then
-        echo "Please provide a pydoc search term..."
-        return 1
-    fi
-    local module
-    module=$(pydoc -k "$1" 2>/dev/null | fzf)
-    if [[ -n $module ]]; then
-        pydoc "$module"
-    fi
 }
 
 color_square() {
@@ -353,13 +305,6 @@ reload() {
     source "${HOME}/.bashrc"
 }
 
-function git_llm_commmit() {
-    git diff --cached -U1 --minimal -B --compact-summary --find-copies-harder -w |
-        head -n 1000 |
-        llm "<summarize these changes as a concise git commit message, do not mention counts of insertions or deletions>" |
-        git commit -F -
-}
-
 to-gif() {
     local in="$1"
     local out="${in/.mp4/.gif}"
@@ -416,46 +361,4 @@ dg-worktree() {
     echo
 
     set +e
-}
-
-gh-pr-to-buildkite() {
-    local id="$1"
-    local pipeline="${2:-dagster/dagster-dagster}"
-    gh pr checkout "$1"
-
-    local branch_existing=$(git branch --show-current)
-    echo "-> Previous branch: ${_branch_existing}"
-
-    echo "-> Renaming branch: ${branch_new}"
-    local branch_new="colton/$(git branch --show-current)"
-    git branch -M "$branch_new"
-
-    echo "-> Pushing branch to remote origin"
-    git push origin "$branch_new"
-
-    local commit="$(git rev-parse HEAD)"
-    echo "-> Using commit sha \`${commit}\`"
-
-    echo "-> Launching buildkite pipeline \`${pipeline}\`"
-    bk build create \
-        --yes \
-        --pipeline "$pipeline" \
-        --branch "$branch_new" \
-        --commit "${commit}" \
-        --message "Validating existing PR \`${id}\` from branch \`${branch_existing}\`" \
-        --ignore-branch-filters
-}
-
-# Checkout GitHub pull request and open diff in Neovim.
-#
-# USAGE
-#
-#       gh-pr-diff <pull-request-id>
-#
-gh-pr-diff() {
-    local id="$1"
-    local target="${2:-origin/master}"
-    git fetch origin
-    gh pr checkout "$id"
-    nvim -c ":DiffviewOpen ${target}...HEAD"
 }

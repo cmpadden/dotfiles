@@ -13,7 +13,5 @@ if ! shopt -oq posix; then
     elif [ -r /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
         # shellcheck source=/dev/null
         source /opt/homebrew/etc/profile.d/bash_completion.sh
-    else
-        echo "No bash completion file present on the system"
     fi
 fi

@@ -7,18 +7,16 @@ export FIGNORE=$FIGNORE:.DS_Store
 
 export PATH="/opt/homebrew/bin:$PATH"
 
-if [ ! -x "$(command -v brew)" ]; then
-    warn 'Homebrew is not installed (see https://brew.sh/)'
-fi
+if command -v brew >/dev/null 2>&1; then
+    BREW_PREFIX="$(brew --prefix)"
 
-BREW_PREFIX="$(brew --prefix)"
-
-# gcloud bash completion
-if [[ -d "$BREW_PREFIX/Caskroom/google-cloud-sdk" ]]; then
-    # shellcheck source=/dev/null
-    source "$BREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
-    # shellcheck source=/dev/null
-    source "$BREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+    # gcloud bash completion
+    if [[ -d "$BREW_PREFIX/Caskroom/google-cloud-sdk" ]]; then
+        # shellcheck source=/dev/null
+        source "$BREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
+        # shellcheck source=/dev/null
+        source "$BREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+    fi
 fi
 
 # OSX 10.15 SILENCE BASH DEPRECATION MESSAGE

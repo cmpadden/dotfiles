@@ -1,4 +1,7 @@
-#!/usr/env bash
+#!/usr/bin/env bash
+
+# Keep profile-safe environment available when `.bashrc` is sourced directly.
+[[ -f "$HOME/.bash/profile.bash" ]] && source "$HOME/.bash/profile.bash"
 
 # only apply customizations on interactive shells
 [[ $- != *i* ]] && return
@@ -20,17 +23,26 @@ check_and_source() {
     fi
 }
 
-check_and_source "$HOME/.bash/aliases.bash"
-check_and_source "$HOME/.bash/bindings.bash"
+source_if_exists() {
+    [ -f "$1" ] || return 0
+    # shellcheck disable=SC1090
+    source "$1"
+}
+
+# Load paths and platform setup before checking which tools are available.
+check_and_source "$HOME/.bash/env.bash"
+check_and_source "$HOME/.bash/darwin.bash"
+check_and_source "$HOME/.bash/shopt.bash"
 check_and_source "$HOME/.bash/completion.bash"
 check_and_source "$HOME/.bash/colors.bash"
-check_and_source "$HOME/.bash/functions.bash"
-check_and_source "$HOME/.bash/env.bash"
-check_and_source "$HOME/.bash/prompt.bash"
-check_and_source "$HOME/.bash/shopt.bash"
-check_and_source "$HOME/.bash/darwin.bash"
 check_and_source "$HOME/.bash/fzf.bash"
-check_and_source "$HOME/.bash/private.bash"
+check_and_source "$HOME/.bash/fzf-functions.bash"
+check_and_source "$HOME/.bash/aliases.bash"
+check_and_source "$HOME/.bash/functions.bash"
+check_and_source "$HOME/.bash/git.bash"
+check_and_source "$HOME/.bash/bindings.bash"
+check_and_source "$HOME/.bash/prompt.bash"
+source_if_exists "$HOME/.bash/private.bash"
 
 # Auto-attach to a tmux session
 if command -v tmux &>/dev/null; then
@@ -38,15 +50,11 @@ if command -v tmux &>/dev/null; then
     if [ -z "$TMUX" ]; then # Attach to an existing session, or create a new session
         tmux attach || tmux new-session
     fi
-else
-    warn 'tmux is not installed'
 fi
 
 # Hook `direnv` into the shell (https://github.com/direnv/direnv)
 if command -v direnv &>/dev/null; then
     eval "$(direnv hook bash)"
-else
-    warn 'direnv is not installed'
 fi
 
 # https://wiki.archlinux.org/title/GnuPG#Invalid_IPC_response_and_Inappropriate_ioctl_for_device
