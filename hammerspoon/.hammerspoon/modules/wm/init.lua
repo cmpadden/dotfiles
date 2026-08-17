@@ -249,6 +249,9 @@ function obj:init()
 
     self._filter_timer = hs.timer.doAfter(0, function()
         self:_start_window_filter()
+        -- Apply the restored active layout to windows that already existed
+        -- when Hammerspoon started; windowCreated only covers future windows.
+        self:set_layout(self.layout)
     end)
 end
 
