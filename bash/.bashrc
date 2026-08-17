@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Keep profile-safe environment available when `.bashrc` is sourced directly.
-[[ -f "$HOME/.bash/profile.bash" ]] && source "$HOME/.bash/profile.bash"
+[[ -f "$HOME/.bash/profile" ]] && source "$HOME/.bash/profile"
 
 # only apply customizations on interactive shells
 [[ $- != *i* ]] && return
@@ -30,19 +30,19 @@ source_if_exists() {
 }
 
 # Load paths and platform setup before checking which tools are available.
-check_and_source "$HOME/.bash/env.bash"
-check_and_source "$HOME/.bash/darwin.bash"
-check_and_source "$HOME/.bash/shopt.bash"
-check_and_source "$HOME/.bash/completion.bash"
-check_and_source "$HOME/.bash/colors.bash"
-check_and_source "$HOME/.bash/fzf.bash"
-check_and_source "$HOME/.bash/fzf-functions.bash"
-check_and_source "$HOME/.bash/aliases.bash"
-check_and_source "$HOME/.bash/functions.bash"
-check_and_source "$HOME/.bash/git.bash"
-check_and_source "$HOME/.bash/bindings.bash"
-check_and_source "$HOME/.bash/prompt.bash"
-source_if_exists "$HOME/.bash/private.bash"
+check_and_source "$HOME/.bash/env"
+check_and_source "$HOME/.bash/darwin"
+check_and_source "$HOME/.bash/shopt"
+check_and_source "$HOME/.bash/completion"
+check_and_source "$HOME/.bash/colors"
+check_and_source "$HOME/.bash/fzf"
+check_and_source "$HOME/.bash/fzf-functions"
+check_and_source "$HOME/.bash/aliases"
+check_and_source "$HOME/.bash/functions"
+check_and_source "$HOME/.bash/git"
+check_and_source "$HOME/.bash/bindings"
+check_and_source "$HOME/.bash/prompt"
+source_if_exists "$HOME/.bash/private"
 
 # Auto-attach to a tmux session
 if command -v tmux &>/dev/null; then
