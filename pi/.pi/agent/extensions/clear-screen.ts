@@ -11,11 +11,13 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
 
       await ctx.ui.custom<void>((tui, _theme, _keybindings, done) => {
+        // The first root child is Pi's transcript document, including startup
+        // help, loaded resources, and the chat transcript.
         const root = tui as unknown as { children?: Array<{ clear?: () => void }> };
-        const chatContainer = root.children?.[1];
+        const transcript = root.children?.[0];
 
-        if (chatContainer && typeof chatContainer.clear === "function") {
-          chatContainer.clear();
+        if (transcript && typeof transcript.clear === "function") {
+          transcript.clear();
         }
 
         tui.requestRender(true);
