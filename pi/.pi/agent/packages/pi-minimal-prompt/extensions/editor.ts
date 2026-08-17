@@ -62,6 +62,7 @@ class StatusEditor extends CustomEditor {
     editorTheme: EditorTheme,
     keybindings: KeybindingsManager,
     private readonly ctx: ExtensionContext,
+    private readonly getGitBranch: () => string | null,
   ) {
     super(tui, editorTheme, keybindings, { paddingX: 1 });
   }
@@ -102,7 +103,7 @@ class StatusEditor extends CustomEditor {
       scrollLabel(base[0] ?? ""),
       scrollLabel(base[bottom] ?? ""),
     ].filter(Boolean).join(" · ");
-    const leftLabel = [this.ctx.cwd, viewportLabel]
+    const leftLabel = [this.getGitBranch(), this.ctx.cwd, viewportLabel]
       .filter(Boolean)
       .map((label) => theme.fg(contextColor, label))
       .join(delimiter);
@@ -130,8 +131,8 @@ class StatusEditor extends CustomEditor {
     );
 
     return [
-      ...promptLines,
       theme.bg("selectedBg", status),
+      ...promptLines,
       ...autocompleteLines,
     ];
   }
@@ -140,12 +141,18 @@ class StatusEditor extends CustomEditor {
 export default function (pi: ExtensionAPI) {
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
+
+    let getGitBranch = (): string | null => null;
+    ctx.ui.setFooter((tui, _theme, footerData) => {
+      getGitBranch = () => footerData.getGitBranch();
+      return {
+        render: () => [],
+        invalidate: () => {},
+        dispose: footerData.onBranchChange(() => tui.requestRender()),
+      };
+    });
     ctx.ui.setEditorComponent((tui, theme, keybindings) =>
-      new StatusEditor(tui, theme, keybindings, ctx),
+      new StatusEditor(tui, theme, keybindings, ctx, () => getGitBranch()),
     );
-    ctx.ui.setFooter(() => ({
-      render: () => [],
-      invalidate: () => {},
-    }));
   });
 }
