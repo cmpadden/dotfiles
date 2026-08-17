@@ -1,0 +1,12 @@
+# Worktrunk's shell integration creates a `wt` wrapper and completions. Delay
+# its setup until `wt` is first used rather than running it for every shell.
+__dotfiles_load_worktrunk() {
+    unset -f wt
+    eval "$(command wt config shell init bash)"
+    unset -f __dotfiles_load_worktrunk
+}
+
+wt() {
+    __dotfiles_load_worktrunk
+    wt "$@"
+}

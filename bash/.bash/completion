@@ -1,17 +1,32 @@
 #!/usr/bin/env bash
 
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /etc/bash_completion
-    elif [ -r /usr/share/bash-completion/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /usr/share/bash-completion/bash_completion
-    elif [ -r /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-        # shellcheck source=/dev/null
-        source /opt/homebrew/etc/profile.d/bash_completion.sh
+# Bash completion takes about 80 ms to initialize. Load it on the first Tab
+# press instead of delaying every new interactive shell. The first Tab only
+# initializes completion; subsequent presses retain the menu-complete behavior
+# configured in `.inputrc`.
+__dotfiles_load_bash_completion() {
+    if ! shopt -oq posix; then
+        if [ -f /usr/share/bash-completion/bash_completion ]; then
+            # shellcheck source=/dev/null
+            source /usr/share/bash-completion/bash_completion
+        elif [ -f /etc/bash_completion ]; then
+            # shellcheck source=/dev/null
+            source /etc/bash_completion
+        elif [ -r /usr/share/bash-completion/bash_completion ]; then
+            # shellcheck source=/dev/null
+            source /usr/share/bash-completion/bash_completion
+        elif [ -r /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+            # shellcheck source=/dev/null
+            source /opt/homebrew/etc/profile.d/bash_completion.sh
+        fi
     fi
-fi
+
+    bind -m emacs-standard '"\C-i": menu-complete'
+    bind -m vi-insert '"\C-i": menu-complete'
+    bind -m vi-command '"\C-i": menu-complete'
+    unset -f __dotfiles_load_bash_completion
+}
+
+bind -m emacs-standard -x '"\C-i": __dotfiles_load_bash_completion'
+bind -m vi-insert -x '"\C-i": __dotfiles_load_bash_completion'
+bind -m vi-command -x '"\C-i": __dotfiles_load_bash_completion'

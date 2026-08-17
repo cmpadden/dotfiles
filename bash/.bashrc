@@ -40,6 +40,9 @@ check_and_source "$HOME/.bash/fzf-functions"
 check_and_source "$HOME/.bash/aliases"
 check_and_source "$HOME/.bash/functions"
 check_and_source "$HOME/.bash/git"
+if command -v wt >/dev/null 2>&1; then
+    check_and_source "$HOME/.bash/worktrunk"
+fi
 check_and_source "$HOME/.bash/bindings"
 check_and_source "$HOME/.bash/prompt"
 source_if_exists "$HOME/.bash/private"
@@ -65,5 +68,3 @@ export GPG_TTY
 # check_and_source "$HOME/.cargo/env"
 
 hash nvim 2>/dev/null && export EDITOR="nvim"
-
-if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
