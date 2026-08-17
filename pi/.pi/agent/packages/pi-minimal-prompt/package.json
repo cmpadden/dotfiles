@@ -18,7 +18,9 @@
   },
   "pi": {
     "extensions": [
-      "./extensions/editor.ts"
+      "./extensions/editor.ts",
+      "./extensions/minimal.ts",
+      "./extensions/header.ts"
     ]
   }
 }

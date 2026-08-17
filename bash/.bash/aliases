@@ -154,11 +154,29 @@ wt-prune() {
         jq -j '
           .items[]
           | select(.worktree? and (.worktree.main | not) and (.worktree.current | not))
-          | select(.display.state == "integrated" or .display.state == "empty")
-          | select(([.worktree.changes.staged, .worktree.changes.modified, .worktree.changes.untracked, .worktree.changes.renamed, .worktree.changes.deleted, .worktree.changes.conflicted] | any) | not)
           | (.branch // .worktree.path), "\u0000"
         ' |
         while IFS= read -r -d '' target; do
-            wt -y remove --foreground "$target"
+            pr_state=$(gh pr list --head "$target" --state all --limit 100 --json state --jq '
+                if any(.state == "OPEN") then "open"
+                elif any(.state == "MERGED" or .state == "CLOSED") then "closed"
+                else "none"
+                end
+            ') || continue
+
+            if [ "$pr_state" = "closed" ]; then
+                wt -y remove --foreground --force --force-delete "$target"
+                continue
+            fi
+
+            safe_to_remove=$(wt --config-set 'list.json-schema=2' list --format=json |
+                jq -r --arg target "$target" '
+                  .items[]
+                  | select((.branch // .worktree.path) == $target)
+                  | select(.display.state == "integrated" or .display.state == "empty")
+                  | select(([.worktree.changes.staged, .worktree.changes.modified, .worktree.changes.untracked, .worktree.changes.renamed, .worktree.changes.deleted, .worktree.changes.conflicted] | any) | not)
+                  | "yes"
+                ')
+            [ "$safe_to_remove" = "yes" ] && wt -y remove --foreground "$target"
         done
 }

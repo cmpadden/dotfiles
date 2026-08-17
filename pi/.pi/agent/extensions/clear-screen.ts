@@ -11,13 +11,14 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
 
       await ctx.ui.custom<void>((tui, _theme, _keybindings, done) => {
-        // The first root child is Pi's transcript document, including startup
-        // help, loaded resources, and the chat transcript.
-        const root = tui as unknown as { children?: Array<{ clear?: () => void }> };
-        const transcript = root.children?.[0];
-
-        if (transcript && typeof transcript.clear === "function") {
-          transcript.clear();
+        // The transcript document keeps the startup header first, followed by
+        // loaded resources and the chat transcript. Preserve the header.
+        const root = tui as unknown as {
+          children?: Array<{ children?: Array<{ clear?: () => void }> }>;
+        };
+        const document = root.children?.[0];
+        for (const section of document?.children?.slice(1) ?? []) {
+          section.clear?.();
         }
 
         tui.requestRender(true);

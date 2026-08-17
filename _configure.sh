@@ -28,8 +28,8 @@ function configure_linux_dark_mode() {
 
     if command -v dbus-update-activation-environment >/dev/null 2>&1; then
         dbus-update-activation-environment --systemd \
-            GTK2_RC_FILES=/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc \
-            || true
+            GTK2_RC_FILES=/usr/share/themes/Adwaita-dark/gtk-2.0/gtkrc ||
+            true
     fi
 
     echo "[INFO] restart the graphical session for all applications to inherit dark mode defaults"

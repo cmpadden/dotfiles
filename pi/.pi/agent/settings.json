@@ -1,11 +1,15 @@
 {
-  "lastChangelogVersion": "0.83.0",
+  "lastChangelogVersion": "0.84.2",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
+  "defaultModel": "gpt-5.6-terra",
   "packages": [
     "npm:pi-diff-review",
     "./packages/pi-minimal-prompt"
   ],
   "defaultThinkingLevel": "medium",
-  "theme": "zenbones-dark"
+  "theme": "zenbones-dark",
+  "hideThinkingBlock": true,
+  "treeFilterMode": "no-tools",
+  "outputPad": 0,
+  "autocompleteMaxVisible": 3
 }
