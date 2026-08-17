@@ -115,7 +115,15 @@ class StatusEditor extends CustomEditor {
         : index === 0
           ? PROMPT_PREFIX
           : "  ";
-      return truncateToWidth(prefix + line, width, "");
+      const promptLine = truncateToWidth(prefix + line, width, "");
+      const filledPromptLine = promptLine.replace(
+        /\x1b\[0m/g,
+        `\x1b[0m${theme.getBgAnsi("customMessageBg")}`,
+      );
+      return theme.bg(
+        "customMessageBg",
+        filledPromptLine + " ".repeat(Math.max(0, width - visibleWidth(promptLine))),
+      );
     });
     const autocompleteLines = base.slice(bottom + 1).map((line) =>
       truncateToWidth(" ".repeat(prefixWidth) + line, width, ""),
