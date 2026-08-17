@@ -4,7 +4,8 @@
   "defaultModel": "gpt-5.6-terra",
   "packages": [
     "npm:pi-diff-review",
-    "./packages/pi-minimal-prompt"
+    "./packages/pi-minimal-prompt",
+    "./packages/pi-vim-mode"
   ],
   "defaultThinkingLevel": "medium",
   "theme": "zenbones-dark",

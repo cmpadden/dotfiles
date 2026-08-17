@@ -1,0 +1,24 @@
+{
+  "name": "pi-vim-mode",
+  "version": "0.1.0",
+  "description": "Vim-style modal editing for Pi's input editor",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-coding-agent",
+    "vim"
+  ],
+  "files": [
+    "extensions",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/editor.ts"
+    ]
+  }
+}
