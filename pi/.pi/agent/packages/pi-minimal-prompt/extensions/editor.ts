@@ -11,7 +11,8 @@ import {
   visibleWidth,
 } from "@earendil-works/pi-tui";
 
-const PROMPT_PREFIX = "\x1b[1;38;2;251;241;199m λ\x1b[22;39m";
+const PROMPT = " λ";
+const PROMPT_PREFIX = `\x1b[1;38;2;251;241;199m${PROMPT}\x1b[22;39m`;
 
 const stripAnsi = (text: string): string =>
   text
@@ -139,6 +140,10 @@ class StatusEditor extends CustomEditor {
 }
 
 export default function (pi: ExtensionAPI) {
+  pi.registerMarkdownTransformer((markdown, { messageType }) =>
+    messageType === "user" ? `${PROMPT} ${markdown}` : markdown
+  );
+
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
 
