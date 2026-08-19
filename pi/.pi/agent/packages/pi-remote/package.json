@@ -1,0 +1,36 @@
+{
+  "name": "pi-remote",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal authenticated mobile control for the active Pi session",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-coding-agent",
+    "remote",
+    "ngrok"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/remote.ts"
+    ]
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@comark/html": "^0.6.2",
+    "@ngrok/ngrok": "^1.7.0",
+    "comark": "^0.6.2",
+    "qrcode-terminal": "^0.12.0",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/qrcode-terminal": "^0.12.2",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
+}

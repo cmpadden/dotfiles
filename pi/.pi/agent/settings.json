@@ -5,7 +5,8 @@
   "packages": [
     "npm:pi-diff-review",
     "./packages/pi-minimal-prompt",
-    "./packages/pi-vim-mode"
+    "./packages/pi-vim-mode",
+    "./packages/pi-remote"
   ],
   "defaultThinkingLevel": "medium",
   "theme": "zenbones-dark",
