@@ -19,7 +19,7 @@ import {
   sessionCookie,
   tokenHash,
   tokenMatches,
-} from "../lib/pairing.mjs";
+} from "../lib/pair-auth.mjs";
 
 const STATUS_KEY = "pi-remote";
 const WIDGET_KEY = "pi-remote-qr";
@@ -27,7 +27,6 @@ const MAX_BODY_BYTES = 256 * 1024;
 const WEB_HTML_URL = new URL("../web/index.html", import.meta.url);
 
 type RemoteState = {
-  localUrl: string;
   publicUrl: string;
   server: Server;
   listener: ngrok.Listener;
@@ -39,7 +38,7 @@ type RemoteState = {
 };
 
 type SecretPromptTheme = {
-  fg(color: "accent" | "muted" | "dim" | "error", text: string): string;
+  fg(color: "accent" | "muted" | "dim", text: string): string;
   bold(text: string): string;
 };
 
@@ -245,6 +244,15 @@ export default function remoteExtension(pi: ExtensionAPI) {
     await stopRemote(current);
   });
 
+  function activeSessionCount(): number {
+    if (!remote) return 0;
+    const now = Date.now();
+    for (const [hash, expiresAt] of remote.sessions) {
+      if (expiresAt < now) remote.sessions.delete(hash);
+    }
+    return remote.sessions.size;
+  }
+
   function isAuthenticated(req: IncomingMessage): boolean {
     if (!remote) return false;
     const token = parseCookies(req.headers.cookie)[SESSION_COOKIE];
@@ -258,14 +266,17 @@ export default function remoteExtension(pi: ExtensionAPI) {
     return true;
   }
 
-  function recordFailedPairing(req: IncomingMessage): boolean {
-    if (!remote) return false;
+  function pairingAttempts(req: IncomingMessage): { key: string; attempts: number[] } {
     const key = req.socket.remoteAddress || "unknown";
     const cutoff = Date.now() - 60_000;
-    const attempts = (remote.failedPairings.get(key) || []).filter((timestamp) => timestamp >= cutoff);
-    attempts.push(Date.now());
-    remote.failedPairings.set(key, attempts);
-    return attempts.length > 10;
+    const attempts = (remote?.failedPairings.get(key) || []).filter((timestamp) => timestamp >= cutoff);
+    return { key, attempts };
+  }
+
+  function recordFailedPairing(req: IncomingMessage): void {
+    if (!remote) return;
+    const { key, attempts } = pairingAttempts(req);
+    remote.failedPairings.set(key, [...attempts, Date.now()]);
   }
 
   async function handleRequest(req: IncomingMessage, res: ServerResponse, ctx: ExtensionCommandContext): Promise<void> {
@@ -274,7 +285,7 @@ export default function remoteExtension(pi: ExtensionAPI) {
       res.writeHead(200, {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store",
-        "content-security-policy": "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+        "content-security-policy": "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
         "x-frame-options": "DENY",
         "x-content-type-options": "nosniff",
         "referrer-policy": "no-referrer",
@@ -287,7 +298,11 @@ export default function remoteExtension(pi: ExtensionAPI) {
         json(res, 403, { error: "Cross-origin request denied" });
         return;
       }
-      if (!remote || recordFailedPairing(req)) {
+      if (!remote) {
+        json(res, 503, { error: "Remote session is not available" });
+        return;
+      }
+      if (pairingAttempts(req).attempts.length >= 10) {
         json(res, 429, { error: "Too many pairing attempts; wait one minute" });
         return;
       }
@@ -296,6 +311,7 @@ export default function remoteExtension(pi: ExtensionAPI) {
         const secret = typeof body.secret === "string" ? body.secret : "";
         const valid = Date.now() <= remote.pairingExpiresAt && tokenMatches(secret, remote.pairingHash);
         if (!valid) {
+          recordFailedPairing(req);
           json(res, 401, { error: "Pairing link is invalid, expired, or already used" });
           return;
         }
@@ -312,7 +328,13 @@ export default function remoteExtension(pi: ExtensionAPI) {
       }
       return;
     }
-    if (url.pathname.startsWith("/api/") && !isAuthenticated(req)) {
+    if (req.method === "POST" && !sameOrigin(req)) {
+      json(res, 403, { error: "Cross-origin request denied" });
+      return;
+    }
+    // Only the inert bootstrap document and one-time pairing exchange are public.
+    // Every other route requires the HttpOnly session cookie issued by /api/pair.
+    if (!isAuthenticated(req)) {
       json(res, 401, { error: "Pair this browser by scanning the current Pi Remote QR code" });
       return;
     }
@@ -352,10 +374,6 @@ export default function remoteExtension(pi: ExtensionAPI) {
       });
       return;
     }
-    if (req.method === "POST" && !sameOrigin(req)) {
-      json(res, 403, { error: "Cross-origin request denied" });
-      return;
-    }
     if (req.method === "POST" && url.pathname === "/api/prompt") {
       try {
         const body = await readJson(req);
@@ -376,7 +394,7 @@ export default function remoteExtension(pi: ExtensionAPI) {
     json(res, 404, { error: "Not found" });
   }
 
-  async function setupNgrok(ctx: ExtensionCommandContext): Promise<{ token: string; source: string } | undefined> {
+  async function setupNgrok(ctx: ExtensionCommandContext): Promise<string | undefined> {
     if (ctx.mode !== "tui") {
       throw new Error("Masked ngrok setup is available in Pi's terminal UI. Set NGROK_AUTHTOKEN before starting Pi in other modes.");
     }
@@ -414,30 +432,29 @@ export default function remoteExtension(pi: ExtensionAPI) {
     if (persistence === "Save to ngrok config") {
       const path = await saveNgrokAuthtoken(token);
       ctx.ui.notify(`ngrok authtoken saved with owner-only permissions to ${path}`, "info");
-      return { token, source: path };
+      return token;
     }
-    return { token, source: "this Pi process" };
+    return token;
   }
 
-  async function requireNgrokAuth(ctx: ExtensionCommandContext): Promise<{ token: string; source: string } | undefined> {
-    const existing = await resolveNgrokAuthtoken();
-    return existing ?? setupNgrok(ctx);
+  async function requireNgrokAuth(ctx: ExtensionCommandContext): Promise<string | undefined> {
+    return (await resolveNgrokAuthtoken()) ?? setupNgrok(ctx);
   }
 
   async function showQr(ctx: ExtensionCommandContext, pairUrl: string): Promise<void> {
+    const sessionUrl = new URL(pairUrl);
+    sessionUrl.hash = "";
+    const footer = `Run /remote close to stop • Session URL ${sessionUrl.toString()}`;
     if (ctx.mode !== "tui") {
-      ctx.ui.setWidget(WIDGET_KEY, ["Pi Remote pairing link", pairUrl, "Single use • expires in 5 minutes", "Close with /remote close"]);
+      ctx.ui.setWidget(WIDGET_KEY, [pairUrl, footer]);
       return;
     }
     const lines = await qrLines(pairUrl);
     ctx.ui.setWidget(WIDGET_KEY, (_tui, theme) => ({
       render: (width) => [
-        truncateToWidth(theme.fg("accent", theme.bold("Pi Remote")), width),
-        "",
         ...lines.map((line) => truncateToWidth(line, width, "")),
         "",
-        truncateToWidth(theme.fg("muted", "Scan to pair • single use • expires in 5 minutes"), width),
-        truncateToWidth(theme.fg("dim", "Run /remote to rotate • /remote close to stop"), width),
+        truncateToWidth(theme.fg("dim", footer), width),
       ],
       invalidate: () => {},
     }));
@@ -455,7 +472,6 @@ export default function remoteExtension(pi: ExtensionAPI) {
   async function open(ctx: ExtensionCommandContext): Promise<void> {
     if (remote) {
       await rotatePairing(ctx);
-      ctx.ui.notify("Pi Remote pairing QR rotated; existing paired browsers remain connected", "info");
       return;
     }
     if (!ctx.hasUI) throw new Error("/remote requires interactive setup");
@@ -474,9 +490,8 @@ export default function remoteExtension(pi: ExtensionAPI) {
       });
       const address = server.address() as AddressInfo;
       const localUrl = `http://127.0.0.1:${address.port}`;
-      const tunnel = await startNgrok(localUrl, auth.token);
+      const tunnel = await startNgrok(localUrl, auth);
       remote = {
-        localUrl,
         publicUrl: tunnel.publicUrl,
         server,
         listener: tunnel.listener,
@@ -489,7 +504,6 @@ export default function remoteExtension(pi: ExtensionAPI) {
 
       ctx.ui.setStatus(STATUS_KEY, "remote: paired access");
       await rotatePairing(ctx);
-      ctx.ui.notify(`Pi Remote ready:\n${tunnel.publicUrl}`, "info");
     } catch (error) {
       server.close();
       ctx.ui.setStatus(STATUS_KEY, undefined);
@@ -510,7 +524,7 @@ export default function remoteExtension(pi: ExtensionAPI) {
         if (action === "status") {
           ctx.ui.notify(
             remote
-              ? `Pi Remote is running\n${remote.publicUrl}\nPaired browsers: ${remote.sessions.size}\nPairing: ${remote.pairingHash && remote.pairingExpiresAt >= Date.now() ? "available" : "used or expired"}`
+              ? `Pi Remote is running\n${remote.publicUrl}\nPaired browsers: ${activeSessionCount()}\nPairing: ${remote.pairingHash && remote.pairingExpiresAt >= Date.now() ? "available" : "used or expired"}`
               : "Pi Remote is stopped",
             "info",
           );

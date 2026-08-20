@@ -9,10 +9,7 @@ import { saveNgrokAuthtoken } from "../lib/ngrok-storage.mjs";
 const TOKEN = "2abc_example_token_that_is_long_enough";
 
 test("prefers NGROK_AUTHTOKEN", async () => {
-  assert.deepEqual(await resolveNgrokAuthtoken({ env: { NGROK_AUTHTOKEN: TOKEN }, paths: [] }), {
-    token: TOKEN,
-    source: "NGROK_AUTHTOKEN",
-  });
+  assert.equal(await resolveNgrokAuthtoken({ env: { NGROK_AUTHTOKEN: TOKEN }, paths: [] }), TOKEN);
 });
 
 test("saves an owner-only v3 ngrok config", async () => {
@@ -20,7 +17,7 @@ test("saves an owner-only v3 ngrok config", async () => {
   const path = join(dir, "ngrok.yml");
   await saveNgrokAuthtoken(TOKEN, { path });
   assert.match(await readFile(path, "utf8"), /authtoken:/);
-  assert.deepEqual(await resolveNgrokAuthtoken({ env: {}, paths: [path] }), { token: TOKEN, source: path });
+  assert.equal(await resolveNgrokAuthtoken({ env: {}, paths: [path] }), TOKEN);
 });
 
 test("reads v3 ngrok config", async () => {
@@ -28,5 +25,5 @@ test("reads v3 ngrok config", async () => {
   const path = join(dir, "ngrok.yml");
   await writeFile(path, `version: 3\nagent:\n  authtoken: ${TOKEN}\n`);
   const resolved = await resolveNgrokAuthtoken({ env: {}, paths: [path] });
-  assert.deepEqual(resolved, { token: TOKEN, source: path });
+  assert.equal(resolved, TOKEN);
 });

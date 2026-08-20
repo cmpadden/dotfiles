@@ -4,8 +4,14 @@ export const PAIRING_TTL_MS = 5 * 60 * 1000;
 export const SESSION_TTL_SECONDS = 8 * 60 * 60;
 export const SESSION_COOKIE = "pi_remote_session";
 
-export function randomToken() {
-  return randomBytes(32).toString("base64url");
+export function randomToken(bytes = 32) {
+  return randomBytes(bytes).toString("base64url");
+}
+
+function normalizePairingToken(value) {
+  const fragment = String(value || "").replace(/^#/, "");
+  if (!fragment.startsWith("pair=")) return fragment;
+  return new URLSearchParams(fragment).get("pair") || "";
 }
 
 export function tokenHash(token) {
@@ -14,18 +20,18 @@ export function tokenHash(token) {
 
 export function tokenMatches(token, expectedHash) {
   if (!expectedHash || typeof token !== "string") return false;
-  const actual = tokenHash(token);
+  const actual = tokenHash(normalizePairingToken(token));
   return actual.length === expectedHash.length && timingSafeEqual(actual, expectedHash);
 }
 
 export function createPairing(now = Date.now()) {
-  const secret = randomToken();
+  const secret = randomToken(16);
   return { secret, hash: tokenHash(secret), expiresAt: now + PAIRING_TTL_MS };
 }
 
 export function pairingUrl(publicUrl, secret) {
   const url = new URL(publicUrl);
-  url.hash = new URLSearchParams({ pair: secret }).toString();
+  url.hash = secret;
   return url.toString();
 }
 
@@ -43,8 +49,4 @@ export function parseCookies(header = "") {
 
 export function sessionCookie(token) {
   return `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_TTL_SECONDS}`;
-}
-
-export function clearSessionCookie() {
-  return `${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 }

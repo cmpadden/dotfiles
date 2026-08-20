@@ -21,7 +21,7 @@ Experimental, ultra-minimal mobile control for the currently active Pi TUI sessi
 
 ## Current UI scope
 
-The dark-only mobile UI uses a restrained, typography-led hierarchy and renders assistant content with Comark. It currently shows:
+The light mobile UI uses a restrained, typography-led hierarchy and renders assistant content with Comark. It currently shows:
 
 - user messages and Comark-rendered assistant Markdown;
 - streaming Markdown with incomplete syntax auto-closed;
@@ -29,16 +29,16 @@ The dark-only mobile UI uses a restrained, typography-led hierarchy and renders 
 - compact tool activity labels;
 - one composer with send and abort controls.
 
-It omits thinking, raw tool arguments/results, file browsing, model controls, session switching, and Markdown rendering. This keeps the mobile surface auditable while the transport and live-session behavior stabilize.
+It omits thinking, raw tool arguments/results, file browsing, model controls, and session switching. This keeps the mobile surface auditable while the transport and live-session behavior stabilize.
 
 ## Security model
 
 - The local server binds only to `127.0.0.1` on a random port.
 - ngrok terminates HTTPS but performs no end-user authentication.
-- The QR contains a random 256-bit secret in the URL fragment, which is not sent to ngrok with the initial request.
+- The QR contains a random 128-bit single-use secret in the URL fragment, which is not sent to ngrok with the initial request.
 - Browser JavaScript exchanges the secret once for an `HttpOnly; Secure; SameSite=Strict` session cookie.
 - Pairing expires after five minutes, is invalidated after one successful exchange, and failed attempts are rate-limited.
-- Every transcript, event, prompt, and abort endpoint requires the session cookie.
+- Only the inert bootstrap document and one-time pairing exchange are public. Every other route requires the session cookie.
 - Running `/remote` while active rotates the pairing secret while preserving already paired browser sessions.
 - The browser receives no provider credentials or Pi auth files.
 - `/remote close` and Pi session shutdown terminate the tunnel.

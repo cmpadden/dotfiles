@@ -23,12 +23,12 @@ function configToken(config) {
 export async function resolveNgrokAuthtoken(options = {}) {
   const env = options.env ?? process.env;
   const fromEnv = String(env.NGROK_AUTHTOKEN || "").trim();
-  if (fromEnv) return { token: fromEnv, source: "NGROK_AUTHTOKEN" };
+  if (fromEnv) return fromEnv;
 
   for (const path of options.paths ?? ngrokConfigPaths(env)) {
     try {
       const token = configToken(parse(await readFile(path, "utf8")));
-      if (token) return { token, source: path };
+      if (token) return token;
     } catch (error) {
       if (error?.code !== "ENOENT") throw new Error(`Could not read ngrok config ${path}: ${error.message}`);
     }
