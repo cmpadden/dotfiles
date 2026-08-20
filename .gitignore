@@ -33,5 +33,6 @@ pi/.pi/agent/pi-crash.log
 pi/.pi/agent/sessions/
 pi/.pi/agent/trust.json
 pi/.pi/agent/npm/node_modules/
+pi/.pi/agent/packages/*/node_modules/
 pi/.pi/agent/git/*
 !pi/.pi/agent/git/.gitignore

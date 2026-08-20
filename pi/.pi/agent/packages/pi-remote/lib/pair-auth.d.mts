@@ -1,0 +1,10 @@
+export const PAIRING_TTL_MS: number;
+export const SESSION_TTL_SECONDS: number;
+export const SESSION_COOKIE: string;
+export function randomToken(bytes?: number): string;
+export function tokenHash(token: unknown): Buffer;
+export function tokenMatches(token: unknown, expectedHash: Buffer | undefined): boolean;
+export function createPairing(now?: number): { secret: string; hash: Buffer; expiresAt: number };
+export function pairingUrl(publicUrl: string, secret: string): string;
+export function parseCookies(header?: string): Record<string, string>;
+export function sessionCookie(token: string): string;
