@@ -25,33 +25,9 @@ _fzf_compgen_path() {
     command find -L "$1" -name ./*.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2>/dev/null | command sed 's@^\./@@'
 }
 
-# `fzf --bash` parses and installs a large shell integration. Defer that work
-# until an fzf key binding is used.
-__dotfiles_load_fzf() {
-    if command -v fzf >/dev/null 2>&1; then
-        # shellcheck source=/dev/null
-        eval "$(fzf --bash)"
-    fi
-    unset -f __dotfiles_load_fzf
-}
-
-__dotfiles_fzf_file_widget() {
-    __dotfiles_load_fzf
-    declare -F fzf-file-widget >/dev/null && fzf-file-widget
-}
-
-__dotfiles_fzf_history_widget() {
-    __dotfiles_load_fzf
-    declare -F __fzf_history__ >/dev/null && __fzf_history__
-}
-
-__dotfiles_fzf_cd_widget() {
-    __dotfiles_load_fzf
-    declare -F __fzf_cd__ >/dev/null && eval "$(__fzf_cd__)"
-}
-
-for keymap in emacs-standard vi-command vi-insert; do
-    bind -m "$keymap" -x '"\C-t": __dotfiles_fzf_file_widget'
-    bind -m "$keymap" -x '"\C-r": __dotfiles_fzf_history_widget'
-    bind -m "$keymap" -x '"\ec": __dotfiles_fzf_cd_widget'
-done
+# Load fzf's completion eagerly: its `**<Tab>` expansion must be installed
+# before Readline handles Tab, unlike its explicit key bindings.
+if command -v fzf >/dev/null 2>&1; then
+    # shellcheck source=/dev/null
+    eval "$(fzf --bash)"
+fi
