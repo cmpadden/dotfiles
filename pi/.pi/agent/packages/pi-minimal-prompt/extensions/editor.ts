@@ -13,6 +13,8 @@ import {
 
 const PROMPT = " λ";
 const PROMPT_PREFIX = `\x1b[1;38;2;251;241;199m${PROMPT}\x1b[22;39m`;
+// A deliberately dark teal companion to Zenbones's cyan accent, for legible status text.
+const STATUS_ACCENT_BACKGROUND = "\x1b[48;2;49;76;81m";
 
 const stripAnsi = (text: string): string =>
   text
@@ -34,6 +36,13 @@ function bottomBorderIndex(lines: string[]): number {
 
 function scrollLabel(line: string): string | undefined {
   return stripAnsi(line).match(/([↑↓]\s+\d+\s+more)/)?.[1];
+}
+
+function statusAccentBackground(text: string): string {
+  return `${STATUS_ACCENT_BACKGROUND}${text.replace(
+    /\x1b\[0m/g,
+    `\x1b[0m${STATUS_ACCENT_BACKGROUND}`,
+  )}\x1b[49m`;
 }
 
 function alignStatus(left: string, right: string, width: number): string {
@@ -120,10 +129,10 @@ class StatusEditor extends CustomEditor {
       const promptLine = truncateToWidth(prefix + line, width, "");
       const filledPromptLine = promptLine.replace(
         /\x1b\[0m/g,
-        `\x1b[0m${theme.getBgAnsi("customMessageBg")}`,
+        `\x1b[0m${theme.getBgAnsi("userMessageBg")}`,
       );
       return theme.bg(
-        "customMessageBg",
+        "userMessageBg",
         filledPromptLine + " ".repeat(Math.max(0, width - visibleWidth(promptLine))),
       );
     });
@@ -131,17 +140,21 @@ class StatusEditor extends CustomEditor {
       truncateToWidth(" ".repeat(prefixWidth) + line, width, ""),
     );
 
+    const promptSpacer = theme.bg("userMessageBg", " ".repeat(width));
+
     return [
-      theme.bg("selectedBg", status),
+      statusAccentBackground(status),
+      promptSpacer,
       ...promptLines,
       ...autocompleteLines,
+      promptSpacer,
     ];
   }
 }
 
 export default function (pi: ExtensionAPI) {
   pi.registerMarkdownTransformer((markdown, { messageType }) =>
-    messageType === "user" ? `${PROMPT} ${markdown}` : markdown
+    messageType === "user" ? ` **λ** ${markdown}` : markdown
   );
 
   pi.on("session_start", (_event, ctx) => {
