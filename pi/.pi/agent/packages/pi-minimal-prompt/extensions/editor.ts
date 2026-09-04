@@ -13,8 +13,8 @@ import {
 
 const PROMPT = " λ";
 const PROMPT_PREFIX = `\x1b[1;38;2;251;241;199m${PROMPT}\x1b[22;39m`;
-// A deliberately dark teal companion to Zenbones's cyan accent, for legible status text.
-const STATUS_ACCENT_BACKGROUND = "\x1b[48;2;49;76;81m";
+// A dark maroon status bar that keeps the muted foreground text legible.
+const STATUS_ACCENT_BACKGROUND = "\x1b[48;2;92;38;50m";
 
 const stripAnsi = (text: string): string =>
   text
