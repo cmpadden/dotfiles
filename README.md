@@ -80,6 +80,7 @@ Previously used tools are kept in `_archive/`.
 | [Alacritty](https://github.com/alacritty/alacritty) | A fast, cross-platform, OpenGL terminal emulator                                                              | Terminal Emulator |
 | [urxvt](https://linux.die.net/man/1/urxvt)          | rxvt-unicode (ouR XVT, unicode) - (a VT102 emulator for the X window system)                                  | Terminal Emulator |
 | [Kitty](https://sw.kovidgoyal.net/kitty/)  | The fast, feature-rich, GPU based terminal emulator                                                                                                                      | Terminal |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Agentic coding tool that lives in your terminal. | Utility |
 
 </details>
 
