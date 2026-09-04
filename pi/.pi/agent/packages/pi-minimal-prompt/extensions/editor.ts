@@ -113,11 +113,16 @@ class StatusEditor extends CustomEditor {
       scrollLabel(base[0] ?? ""),
       scrollLabel(base[bottom] ?? ""),
     ].filter(Boolean).join(" · ");
+    const sessionId = this.ctx.sessionManager.getSessionId();
     const leftLabel = [this.getGitBranch(), this.ctx.cwd, viewportLabel]
       .filter(Boolean)
       .map((label) => theme.fg(contextColor, label))
       .join(delimiter);
-    const rightLabel = `${usageLabel}${delimiter}${modelLabel}`;
+    const rightLabel = [
+      sessionId ? theme.fg(contextColor, sessionId) : "",
+      usageLabel,
+      modelLabel,
+    ].filter(Boolean).join(delimiter);
     const status = alignStatus(` ${leftLabel}`, `${rightLabel} `, width);
 
     const promptLines = base.slice(1, bottom).map((line, index) => {
