@@ -47,29 +47,6 @@ return {
         return dashboard
     end,
     config = function(_, dashboard)
-        if vim.o.filetype == "lazy" then
-            vim.cmd.close()
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "AlphaReady",
-                callback = require("lazy").show(),
-            })
-        end
-
         require("alpha").setup(dashboard.opts)
-
-        vim.api.nvim_create_autocmd("User", {
-            pattern = "LazyVimStarted",
-            callback = function()
-                local stats = require("lazy").stats()
-                local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-                dashboard.section.footer.val = stats.loaded
-                    .. "/"
-                    .. stats.count
-                    .. " "
-                    .. ms
-                    .. "ms"
-                pcall(vim.cmd.AlphaRedraw)
-            end,
-        })
     end,
 }
