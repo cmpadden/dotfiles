@@ -70,6 +70,10 @@ end
 
 vim.pack.add(vim.tbl_values(specs), { confirm = false })
 
+vim.api.nvim_create_user_command("PackUpdate", function()
+    vim.pack.update()
+end, { desc = "Update all vim.pack plugins" })
+
 for _, spec in ipairs(configured) do
     if type(spec.init) == "function" then
         spec.init()
