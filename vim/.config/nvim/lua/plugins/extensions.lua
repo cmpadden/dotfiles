@@ -4,17 +4,8 @@
 
 local obj = {
 
-    -- https://github.com/tpope/vim-dadbod
-    { "tpope/vim-dadbod" },
-
     -- https://github.com/tpope/vim-fugitive
     { "tpope/vim-fugitive" },
-
-    -- https://github.com/tpope/vim-obsession
-    { "tpope/vim-obsession" },
-
-    -- https://github.com/tpope/vim-rhubarb
-    { "tpope/vim-rhubarb" },
 
     -- https://github.com/tpope/vim-surround
     { "tpope/vim-surround" },
@@ -225,17 +216,6 @@ local obj = {
         },
     },
 
-    -- https://github.com/Olical/conjure
-    {
-        "Olical/conjure",
-        ft = { "clojure", "fennel", "python" },
-        lazy = true,
-        init = function()
-            vim.g["conjure#log#hud#enabled"] = false
-            vim.g["conjure#mapping#doc_word"] = false
-        end,
-    },
-
     -- -- https://github.com/junegunn/fzf
     -- {
     --     "junegunn/fzf",
@@ -321,6 +301,10 @@ local obj = {
 --
 --     brew install --HEAD neovim
 --     brew reinstall neovim
+--
+-- Error: `invalid node type at position 2765 for language vim`
+-- Solution:
+-- > rm /opt/homebrew/lib/nvim/parser/vim.so
 --
 if vim.version().major == 0 and vim.version().minor < 10 then
     -- https://github.com/tpope/vim-commentary (built-in as of v0.10.0)

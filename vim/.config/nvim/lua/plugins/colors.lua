@@ -2,48 +2,22 @@
 --                                   Colors                                   --
 --------------------------------------------------------------------------------
 
+-- Previous color schemes:
+--
+-- Verf/deepwhite.nvim
+-- catppuccin/nvim
+-- cocopon/iceberg.vim
+-- ellisonleao/gruvbox.nvim
+-- jesseleite/nvim-noirbuddy
+-- mcchrish/zenbones.nvim
+-- mellow-theme/mellow.nvim
+-- nordtheme/vim
+-- nyoom-engineering/oxocarbon.nvim
+-- rebelot/kanagawa.nvim
+-- scottmckendry/cyberdream.nvim
+-- tanvirtin/monokai.nvim
+
 return {
-
-    -- Error: `invalid node type at position 2765 for language vim`
-    -- Solution:
-    -- > rm /opt/homebrew/lib/nvim/parser/vim.so
-
-    -- https://github.com/ellisonleao/gruvbox.nvim
-    {
-        "ellisonleao/gruvbox.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            require("gruvbox").setup({
-                undercurl = false,
-                underline = false,
-                italic = {
-                    strings = false,
-                    emphasis = false,
-                    comments = true,
-                    operators = false,
-                    folds = false,
-                },
-                invert_selection = false,
-                contrast = "hard",
-                overrides = {
-                    SignColumn = { link = "Normal" },
-                    GruvboxGreenSign = { bg = "" },
-                    GruvboxOrangeSign = { bg = "" },
-                    GruvboxPurpleSign = { bg = "" },
-                    GruvboxYellowSign = { bg = "" },
-                    GruvboxRedSign = { bg = "" },
-                    GruvboxBlueSign = { bg = "" },
-                    GruvboxAquaSign = { bg = "" },
-                },
-            })
-            vim.o.termguicolors = true
-            vim.o.background = "dark"
-            vim.cmd.colorscheme("gruvbox")
-        end,
-        enabled = false,
-    },
-
     -- https://github.com/EdenEast/nightfox.nvim
     {
         "EdenEast/nightfox.nvim",
@@ -51,184 +25,7 @@ return {
         priority = 1000,
         init = function()
             vim.o.termguicolors = true
-            vim.cmd.colorscheme("terafox")
+            vim.cmd.colorscheme("carbonfox")
         end,
-        enabled = false,
-    },
-
-    -- https://github.com/catppuccin/nvim
-    {
-        "catppuccin/nvim",
-        name = "catppuccin",
-        priority = 1000,
-        init = function()
-            require("catppuccin").setup({
-                flavour = "auto",
-                background = {
-                    light = "latte",
-                    dark = "mocha",
-                },
-                color_overrides = {
-                    mocha = {
-                        base = "#121317",
-                    },
-                },
-                term_colors = true,
-                no_italic = true,
-                no_bold = true,
-                no_underline = true,
-                integrations = {
-                    cmp = true,
-                    gitsigns = true,
-                    nvimtree = false,
-                    treesitter = true,
-                    mini = false,
-                },
-            })
-            vim.cmd.colorscheme("catppuccin")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/tanvirtin/monokai.nvim
-    {
-        "tanvirtin/monokai.nvim",
-        lazy = false,
-        init = function()
-            local palette = require("monokai").pro
-            palette.base2 = "#000000"
-            require("monokai").setup({ palette = palette, italics = false })
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/jesseleite/nvim-noirbuddy
-    {
-        "jesseleite/nvim-noirbuddy",
-        dependencies = {
-            { "tjdevries/colorbuddy.nvim" },
-        },
-        lazy = false,
-        priority = 1000,
-        config = function()
-            require("noirbuddy").setup({
-                preset = "slate",
-                colors = {
-                    background = "#18181A",
-                },
-            })
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/mcchrish/zenbones.nvim
-    {
-        "mcchrish/zenbones.nvim",
-        dependencies = {
-            "rktjmp/lush.nvim",
-        },
-        lazy = false,
-        priority = 1000,
-        config = function()
-            vim.o.termguicolors = true
-            vim.o.background = "dark"
-            vim.cmd.colorscheme("zenbones")
-        end,
-        enabled = true,
-    },
-
-    -- https://github.com/cocopon/iceberg.vim
-    -- https://speakerdeck.com/cocopon/creating-your-lovely-color-scheme
-    {
-        "cocopon/iceberg.vim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("iceberg")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/rebelot/kanagawa.nvim
-    {
-        "rebelot/kanagawa.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("kanagawa-dragon")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/mellow-theme/mellow.nvim
-    {
-        "mellow-theme/mellow.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            require("kanagawa").setup({
-                transparent = true,
-                colors = {
-                    theme = {
-                        ui = {
-                            bg = "#000000",
-                        },
-                    },
-                },
-            })
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("mellow")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/Verf/deepwhite.nvim
-    {
-        "Verf/deepwhite.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("deepwhite")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/nordtheme/vim
-    {
-        "nordtheme/vim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.opt.termguicolors = true
-            vim.cmd.colorscheme("nord")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/nyoom-engineering/oxocarbon.nvim
-    {
-        "nyoom-engineering/oxocarbon.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.opt.background = "dark"
-            vim.cmd.colorscheme("oxocarbon")
-        end,
-        enabled = false,
-    },
-
-    -- https://github.com/scottmckendry/cyberdream.nvim
-    {
-        "scottmckendry/cyberdream.nvim",
-        lazy = false,
-        priority = 1000,
-        config = function()
-            vim.o.background = "dark"
-            vim.cmd.colorscheme("cyberdream")
-        end,
-        enabled = false,
     },
 }
