@@ -16,7 +16,6 @@ end
 -- Base configuration applied to all servers
 M.base_config = {
     capabilities = M.get_capabilities(),
-    on_attach = require("shared").default_on_attach,
     flags = { debounce_text_changes = 150 },
 }
 
