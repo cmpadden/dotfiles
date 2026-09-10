@@ -13,13 +13,6 @@ local M = {}
 M.default_on_attach = function(client, bufnr)
     local opts = { noremap = true, silent = true }
 
-    -- Avoid using formatting capability for `tsserver`, and instead use `eslint` or
-    -- `prettier`.
-    if client.name == "tsserver" then
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-    end
-
     -- Global Bindings - Diagnostics
 
     vim.keymap.set("n", "<space>d", vim.diagnostic.open_float, opts)

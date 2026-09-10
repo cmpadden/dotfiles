@@ -56,7 +56,6 @@ function M.setup()
     require("mason-tool-installer").setup({
         ensure_installed = {
             -- LSP servers configured in lua/lsp/servers/
-            "basedpyright",
             "bash-language-server",
             "eslint-lsp",
             "html-lsp",

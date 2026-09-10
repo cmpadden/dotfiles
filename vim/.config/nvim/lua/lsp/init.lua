@@ -13,7 +13,7 @@ function M.load_servers()
     end
 
     for _, filepath in ipairs(server_files) do
-        -- Extract server name from filepath (e.g., "lua/lsp/servers/basedpyright.lua" -> "basedpyright")
+        -- Extract the server name from the configuration filename.
         local server_name = vim.fn.fnamemodify(filepath, ":t:r")
         local ok, config = pcall(require, "lsp.servers." .. server_name)
 
