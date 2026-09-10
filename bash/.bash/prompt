@@ -76,6 +76,15 @@ prompt_git_branch() {
     fi
 }
 
+# Keeps the path offset from the left edge when no context segment precedes it.
+prompt_path_padding() {
+    if [[ -z "$VIRTUAL_ENV" || -z "$DIRENV_DIR" ]]; then
+        local branch
+        branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+        [[ -z "$branch" ]] && printf ' '
+    fi
+}
+
 # Use Carbonfox's ANSI palette instead of hard-coded RGB values. ANSI 16 black
 # keeps context segments quiet while their text stays distinct.
 BLACK_BG="\e[48;5;16m"
@@ -95,6 +104,6 @@ fi
 # the command substitutions remain dynamic for every prompt.
 PS1='\['"${VENV_STYLE}"'\]$(prompt_venv)'
 PS1+='\['"${GIT_STYLE}"'\]$(prompt_git_branch)'
-PS1+='\['"${PATH_STYLE}"'\]\w\e[K'
+PS1+='\['"${PATH_STYLE}"'\]$(prompt_path_padding)\w\e[K'
 PS1+='\['"${RESET}"'\]'
 PS1+='\n\['"${PROMPT_FG}"'\] λ \['"${RESET}"'\]'
