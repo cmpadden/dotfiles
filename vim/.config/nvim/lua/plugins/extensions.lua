@@ -38,9 +38,6 @@ function M.setup()
     vim.keymap.set("x", "ga", "<Plug>(EasyAlign)")
     vim.keymap.set("n", "ga", "<Plug>(EasyAlign)")
 
-    -- https://github.com/norcalli/nvim-colorizer.lua
-    require("colorizer").setup()
-
     -- https://github.com/williamboman/mason.nvim
     require("mason").setup({
         ui = {

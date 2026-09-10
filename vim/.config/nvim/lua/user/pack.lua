@@ -40,7 +40,6 @@ vim.pack.add({
     { src = github .. "junegunn/vim-easy-align" },
     { src = github .. "lewis6991/gitsigns.nvim" },
     { src = github .. "moyiz/blink-emoji.nvim" },
-    { src = github .. "norcalli/nvim-colorizer.lua" },
     { src = github .. "nvim-treesitter/nvim-treesitter" },
     { src = github .. "saghen/blink.cmp", version = vim.version.range("1.0") },
     { src = github .. "sindrets/diffview.nvim" },
