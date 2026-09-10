@@ -1,0 +1,9 @@
+{
+  "print": {
+    "prefix": "print",
+    "body": [
+      "println!(\"{:?}\", ${0});"
+    ],
+    "description": "print"
+  }
+}

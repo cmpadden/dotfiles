@@ -1,0 +1,20 @@
+{
+  "jest describe": {
+    "prefix": "d",
+    "body": [
+      "describe('$1', () => {",
+      "  $0",
+      "});"
+    ],
+    "description": "jest describe"
+  },
+  "jest test": {
+    "prefix": "t",
+    "body": [
+      "test('$1', async () => {",
+      "  $0",
+      "});"
+    ],
+    "description": "jest test"
+  }
+}

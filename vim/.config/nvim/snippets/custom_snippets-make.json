@@ -1,0 +1,15 @@
+{
+  "self generating help goal": {
+    "prefix": "help",
+    "body": [
+      ".DEFAULT_GOAL := help",
+      "",
+      "help:",
+      "\t@echo \"---------------------------------------------------------------\"",
+      "\t@echo \"|                       Available Goals                       |\"",
+      "\t@echo \"---------------------------------------------------------------\"",
+      "\t@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = \":.*?## \"}; {printf \"\\033[36m%-15s\\033[0m %s\\n\", \\$\\$1, \\$\\$2}'"
+    ],
+    "description": "self generating help goal"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "Single File Component": {
+    "prefix": "comp",
+    "body": [
+      "<template>",
+      "  <div>",
+      "  </div>",
+      "</template>",
+      "",
+      "<style>",
+      "</style>",
+      "",
+      "<script>",
+      "export default {",
+      "  data () {",
+      "    return {",
+      "      pageNotFound: '',",
+      "    }",
+      "  }",
+      "}",
+      "</script>"
+    ],
+    "description": "Single File Component"
+  }
+}

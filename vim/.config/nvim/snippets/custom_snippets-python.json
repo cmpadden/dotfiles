@@ -1,0 +1,155 @@
+{
+  "Print": {
+    "prefix": "p",
+    "body": [
+      "print(\"$0\")"
+    ],
+    "description": "Print"
+  },
+  "Print Formatted String": {
+    "prefix": "pf",
+    "body": [
+      "print(f\"${1}\")"
+    ],
+    "description": "Print Formatted String"
+  },
+  "Log Basic Setup": {
+    "prefix": "log",
+    "body": [
+      "logging.basicConfig(level=logging.${1:DEBUG})",
+      "$0"
+    ],
+    "description": "Log Basic Setup"
+  },
+  "Log": {
+    "prefix": "l",
+    "body": [
+      "logging.info(\"${1}\")"
+    ],
+    "description": "Log"
+  },
+  "Write to CSV": {
+    "prefix": "write_csv",
+    "body": [
+      "import csv",
+      "",
+      "with open('output.csv', 'w') as f:",
+      "    w = csv.writer(f)",
+      "    w.writerow([$0])"
+    ],
+    "description": "Write to CSV"
+  },
+  "Import Pandas as `pd`": {
+    "prefix": "pd",
+    "body": [
+      "import pandas as pd"
+    ],
+    "description": "Import Pandas as `pd`"
+  },
+  "Pandas Read CSV": {
+    "prefix": "csv",
+    "body": [
+      "pd.read_csv(\"${1:filename}\", header=None)",
+      "$0"
+    ],
+    "description": "Pandas Read CSV"
+  },
+  "Pandas Read TSV": {
+    "prefix": "tsv",
+    "body": [
+      "pd.read_csv(\"${1:filename}\", sep=\"\\t\", header=None, names=[\"word\", \"score\"])",
+      "$0"
+    ],
+    "description": "Pandas Read TSV"
+  },
+  "Pandas Newline Delimited JSON": {
+    "prefix": "json",
+    "body": [
+      "df = pd.read_json(\"${1:filename}\", lines=True)",
+      "$0"
+    ],
+    "description": "Pandas Newline Delimited JSON"
+  },
+  "Load Multiple Files to Dataframe": {
+    "prefix": "dfglob",
+    "body": [
+      "from glob import glob",
+      "import pandas as pd",
+      "",
+      "dfs = []",
+      "for f in glob(\"$0\"):",
+      "    df = pd.read_json(f, lines=True)",
+      "df = pd.concat(dfs)"
+    ],
+    "description": "Load Multiple Files to Dataframe"
+  },
+  "Concatenate dataframes": {
+    "prefix": "pcat",
+    "body": [
+      "pd.concat([$0])"
+    ],
+    "description": "Concatenate dataframes"
+  },
+  "Generate matplotlib to file": {
+    "prefix": "plot",
+    "body": [
+      "axes = df.plot(subplots=True)[0]",
+      "axes.set_title(\"${1:Plot Title}\")",
+      "fig = axes.get_figure()",
+      "fig.savefig(\"${0:output.png}\")"
+    ],
+    "description": "Generate matplotlib to file"
+  },
+  "Spark Session": {
+    "prefix": "ss",
+    "body": [
+      "from pyspark.sql import SparkSession",
+      "",
+      "spark = SparkSession.builder.appName(\"${0:Spark Session}\").getOrCreate()",
+      "sc = spark.sparkContext"
+    ],
+    "description": "Spark Session"
+  },
+  "Manually Instantiate Spark DataFrame": {
+    "prefix": "sdf",
+    "body": [
+      "df = spark.createDataFrame(",
+      "    [",
+      "        (1, 'foo'),",
+      "        (2, 'bar'),",
+      "        (3, 'baz'),",
+      "    ],",
+      "    ['id', 'msg']",
+      ")"
+    ],
+    "description": "Manually Instantiate Spark DataFrame"
+  },
+  "Spark Window": {
+    "prefix": "window",
+    "body": [
+      "w = Window.partitionBy(\"${1:column}\")",
+      "df = df.withColumn(\"${2:column_aggregate}\", F.max(\"${1:column}\").over(w))"
+    ],
+    "description": "Spark Window"
+  },
+  "Spark Read Newline Delimited JSON": {
+    "prefix": "sjson",
+    "body": [
+      "df = spark \\",
+      "    .read \\",
+      "    .option(\"multiline\", False) \\",
+      "    .json(\"${:input.json}\")"
+    ],
+    "description": "Spark Read Newline Delimited JSON"
+  },
+  "argparse": {
+    "prefix": "argparse",
+    "body": [
+      "parser = argparse.ArgumentParser()",
+      "parser.add_argument(\"--req\", type=str, required=True)",
+      "parser.add_argument(\"--boolean\", action=\"store_true\")",
+      "args = parser.parse_args()"
+    ],
+    "description": "argparse"
+  }
+}

@@ -30,7 +30,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
 
 vim.pack.add({
     { src = github .. "EdenEast/nightfox.nvim" },
-    { src = github .. "L3MON4D3/LuaSnip", version = vim.version.range("2.0") },
     { src = github .. "WhoIsSethDaniel/mason-tool-installer.nvim" },
     { src = github .. "ellisonleao/carbon-now.nvim" },
     { src = github .. "ggandor/lightspeed.nvim" },
@@ -56,7 +55,6 @@ vim.api.nvim_create_user_command("PackUpdate", function()
 end, { desc = "Update all vim.pack plugins" })
 
 require("plugins.colors").setup()
-require("plugins.snippets").setup()
 require("plugins.cmp").setup()
 require("plugins.treesitter").setup()
 require("plugins.extensions").setup()
