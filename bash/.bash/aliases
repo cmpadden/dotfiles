@@ -35,6 +35,8 @@ alias rscp='rsync -aP'
 alias rsmv='rsync -aP --remove-source-files'
 
 if hash eza 2>/dev/null; then
+    # Keep color distinctions while removing eza's default bold and underline styles.
+    export EZA_COLORS='reset:di=34:ex=32:ln=36:or=31:mi=31:pi=33:so=35:bd=33:cd=33:ur=32:uw=33:ux=31:ue=31:gr=32:gw=33:gx=31:tr=32:tw=33:tx=31:sn=32:sb=32:xx=90'
     alias l='eza -1 --group-directories-first'
     alias ls='eza -l --no-user --time-style long-iso --group-directories-first'
 else

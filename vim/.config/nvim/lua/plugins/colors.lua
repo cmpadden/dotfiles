@@ -1,27 +1,27 @@
--------------------------------------------------------------------------------
---                                   Colors                                   --
---------------------------------------------------------------------------------
-
--- Previous color schemes:
---
--- Verf/deepwhite.nvim
--- catppuccin/nvim
--- cocopon/iceberg.vim
--- ellisonleao/gruvbox.nvim
--- jesseleite/nvim-noirbuddy
--- mcchrish/zenbones.nvim
--- mellow-theme/mellow.nvim
--- nordtheme/vim
--- nyoom-engineering/oxocarbon.nvim
--- rebelot/kanagawa.nvim
--- scottmckendry/cyberdream.nvim
--- tanvirtin/monokai.nvim
-
 local M = {}
 
 function M.setup()
     vim.o.termguicolors = true
-    vim.cmd.colorscheme("carbonfox")
+
+    require("dracula").setup({
+        colors = {
+            bg = "#212121",
+            fg = "#f8f8f2",
+            selection = "#3a3a46",
+            red = "#ff5555",
+            bright_red = "#ff6e6e",
+            green = "#50fa7b",
+            bright_green = "#69ff94",
+            yellow = "#ffcb6b",
+            purple = "#c792ea",
+            cyan = "#8be9fd",
+            bright_cyan = "#a4ffff",
+            menu = "#21222c",
+            visual = "#3e4452",
+            black = "#21222c",
+        },
+    })
+    vim.cmd.colorscheme("dracula")
 end
 
 return M

@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.pack.add({
-    { src = github .. "EdenEast/nightfox.nvim" },
+    { src = github .. "Mofiqul/dracula.nvim" },
     { src = github .. "ellisonleao/carbon-now.nvim" },
     { src = github .. "ggandor/lightspeed.nvim" },
     { src = github .. "goolord/alpha-nvim" },
