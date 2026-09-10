@@ -2,7 +2,7 @@ local utils = require("lsp.utils")
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/vtsls.lua
 return vim.tbl_extend("force", utils.base_config, {
-    cmd = { utils.mason_bin .. "vtsls", "--stdio" },
+    cmd = { "vtsls", "--stdio" },
     init_options = {
         hostInfo = "neovim",
     },

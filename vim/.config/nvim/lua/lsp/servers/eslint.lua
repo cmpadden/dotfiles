@@ -1,7 +1,7 @@
 local utils = require("lsp.utils")
 
 return vim.tbl_extend("force", utils.base_config, {
-    cmd = { utils.mason_bin .. "vscode-eslint-language-server", "--stdio" },
+    cmd = { "vscode-eslint-language-server", "--stdio" },
     filetypes = {
         "javascript",
         "javascriptreact",

@@ -38,42 +38,6 @@ function M.setup()
     vim.keymap.set("x", "ga", "<Plug>(EasyAlign)")
     vim.keymap.set("n", "ga", "<Plug>(EasyAlign)")
 
-    -- https://github.com/williamboman/mason.nvim
-    require("mason").setup({
-        ui = {
-            icons = {
-                package_installed = "✓",
-                package_pending = "➜",
-                package_uninstalled = "✗",
-            },
-        },
-    })
-
-    -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
-    require("mason-tool-installer").setup({
-        ensure_installed = {
-            -- LSP servers configured in lua/lsp/servers/
-            "bash-language-server",
-            "eslint-lsp",
-            "html-lsp",
-            "json-lsp",
-            "lua-language-server",
-            "ruff",
-            "rust-analyzer",
-            "tailwindcss-language-server",
-            "vtsls",
-            "yaml-language-server",
-
-            -- Formatters and linters
-            "codespell",
-            "oxfmt",
-            "shfmt",
-            "sqlfluff",
-            "stylua",
-        },
-        run_on_start = true,
-    })
-
     -- https://github.com/stevearc/conform.nvim
     require("conform").setup({
         formatters_by_ft = {
