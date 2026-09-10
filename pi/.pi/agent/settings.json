@@ -9,7 +9,7 @@
     "./packages/pi-remote"
   ],
   "defaultThinkingLevel": "medium",
-  "theme": "zenbones-dark",
+  "theme": "carbonfox",
   "hideThinkingBlock": true,
   "treeFilterMode": "no-tools",
   "outputPad": 0,
