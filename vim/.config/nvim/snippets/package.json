@@ -1,0 +1,67 @@
+{
+  "name": "migrated-snipmate-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "all",
+        "path": "./snippets-all.json"
+      },
+      {
+        "language": "bash",
+        "path": "./snippets-bash.json"
+      },
+      {
+        "language": "lua",
+        "path": "./snippets-lua.json"
+      },
+      {
+        "language": "markdown",
+        "path": "./snippets-markdown.json"
+      },
+      {
+        "language": "python",
+        "path": "./snippets-python.json"
+      },
+      {
+        "language": "rust",
+        "path": "./snippets-rust.json"
+      },
+      {
+        "language": "sh",
+        "path": "./snippets-sh.json"
+      },
+      {
+        "language": "sql",
+        "path": "./snippets-sql.json"
+      },
+      {
+        "language": "all",
+        "path": "./custom_snippets-all.json"
+      },
+      {
+        "language": "make",
+        "path": "./custom_snippets-make.json"
+      },
+      {
+        "language": "python",
+        "path": "./custom_snippets-python.json"
+      },
+      {
+        "language": "sh",
+        "path": "./custom_snippets-sh.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./custom_snippets-typescript.json"
+      },
+      {
+        "language": "vimwiki",
+        "path": "./custom_snippets-vimwiki.json"
+      },
+      {
+        "language": "vue",
+        "path": "./custom_snippets-vue.json"
+      }
+    ]
+  }
+}

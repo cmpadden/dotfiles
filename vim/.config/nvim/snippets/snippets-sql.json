@@ -1,0 +1,130 @@
+{
+  "tbl": {
+    "prefix": "tbl",
+    "body": [
+      "create table ${1:table} (",
+      "\t${0:columns}",
+      ");"
+    ],
+    "description": "tbl"
+  },
+  "col": {
+    "prefix": "col",
+    "body": [
+      "${1:name}\t${2:type}\t${3:default ''}\t${0:not null}"
+    ],
+    "description": "col"
+  },
+  "ccol": {
+    "prefix": "ccol",
+    "body": [
+      "${1:name}\tvarchar2(${2:size})\t${3:default ''}\t${0:not null}"
+    ],
+    "description": "ccol"
+  },
+  "ncol": {
+    "prefix": "ncol",
+    "body": [
+      "${1:name}\tnumber\t${3:default 0}\t${0:not null}"
+    ],
+    "description": "ncol"
+  },
+  "dcol": {
+    "prefix": "dcol",
+    "body": [
+      "${1:name}\tdate\t${3:default sysdate}\t${0:not null}"
+    ],
+    "description": "dcol"
+  },
+  "ind": {
+    "prefix": "ind",
+    "body": [
+      "create index ${0:$1_$2} on ${1:table}(${2:column});"
+    ],
+    "description": "ind"
+  },
+  "uind": {
+    "prefix": "uind",
+    "body": [
+      "create unique index ${1:name} on ${2:table}(${0:column});"
+    ],
+    "description": "uind"
+  },
+  "tblcom": {
+    "prefix": "tblcom",
+    "body": [
+      "comment on table ${1:table} is '${0:comment}';"
+    ],
+    "description": "tblcom"
+  },
+  "colcom": {
+    "prefix": "colcom",
+    "body": [
+      "comment on column ${1:table}.${2:column} is '${0:comment}';"
+    ],
+    "description": "colcom"
+  },
+  "addcol": {
+    "prefix": "addcol",
+    "body": [
+      "alter table ${1:table} add (${2:column} ${0:type});"
+    ],
+    "description": "addcol"
+  },
+  "seq": {
+    "prefix": "seq",
+    "body": [
+      "create sequence ${1:name} start with ${2:1} increment by ${3:1} minvalue ${0:1};"
+    ],
+    "description": "seq"
+  },
+  "s*": {
+    "prefix": "s*",
+    "body": [
+      "select * from ${0:table}"
+    ],
+    "description": "s*"
+  },
+  "dt": {
+    "prefix": "dt",
+    "body": [
+      "describe table ${0:table}",
+      "",
+      "########################################################################################",
+      "#                                      Snowflake                                       #",
+      "########################################################################################"
+    ],
+    "description": "dt"
+  },
+  "role": {
+    "prefix": "role",
+    "body": [
+      "use role ${0:table};"
+    ],
+    "description": "role"
+  },
+  "network_policies_show": {
+    "prefix": "network_policies_show",
+    "body": [
+      "show network policies;"
+    ],
+    "description": "network_policies_show"
+  },
+  "network_policies_describe": {
+    "prefix": "network_policies_describe",
+    "body": [
+      "describe network policy ${0:network_policy_name};"
+    ],
+    "description": "network_policies_describe"
+  },
+  "network_policies_alter": {
+    "prefix": "network_policies_alter",
+    "body": [
+      "alter network policy if exists ${0:network_policy_name}",
+      "set allowed_ip_list = (",
+      "  '${1:0.0.0.0}'",
+      ");"
+    ],
+    "description": "network_policies_alter"
+  }
+}

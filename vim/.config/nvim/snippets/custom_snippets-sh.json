@@ -1,0 +1,27 @@
+{
+  "Array Cheatsheet": {
+    "prefix": "arr",
+    "body": [
+      "arr=(\"${1}\")"
+    ],
+    "description": "Array Cheatsheet"
+  },
+  "for array items": {
+    "prefix": "fora",
+    "body": [
+      "for item in \"${arr[@]}\"; do",
+      "    printf \"%s\\n\" \"${1:\\$item}\"",
+      "done"
+    ],
+    "description": "for array items"
+  },
+  "for array items with index": {
+    "prefix": "forai",
+    "body": [
+      "for ix in ${!${1:arr}[*]}; do",
+      "    printf \"%4d: %s\\n\" \"$ix\" \"${${1:arr}[$ix]}\"",
+      "done"
+    ],
+    "description": "for array items with index"
+  }
+}

@@ -29,7 +29,7 @@ function M.setup()
             },
         },
         snippets = {
-            preset = "luasnip",
+            preset = "default",
         },
         sources = {
             default = {
@@ -38,8 +38,21 @@ function M.setup()
                 "path",
                 "emoji",
                 "buffer",
+                "dynamic_snippets",
             },
             providers = {
+                dynamic_snippets = {
+                    name = "Dynamic snippets",
+                    module = "user.dynamic_snippets",
+                    score_offset = 15,
+                },
+                snippets = {
+                    opts = {
+                        extended_filetypes = {
+                            bash = { "sh" },
+                        },
+                    },
+                },
                 emoji = {
                     module = "blink-emoji",
                     name = "emoji",
