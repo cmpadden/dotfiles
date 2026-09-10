@@ -85,13 +85,13 @@ prompt_path_padding() {
     fi
 }
 
-# Use Carbonfox's ANSI palette instead of hard-coded RGB values. ANSI 16 black
-# keeps context segments quiet while their text stays distinct.
-BLACK_BG="\e[48;5;16m"
-VENV_STYLE="${BLACK_BG}\e[38;5;1m"  # red
-GIT_STYLE="${BLACK_BG}\e[38;5;3m"   # teal
-PATH_STYLE="${BLACK_BG}\e[38;5;15m" # white
-PROMPT_FG="\e[1;38;5;15m"           # bright foreground
+# Use Dracula+'s ANSI palette. A subtly lighter surface separates the prompt
+# context segments from the terminal background.
+BACKGROUND="\e[48;2;40;42;54m"
+VENV_STYLE="${BACKGROUND}\e[38;5;1m" # red
+GIT_STYLE="${BACKGROUND}\e[38;5;6m"  # cyan
+PATH_STYLE="${BACKGROUND}\e[38;5;15m" # foreground
+PROMPT_FG="\e[1;38;5;15m"             # foreground
 RESET="\e[0m"
 
 # ============================================================================
