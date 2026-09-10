@@ -17,15 +17,11 @@
 -- scottmckendry/cyberdream.nvim
 -- tanvirtin/monokai.nvim
 
-return {
-    -- https://github.com/EdenEast/nightfox.nvim
-    {
-        "EdenEast/nightfox.nvim",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.o.termguicolors = true
-            vim.cmd.colorscheme("carbonfox")
-        end,
-    },
-}
+local M = {}
+
+function M.setup()
+    vim.o.termguicolors = true
+    vim.cmd.colorscheme("carbonfox")
+end
+
+return M

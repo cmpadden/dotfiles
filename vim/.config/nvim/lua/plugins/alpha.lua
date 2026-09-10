@@ -23,30 +23,23 @@ end
 local BANNER_TEXT =
     "All moments, past, present, and future, always have existed, always will exist. The Tralfamadorians can look at all the different moments just the way we can look at a stretch of the Rocky Mountains, for instance. It is just an illusion we have here on Earth that one moment follows another one, like beads on a string, and that once a moment is gone it is gone forever."
 
-return {
-    "goolord/alpha-nvim",
-    event = "VimEnter",
-    init = false,
-    opts = function()
-        local path_ok, dashboard = pcall(require, "alpha.themes.dashboard")
+local M = {}
 
-        if not path_ok then
-            return
-        end
+function M.setup()
+    local path_ok, dashboard = pcall(require, "alpha.themes.dashboard")
+    if not path_ok then
+        return
+    end
 
-        dashboard.section.header.val = wrap(BANNER_TEXT)
-        -- dashboard.section.header.opts.hl = "DashboardHeader"
+    dashboard.section.header.val = wrap(BANNER_TEXT)
+    dashboard.section.buttons.val = {
+        dashboard.button("i", "New file", ":ene <BAR> startinsert <CR>"),
+        dashboard.button("f", "Find file", ":FzfLua files<CR>"),
+        dashboard.button("s", "Settings", ":e $MYVIMRC | :cd %:p:h<CR>"),
+        dashboard.button("q", "Quit", ":qa<CR>"),
+    }
 
-        dashboard.section.buttons.val = {
-            dashboard.button("i", "New file", ":ene <BAR> startinsert <CR>"),
-            dashboard.button("f", "Find file", ":FzfLua files<CR>"),
-            dashboard.button("s", "Settings", ":e $MYVIMRC | :cd %:p:h<CR>"),
-            dashboard.button("q", "Quit", ":qa<CR>"),
-        }
+    require("alpha").setup(dashboard.opts)
+end
 
-        return dashboard
-    end,
-    config = function(_, dashboard)
-        require("alpha").setup(dashboard.opts)
-    end,
-}
+return M

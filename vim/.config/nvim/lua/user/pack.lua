@@ -5,94 +5,59 @@ if not vim.pack then
 end
 
 local github = "https://github.com/"
-local setup_modules = {
-    ["saghen/blink.cmp"] = "blink.cmp",
-    ["WhoIsSethDaniel/mason-tool-installer.nvim"] = "mason-tool-installer",
-    ["stevearc/conform.nvim"] = "conform",
-    ["ellisonleao/carbon-now.nvim"] = "carbon-now",
-    ["ibhagwan/fzf-lua"] = "fzf-lua",
-}
-local versions = {
-    ["L3MON4D3/LuaSnip"] = vim.version.range("2.0"),
-    ["saghen/blink.cmp"] = vim.version.range("1.0"),
-}
 
-local modules = {
-    require("plugins.colors"),
-    require("plugins.snippets"),
-    require("plugins.cmp"),
-    require("plugins.treesitter"),
-    require("plugins.extensions"),
-    require("plugins.alpha"),
-    require("plugins.personal"),
-}
-
-local specs = {}
-local configured = {}
-
-local function add(spec)
-    if type(spec) == "string" then
-        spec = { spec }
-    end
-
-    if spec.enabled == false then
-        return
-    end
-
-    local repo = spec[1]
-    if not repo then
-        return
-    end
-
-    if not specs[repo] then
-        specs[repo] = {
-            src = github .. repo,
-            version = versions[repo],
-        }
-    end
-
-    for _, dependency in ipairs(spec.dependencies or {}) do
-        add(dependency)
-    end
-
-    table.insert(configured, spec)
-end
-
-for _, module in ipairs(modules) do
-    if module[1] and type(module[1]) == "string" then
-        add(module)
-    else
-        for _, spec in ipairs(module) do
-            add(spec)
+vim.api.nvim_create_autocmd("PackChanged", {
+    callback = function(event)
+        if event.data.kind ~= "update" then
+            return
         end
-    end
-end
 
-vim.pack.add(vim.tbl_values(specs), { confirm = false })
+        local commands = {
+            ["mason.nvim"] = "MasonUpdate",
+            ["nvim-treesitter"] = "TSUpdate",
+        }
+        local command = commands[event.data.spec.name]
+        if not command then
+            return
+        end
+
+        vim.schedule(function()
+            vim.cmd.packadd(event.data.spec.name)
+            vim.cmd(command)
+        end)
+    end,
+})
+
+vim.pack.add({
+    { src = github .. "EdenEast/nightfox.nvim" },
+    { src = github .. "L3MON4D3/LuaSnip", version = vim.version.range("2.0") },
+    { src = github .. "WhoIsSethDaniel/mason-tool-installer.nvim" },
+    { src = github .. "ellisonleao/carbon-now.nvim" },
+    { src = github .. "ggandor/lightspeed.nvim" },
+    { src = github .. "goolord/alpha-nvim" },
+    { src = github .. "ibhagwan/fzf-lua" },
+    { src = github .. "jpalardy/vim-slime" },
+    { src = github .. "junegunn/goyo.vim" },
+    { src = github .. "junegunn/vim-easy-align" },
+    { src = github .. "lewis6991/gitsigns.nvim" },
+    { src = github .. "moyiz/blink-emoji.nvim" },
+    { src = github .. "norcalli/nvim-colorizer.lua" },
+    { src = github .. "nvim-treesitter/nvim-treesitter" },
+    { src = github .. "saghen/blink.cmp", version = vim.version.range("1.0") },
+    { src = github .. "sindrets/diffview.nvim" },
+    { src = github .. "stevearc/conform.nvim" },
+    { src = github .. "tpope/vim-fugitive" },
+    { src = github .. "tpope/vim-surround" },
+    { src = github .. "williamboman/mason.nvim" },
+}, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, { desc = "Update all vim.pack plugins" })
 
-for _, spec in ipairs(configured) do
-    if type(spec.init) == "function" then
-        spec.init()
-    end
-end
-
-for _, spec in ipairs(configured) do
-    local opts = spec.opts
-    if type(opts) == "function" then
-        opts = opts()
-    end
-
-    if type(spec.config) == "function" then
-        spec.config(spec, opts)
-    elseif opts then
-        local module = setup_modules[spec[1]]
-        if not module then
-            error("No vim.pack setup module configured for " .. spec[1])
-        end
-        require(module).setup(opts)
-    end
-end
+require("plugins.colors").setup()
+require("plugins.snippets").setup()
+require("plugins.cmp").setup()
+require("plugins.treesitter").setup()
+require("plugins.extensions").setup()
+require("plugins.alpha").setup()

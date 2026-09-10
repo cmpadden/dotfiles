@@ -6,17 +6,10 @@
 --     https://cmp.saghen.dev/modes/cmdline.html
 --     https://cmp.saghen.dev/recipes.html#border
 
-return {
-    "saghen/blink.cmp",
-    dependencies = {
-        "moyiz/blink-emoji.nvim",
-        { "L3MON4D3/LuaSnip", version = "v2.*" },
-    },
-    version = "1.*",
-    prebuilt_binaries = {
-        download = true,
-    },
-    opts = {
+local M = {}
+
+function M.setup()
+    require("blink.cmp").setup({
         keymap = {
             preset = "default",
             ["<C-l>"] = { "select_and_accept" }, -- default <C-y>
@@ -52,18 +45,14 @@ return {
                     name = "emoji",
                     score_offset = 15,
                     opts = { insert = true },
-                    -- should_show_items = function()
-                    --   return vim.tbl_contains(
-                    --     -- Enable emoji completion only for git commits and markdown.
-                    --     -- By default, enabled for all file-types.
-                    --     { "gitcommit", "markdown" },
-                    --     vim.o.filetype
-                    --   )
-                    -- end,
                 },
             },
         },
-        fuzzy = { implementation = "prefer_rust_with_warning" },
-    },
-    opts_extend = { "sources.default" },
-}
+        fuzzy = {
+            implementation = "prefer_rust_with_warning",
+            prebuilt_binaries = { download = true },
+        },
+    })
+end
+
+return M
