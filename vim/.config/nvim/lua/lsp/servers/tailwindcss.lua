@@ -1,7 +1,7 @@
 local utils = require("lsp.utils")
 
 return vim.tbl_extend("force", utils.base_config, {
-    cmd = { utils.mason_bin .. "tailwindcss-language-server", "--stdio" },
+    cmd = { "tailwindcss-language-server", "--stdio" },
     filetypes = {
         "aspnetcorerazor",
         "astro",

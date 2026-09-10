@@ -1,9 +1,6 @@
 -- Shared utilities for LSP server configuration
 local M = {}
 
--- Path to mason-installed binaries
-M.mason_bin = vim.fn.stdpath("data") .. "/mason/bin/"
-
 -- Get LSP capabilities including blink.cmp integration
 function M.get_capabilities()
     return vim.tbl_deep_extend(

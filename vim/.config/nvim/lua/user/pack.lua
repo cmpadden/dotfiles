@@ -13,7 +13,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
         end
 
         local commands = {
-            ["mason.nvim"] = "MasonUpdate",
             ["nvim-treesitter"] = "TSUpdate",
         }
         local command = commands[event.data.spec.name]
@@ -30,7 +29,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
 
 vim.pack.add({
     { src = github .. "EdenEast/nightfox.nvim" },
-    { src = github .. "WhoIsSethDaniel/mason-tool-installer.nvim" },
     { src = github .. "ellisonleao/carbon-now.nvim" },
     { src = github .. "ggandor/lightspeed.nvim" },
     { src = github .. "goolord/alpha-nvim" },
@@ -41,12 +39,11 @@ vim.pack.add({
     { src = github .. "lewis6991/gitsigns.nvim" },
     { src = github .. "moyiz/blink-emoji.nvim" },
     { src = github .. "nvim-treesitter/nvim-treesitter" },
-    { src = github .. "saghen/blink.cmp", version = vim.version.range("1.0") },
+    { src = github .. "saghen/blink.cmp", version = vim.version.range("1") },
     { src = github .. "sindrets/diffview.nvim" },
     { src = github .. "stevearc/conform.nvim" },
     { src = github .. "tpope/vim-fugitive" },
     { src = github .. "tpope/vim-surround" },
-    { src = github .. "williamboman/mason.nvim" },
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
