@@ -12,9 +12,13 @@ import {
 } from "@earendil-works/pi-tui";
 
 const PROMPT = " λ";
-const PROMPT_PREFIX = `\x1b[1;38;2;251;241;199m${PROMPT}\x1b[22;39m`;
-// A dark maroon status bar that keeps the muted foreground text legible.
-const STATUS_ACCENT_BACKGROUND = "\x1b[48;2;92;38;50m";
+// Carbonfox foregrounds shared with the Bash prompt.
+// ANSI 16 provides its black background.
+const PROMPT_PREFIX = `\x1b[1;38;2;228;228;229m${PROMPT}\x1b[22;39m`;
+const STATUS_BACKGROUND = "\x1b[48;5;16m";
+const STATUS_WHITE = "\x1b[38;2;228;228;229m";
+const STATUS_RED = "\x1b[38;2;238;83;150m";
+const STATUS_TEAL = "\x1b[38;2;8;189;186m";
 
 const stripAnsi = (text: string): string =>
   text
@@ -38,10 +42,14 @@ function scrollLabel(line: string): string | undefined {
   return stripAnsi(line).match(/([↑↓]\s+\d+\s+more)/)?.[1];
 }
 
-function statusAccentBackground(text: string): string {
-  return `${STATUS_ACCENT_BACKGROUND}${text.replace(
+function statusForeground(color: string, text: string): string {
+  return `${color}${text}\x1b[39m`;
+}
+
+function statusBackground(text: string): string {
+  return `${STATUS_BACKGROUND}${text.replace(
     /\x1b\[0m/g,
-    `\x1b[0m${STATUS_ACCENT_BACKGROUND}`,
+    `\x1b[0m${STATUS_BACKGROUND}`,
   )}\x1b[49m`;
 }
 
@@ -90,36 +98,36 @@ class StatusEditor extends CustomEditor {
     const thinking = this.ctx.thinkingLevel;
     const usage = this.ctx.getContextUsage();
     const context = usage ? `${Math.round(usage.percent)}%` : "";
-    const contextColor = (usage?.percent ?? 0) >= 90
-      ? "error"
-      : (usage?.percent ?? 0) >= 70
-        ? "warning"
-        : "muted";
+    const contextForeground = (usage?.percent ?? 0) >= 90
+      ? STATUS_RED
+      : STATUS_WHITE;
 
     const cost = this.ctx.sessionManager.getBranch().reduce((total, entry) => {
       if (entry.type !== "message" || entry.message.role !== "assistant") return total;
       return total + entry.message.usage.cost.total;
     }, 0);
-    const delimiter = theme.fg(contextColor, " · ");
+    const delimiter = statusForeground(STATUS_WHITE, " · ");
     const modelLabel = [
-      theme.fg(contextColor, model),
-      thinking !== "off" ? theme.fg(contextColor, thinking) : "",
+      statusForeground(STATUS_WHITE, model),
+      thinking !== "off" ? statusForeground(STATUS_WHITE, thinking) : "",
     ].filter(Boolean).join(delimiter);
     const usageLabel = [
-      context ? theme.fg(contextColor, context) : "",
-      theme.fg(contextColor, `$${cost.toFixed(3)}`),
+      context ? statusForeground(contextForeground, context) : "",
+      statusForeground(STATUS_WHITE, `$${cost.toFixed(3)}`),
     ].filter(Boolean).join(delimiter);
     const viewportLabel = [
       scrollLabel(base[0] ?? ""),
       scrollLabel(base[bottom] ?? ""),
     ].filter(Boolean).join(" · ");
     const sessionId = this.ctx.sessionManager.getSessionId();
-    const leftLabel = [this.getGitBranch(), this.ctx.cwd, viewportLabel]
-      .filter(Boolean)
-      .map((label) => theme.fg(contextColor, label))
-      .join(delimiter);
+    const gitBranch = this.getGitBranch();
+    const leftLabel = [
+      gitBranch ? statusForeground(STATUS_TEAL, gitBranch) : "",
+      this.ctx.cwd ? statusForeground(STATUS_WHITE, this.ctx.cwd) : "",
+      viewportLabel ? statusForeground(STATUS_WHITE, viewportLabel) : "",
+    ].filter(Boolean).join(delimiter);
     const rightLabel = [
-      sessionId ? theme.fg(contextColor, sessionId) : "",
+      sessionId ? statusForeground(STATUS_WHITE, sessionId) : "",
       usageLabel,
       modelLabel,
     ].filter(Boolean).join(delimiter);
@@ -148,7 +156,7 @@ class StatusEditor extends CustomEditor {
     const promptSpacer = theme.bg("userMessageBg", " ".repeat(width));
 
     return [
-      statusAccentBackground(status),
+      statusBackground(status),
       promptSpacer,
       ...promptLines,
       ...autocompleteLines,
