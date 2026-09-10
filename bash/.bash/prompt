@@ -76,13 +76,9 @@ prompt_git_branch() {
     fi
 }
 
-# Keeps the path offset from the left edge when no context segment precedes it.
-prompt_path_padding() {
-    if [[ -z "$VIRTUAL_ENV" || -z "$DIRENV_DIR" ]]; then
-        local branch
-        branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-        [[ -z "$branch" ]] && printf ' '
-    fi
+# Keeps the first displayed prompt segment offset from the left edge.
+prompt_leading_padding() {
+    [[ -z "$VIRTUAL_ENV" || -z "$DIRENV_DIR" ]] && printf ' '
 }
 
 # Use Dracula+'s ANSI palette. A subtly lighter surface separates the prompt
@@ -102,8 +98,9 @@ fi
 
 # Variables must be outside single quotes so their escape sequences expand while
 # the command substitutions remain dynamic for every prompt.
-PS1='\['"${VENV_STYLE}"'\]$(prompt_venv)'
+PS1='\['"${PATH_STYLE}"'\]$(prompt_leading_padding)'
+PS1+='\['"${VENV_STYLE}"'\]$(prompt_venv)'
 PS1+='\['"${GIT_STYLE}"'\]$(prompt_git_branch)'
-PS1+='\['"${PATH_STYLE}"'\]$(prompt_path_padding)\w\e[K'
+PS1+='\['"${PATH_STYLE}"'\]\w\e[K'
 PS1+='\['"${RESET}"'\]'
 PS1+='\n\['"${PROMPT_FG}"'\] λ \['"${RESET}"'\]'
