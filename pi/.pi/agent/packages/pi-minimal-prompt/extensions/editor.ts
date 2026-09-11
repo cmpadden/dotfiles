@@ -108,7 +108,7 @@ class StatusEditor extends CustomEditor {
     const delimiter = statusForeground(STATUS_WHITE, " · ");
     const modelLabel = [
       statusForeground(STATUS_WHITE, model),
-      thinking !== "off" ? statusForeground(STATUS_WHITE, thinking) : "",
+      statusForeground(STATUS_WHITE, thinking),
     ].filter(Boolean).join(delimiter);
     const usageLabel = [
       context ? statusForeground(contextForeground, context) : "",
