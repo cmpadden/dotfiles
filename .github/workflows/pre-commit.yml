@@ -26,9 +26,14 @@ jobs:
         with:
           go-version: "1.24.x"
 
-      - uses: JohnnyMorganz/stylua-action@v1.1.2
-        with:
-          version: v2.5.2
+      - name: Install StyLua
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl --fail --location --silent --show-error \
+            https://github.com/JohnnyMorganz/StyLua/releases/download/v2.5.2/stylua-linux-x86_64.zip \
+            --output /tmp/stylua.zip
+          unzip -q /tmp/stylua.zip -d "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install shfmt
         run: |
