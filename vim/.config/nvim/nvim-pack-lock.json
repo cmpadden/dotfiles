@@ -13,10 +13,6 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
-    "carbon-now.nvim": {
-      "rev": "2440d007633a5d436ebc9d2b5ef74e4fddd83f15",
-      "src": "https://github.com/ellisonleao/carbon-now.nvim"
-    },
     "conform.nvim": {
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -37,13 +33,9 @@
       "rev": "f2421c550618d257048afa650413d9e542ddbe67",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "goyo.vim": {
-      "rev": "9c72fdf2d202914318581f9f0dd09fd102f8504d",
-      "src": "https://github.com/junegunn/goyo.vim"
-    },
-    "lightspeed.nvim": {
-      "rev": "fcc72d8a4d5f4ebba62d8a3a0660f88f1b5c3b05",
-      "src": "https://github.com/ggandor/lightspeed.nvim"
+    "leap.nvim": {
+      "rev": "38af0ab56c6eb8757ee6006dd13ab79c2bc11a49",
+      "src": "https://codeberg.org/andyg/leap.nvim"
     },
     "nvim-treesitter": {
       "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
