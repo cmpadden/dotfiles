@@ -1,109 +1,68 @@
-------------------------------------------------------------------------------------------
---                                    Auto Commands                                     --
-------------------------------------------------------------------------------------------
+local function markdown_fold_expr(lnum)
+    local level = vim.fn.getline(lnum):match("^(#+) ")
+    return level and ">" .. #level or "="
+end
 
--- after opening `help` files, move them to the right
--- vim.cmd([[
---   augroup helpFileType
---     autocmd!
---     autocmd FileType help wincmd L
---   augroup END
--- ]])
+local function markdown_fold_text()
+    local line = vim.fn.getline(vim.v.foldstart)
+    local line_count = vim.v.foldend - vim.v.foldstart + 1
+    return string.format("%s [%d]", line, line_count)
+end
 
--- enable spell checking for certain file types
-vim.cmd([[
-  augroup spellChecking
-    autocmd!
-    autocmd FileType vimwiki setlocal spell
-    autocmd FileType markdown setlocal spell
-  augroup END
-]])
-
--- Help Vim recognize *.sbt and *.sc as Scala files
-vim.cmd([[
-  augroup scalaFiletypes
-    autocmd BufRead,BufNewFile *.sbt,*.sc set filetype=scala
-  augroup END
-]])
-
-vim.cmd([[
-  augroup foldmethod_markers
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-  augroup END
-]])
-
--- vimscript function for markdown folding
-vim.cmd([[
-  function! MarkdownFoldExpr(lnum)
-    let line = getline(a:lnum)
-    if line =~ '^###### '
-      return '>6'
-    elseif line =~ '^##### '
-      return '>5'
-    elseif line =~ '^#### '
-      return '>4'
-    elseif line =~ '^### '
-      return '>3'
-    elseif line =~ '^## '
-      return '>2'
-    elseif line =~ '^# '
-      return '>1'
-    else
-      return '='
-    endif
-  endfunction
-
-  function! CustomMarkdownFoldText()
-    let line = getline(v:foldstart)
-    let line_count = v:foldend - v:foldstart + 1
-    return line . ' [' . line_count . ']'
-  endfunction
-]])
-
--- Set fold expression and level for markdown files
+local spell_checking = vim.api.nvim_create_augroup("spell_checking", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
+    group = spell_checking,
+    pattern = { "markdown", "vimwiki" },
+    command = "setlocal spell",
+})
+
+local filetypes = vim.api.nvim_create_augroup("filetypes", { clear = true })
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    group = filetypes,
+    pattern = { "*.sbt", "*.sc" },
+    command = "setfiletype scala",
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    group = filetypes,
+    pattern = "*.hy",
+    command = "setfiletype clojure",
+})
+
+local folding = vim.api.nvim_create_augroup("folding", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+    group = folding,
+    pattern = "vim",
+    command = "setlocal foldmethod=marker",
+})
+vim.api.nvim_create_autocmd("FileType", {
+    group = folding,
     pattern = "markdown",
     callback = function()
         vim.opt_local.foldmethod = "expr"
         vim.opt_local.foldlevel = 1
-        vim.opt_local.foldexpr = "MarkdownFoldExpr(v:lnum)"
-        vim.opt_local.foldtext = "CustomMarkdownFoldText()"
+        vim.opt_local.foldexpr = "v:lua.markdown_fold_expr(v:lnum)"
+        vim.opt_local.foldtext = "v:lua.markdown_fold_text()"
     end,
 })
 
--- run Python code
-vim.cmd([[
-  augroup pythonMappings
-      autocmd!
-      autocmd Filetype python nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
-  augroup END
-]])
+_G.markdown_fold_expr = markdown_fold_expr
+_G.markdown_fold_text = markdown_fold_text
 
--- Meh, it's close enough...
-vim.cmd([[
-  augroup hySyntax
-      autocmd!
-      autocmd BufNewFile,BufRead *.hy set syntax=clojure
-  augroup END
-]])
-
--- -- softwrap markdown files; we like long lines
--- --
--- -- References:
--- -- - https://stackoverflow.com/a/26015800
--- -- - https://stackoverflow.com/a/26284471
--- vim.cmd([[
---   augroup markdownWrap
---       autocmd!
---       autocmd FileType markdown set wrap linebreak showbreak=>>>
---
---   augroup END
--- ]])
-
--- todo: consider `.editorconfig`
+local python = vim.api.nvim_create_augroup("python", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+    group = python,
+    pattern = "python",
+    callback = function(event)
+        vim.keymap.set("n", "<F5>", function()
+            vim.cmd("!python " .. vim.fn.shellescape(vim.api.nvim_buf_get_name(event.buf)))
+        end, { buffer = event.buf, desc = "Run current Python file" })
+    end,
+})
+
+local javascript = vim.api.nvim_create_augroup("javascript", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+    group = javascript,
+    pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
     callback = function()
         vim.opt_local.tabstop = 2
         vim.opt_local.shiftwidth = 2

@@ -13,7 +13,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
         end
 
         local commands = {
-            ["mason.nvim"] = "MasonUpdate",
             ["nvim-treesitter"] = "TSUpdate",
         }
         local command = commands[event.data.spec.name]
@@ -29,8 +28,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.pack.add({
-    { src = github .. "EdenEast/nightfox.nvim" },
-    { src = github .. "WhoIsSethDaniel/mason-tool-installer.nvim" },
+    { src = github .. "Mofiqul/dracula.nvim" },
     { src = "https://codeberg.org/andyg/leap.nvim" },
     { src = github .. "goolord/alpha-nvim" },
     { src = github .. "ibhagwan/fzf-lua" },
@@ -39,20 +37,22 @@ vim.pack.add({
     { src = github .. "lewis6991/gitsigns.nvim" },
     { src = github .. "moyiz/blink-emoji.nvim" },
     { src = github .. "nvim-treesitter/nvim-treesitter" },
-    { src = github .. "saghen/blink.cmp", version = vim.version.range("1.0") },
+    { src = github .. "saghen/blink.cmp", version = vim.version.range("1") },
     { src = github .. "sindrets/diffview.nvim" },
     { src = github .. "stevearc/conform.nvim" },
     { src = github .. "tpope/vim-fugitive" },
     { src = github .. "tpope/vim-surround" },
-    { src = github .. "williamboman/mason.nvim" },
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, { desc = "Update all vim.pack plugins" })
 
-require("plugins.colors").setup()
-require("plugins.cmp").setup()
-require("plugins.treesitter").setup()
-require("plugins.extensions").setup()
 require("plugins.alpha").setup()
+require("plugins.cmp").setup()
+require("plugins.colors").setup()
+require("plugins.conform").setup()
+require("plugins.editing").setup()
+require("plugins.fzf").setup()
+require("plugins.gitsigns").setup()
+require("plugins.treesitter").setup()

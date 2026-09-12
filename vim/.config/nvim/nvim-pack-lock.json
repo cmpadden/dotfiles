@@ -9,9 +9,9 @@
       "src": "https://github.com/moyiz/blink-emoji.nvim"
     },
     "blink.cmp": {
-      "rev": "49f211fe5d729df53df4c042d7c3464cf47d199e",
+      "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
-      "version": "1.0.0 - 1.1.0"
+      "version": "1.0.0 - 2.0.0"
     },
     "conform.nvim": {
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
@@ -20,6 +20,10 @@
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
       "src": "https://github.com/sindrets/diffview.nvim"
+    },
+    "dracula.nvim": {
+      "rev": "ae752c13e95fb7c5f58da4b5123cb804ea7568ee",
+      "src": "https://github.com/Mofiqul/dracula.nvim"
     },
     "fzf-lua": {
       "rev": "05e44d38de0a79c11fba5f7bf8138791b1dbdd1e",
@@ -32,18 +36,6 @@
     "leap.nvim": {
       "rev": "38af0ab56c6eb8757ee6006dd13ab79c2bc11a49",
       "src": "https://codeberg.org/andyg/leap.nvim"
-    },
-    "mason-tool-installer.nvim": {
-      "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
-      "src": "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim"
-    },
-    "mason.nvim": {
-      "rev": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d",
-      "src": "https://github.com/williamboman/mason.nvim"
-    },
-    "nightfox.nvim": {
-      "rev": "4dacd3f0185a2227bdf3b6c0975a8f0bf87cac9a",
-      "src": "https://github.com/EdenEast/nightfox.nvim"
     },
     "nvim-treesitter": {
       "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",

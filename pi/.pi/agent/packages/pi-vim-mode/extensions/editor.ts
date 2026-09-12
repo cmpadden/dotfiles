@@ -4,11 +4,9 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import {
   matchesKey,
-  truncateToWidth,
   type AutocompleteProvider,
   type EditorComponent,
   type TUI,
-  visibleWidth,
 } from "@earendil-works/pi-tui";
 
 type CursorEditor = EditorComponent & {
@@ -165,17 +163,7 @@ class VimEditor implements EditorComponent {
   }
 
   render(width: number): string[] {
-    const lines = this.base.render(width);
-    const pending = this.pendingOperator
-      ? `${this.pendingOperator.count}${this.pendingOperator.operator}`
-      : "";
-    const label = ` ${this.mode.toUpperCase()}${pending}${this.count} `;
-    if (lines.length > 0 && visibleWidth(lines[0]!) >= label.length) {
-      const statusBackground = lines[0]!.match(/\x1b\[(?:\d+;)*48(?:;\d+)*m/)?.[0] ?? "";
-      lines[0] = truncateToWidth(lines[0]!, width - label.length, "")
-        + statusBackground + label + (statusBackground ? "\x1b[49m" : "");
-    }
-    return lines;
+    return this.base.render(width);
   }
 
   invalidate(): void {

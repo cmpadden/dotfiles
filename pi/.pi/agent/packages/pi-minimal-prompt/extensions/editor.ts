@@ -12,13 +12,12 @@ import {
 } from "@earendil-works/pi-tui";
 
 const PROMPT = " λ";
-// Carbonfox foregrounds shared with the Bash prompt.
-// ANSI 16 provides its black background.
-const PROMPT_PREFIX = `\x1b[1;38;2;228;228;229m${PROMPT}\x1b[22;39m`;
-const STATUS_BACKGROUND = "\x1b[48;5;16m";
-const STATUS_WHITE = "\x1b[38;2;228;228;229m";
-const STATUS_RED = "\x1b[38;2;238;83;150m";
-const STATUS_TEAL = "\x1b[38;2;8;189;186m";
+// Dracula+ colors shared with the Bash prompt and Ghostty theme.
+const PROMPT_PREFIX = `\x1b[1;38;2;248;248;242m${PROMPT}\x1b[22;39m`;
+const STATUS_BACKGROUND = "\x1b[48;2;40;42;54m";
+const STATUS_WHITE = "\x1b[38;2;248;248;242m";
+const STATUS_RED = "\x1b[38;2;255;110;110m";
+const STATUS_CYAN = "\x1b[38;2;139;233;253m";
 
 const stripAnsi = (text: string): string =>
   text
@@ -109,7 +108,7 @@ class StatusEditor extends CustomEditor {
     const delimiter = statusForeground(STATUS_WHITE, " · ");
     const modelLabel = [
       statusForeground(STATUS_WHITE, model),
-      thinking !== "off" ? statusForeground(STATUS_WHITE, thinking) : "",
+      statusForeground(STATUS_WHITE, thinking),
     ].filter(Boolean).join(delimiter);
     const usageLabel = [
       context ? statusForeground(contextForeground, context) : "",
@@ -122,7 +121,7 @@ class StatusEditor extends CustomEditor {
     const sessionId = this.ctx.sessionManager.getSessionId();
     const gitBranch = this.getGitBranch();
     const leftLabel = [
-      gitBranch ? statusForeground(STATUS_TEAL, gitBranch) : "",
+      gitBranch ? statusForeground(STATUS_CYAN, gitBranch) : "",
       this.ctx.cwd ? statusForeground(STATUS_WHITE, this.ctx.cwd) : "",
       viewportLabel ? statusForeground(STATUS_WHITE, viewportLabel) : "",
     ].filter(Boolean).join(delimiter);

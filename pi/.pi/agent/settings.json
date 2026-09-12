@@ -9,7 +9,7 @@
     "./packages/pi-remote"
   ],
   "defaultThinkingLevel": "medium",
-  "theme": "carbonfox",
+  "theme": "dracula-plus",
   "hideThinkingBlock": true,
   "treeFilterMode": "no-tools",
   "outputPad": 0,
