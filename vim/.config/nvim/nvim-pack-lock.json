@@ -1,9 +1,5 @@
 {
   "plugins": {
-    "alpha-nvim": {
-      "rev": "4ba26e41990c11620c96c0e1cff20eab65efde4a",
-      "src": "https://github.com/goolord/alpha-nvim"
-    },
     "blink-emoji.nvim": {
       "rev": "dff709139ad5389fb55ebab026e75278a12b325a",
       "src": "https://github.com/moyiz/blink-emoji.nvim"

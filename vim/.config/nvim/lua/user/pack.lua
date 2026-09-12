@@ -30,7 +30,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
 vim.pack.add({
     { src = github .. "Mofiqul/dracula.nvim" },
     { src = "https://codeberg.org/andyg/leap.nvim" },
-    { src = github .. "goolord/alpha-nvim" },
     { src = github .. "ibhagwan/fzf-lua" },
     { src = github .. "jpalardy/vim-slime" },
     { src = github .. "junegunn/vim-easy-align" },
@@ -48,7 +47,6 @@ vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, { desc = "Update all vim.pack plugins" })
 
-require("plugins.alpha").setup()
 require("plugins.cmp").setup()
 require("plugins.colors").setup()
 require("plugins.conform").setup()

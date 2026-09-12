@@ -4,6 +4,7 @@ vim.opt.listchars = { tab = ">-", trail = ".", extends = ">" }
 vim.opt.list = true
 
 vim.opt.swapfile = false
+vim.opt.shortmess:append("I")
 
 vim.opt.wrap = false
 vim.opt.ignorecase = true
