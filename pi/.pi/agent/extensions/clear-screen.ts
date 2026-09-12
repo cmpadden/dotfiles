@@ -1,10 +1,6 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 export default function (pi: ExtensionAPI) {
-  pi.on("session_start", async (_event, ctx) => {
-    ctx.ui.notify("clear-screen active: Ctrl+L clears the screen, model selector is Ctrl+X.", "info");
-  });
-
   pi.registerShortcut("ctrl+l", {
     description: "Clear screen",
     handler: async (ctx) => {
