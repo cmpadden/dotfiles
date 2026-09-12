@@ -4,6 +4,7 @@ import {
   type ExtensionContext,
   type KeybindingsManager,
 } from "@earendil-works/pi-coding-agent";
+import { homedir } from "node:os";
 import {
   type EditorTheme,
   type TUI,
@@ -18,6 +19,14 @@ const STATUS_BACKGROUND = "\x1b[48;2;40;42;54m";
 const STATUS_WHITE = "\x1b[38;2;248;248;242m";
 const STATUS_RED = "\x1b[38;2;255;110;110m";
 const STATUS_CYAN = "\x1b[38;2;139;233;253m";
+const HOME_DIRECTORY = homedir();
+
+function displayPath(path: string): string {
+  if (path === HOME_DIRECTORY) return "~";
+  return path.startsWith(`${HOME_DIRECTORY}/`)
+    ? `~${path.slice(HOME_DIRECTORY.length)}`
+    : path;
+}
 
 const stripAnsi = (text: string): string =>
   text
@@ -122,7 +131,7 @@ class StatusEditor extends CustomEditor {
     const gitBranch = this.getGitBranch();
     const leftLabel = [
       gitBranch ? statusForeground(STATUS_CYAN, gitBranch) : "",
-      this.ctx.cwd ? statusForeground(STATUS_WHITE, this.ctx.cwd) : "",
+      this.ctx.cwd ? statusForeground(STATUS_WHITE, displayPath(this.ctx.cwd)) : "",
       viewportLabel ? statusForeground(STATUS_WHITE, viewportLabel) : "",
     ].filter(Boolean).join(delimiter);
     const rightLabel = [
