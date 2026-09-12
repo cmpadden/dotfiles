@@ -8,6 +8,7 @@ if hash nvim 2>/dev/null; then
     alias v="nvim"
     alias vim="nvim"
     alias vimdiff="nvim -d"
+    alias ndiff='nvim -c "DiffviewOpen"'
 fi
 
 if [ -f "$HOME/notes.md.asc" ]; then
@@ -82,6 +83,7 @@ alias ga="git add"
 alias gc="git checkout"
 alias gs="git status --untracked-files=all ."
 alias gd="git diff"
+alias gdiff="git difftool"
 alias gds="git diff --staged"
 alias gu="git shortlog | /usr/bin/grep -E '^[^ ]'"
 alias gfm="git fetch origin main:main"
