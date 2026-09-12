@@ -31,12 +31,10 @@ vim.api.nvim_create_autocmd("PackChanged", {
 vim.pack.add({
     { src = github .. "EdenEast/nightfox.nvim" },
     { src = github .. "WhoIsSethDaniel/mason-tool-installer.nvim" },
-    { src = github .. "ellisonleao/carbon-now.nvim" },
-    { src = github .. "ggandor/lightspeed.nvim" },
+    { src = "https://codeberg.org/andyg/leap.nvim" },
     { src = github .. "goolord/alpha-nvim" },
     { src = github .. "ibhagwan/fzf-lua" },
     { src = github .. "jpalardy/vim-slime" },
-    { src = github .. "junegunn/goyo.vim" },
     { src = github .. "junegunn/vim-easy-align" },
     { src = github .. "lewis6991/gitsigns.nvim" },
     { src = github .. "moyiz/blink-emoji.nvim" },

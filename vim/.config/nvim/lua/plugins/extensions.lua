@@ -11,28 +11,9 @@ function M.setup()
     vim.g.slime_dont_ask_default = 1
     vim.g.slime_bracketed_paste = 1
 
-    -- https://github.com/junegunn/goyo.vim
-    vim.g.goyo_height = "100%"
-    vim.g.goyo_width = "88"
-    vim.keymap.set("n", "<localleader>G", ":Goyo<CR>")
-    vim.cmd([[
-        function! s:goyo_enter()
-          :Gitsigns toggle_signs
-          if exists('$TMUX')
-            silent !tmux set status off
-          endif
-        endfunction
-
-        function! s:goyo_leave()
-          :Gitsigns toggle_signs
-          if exists('$TMUX')
-            silent !tmux set status on
-          endif
-        endfunction
-
-        autocmd! User GoyoEnter nested call <SID>goyo_enter()
-        autocmd! User GoyoLeave nested call <SID>goyo_leave()
-    ]])
+    -- https://codeberg.org/andyg/leap.nvim
+    vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap)")
+    vim.keymap.set("n", "S", "<Plug>(leap-from-window)")
 
     -- https://github.com/junegunn/vim-easy-align
     vim.keymap.set("x", "ga", "<Plug>(EasyAlign)")
@@ -101,27 +82,6 @@ function M.setup()
     vim.keymap.set("", "<leader>f", function()
         require("conform").format({ async = true })
     end, { desc = "Format buffer" })
-
-    -- https://github.com/ellisonleao/carbon-now.nvim
-    require("carbon-now").setup({
-        open_cmd = "open", -- default: xdg-open
-        options = {
-            drop_shadow_blur = "68px",
-            drop_shadow = false,
-            drop_shadow_offset_y = "20px",
-            font_family = "Hack",
-            font_size = "18px",
-            line_height = "133%",
-            line_numbers = true,
-            theme = "shades-of-purple",
-            titlebar = "",
-            watermark = false,
-            width = "680",
-            window_theme = "round",
-            bg = "black",
-        },
-    })
-    vim.keymap.set("v", "<leader>cn", ":CarbonNow<CR>", { silent = true })
 
     -- https://github.com/ibhagwan/fzf-lua
     vim.keymap.set("n", "<C-f>f", require("fzf-lua").files)
