@@ -1,7 +1,7 @@
 {
   "name": "pi-minimal-prompt",
   "version": "0.1.0",
-  "description": "A minimal lambda prompt and status bar for Pi",
+  "description": "A minimal prompt and status bar for Pi",
   "type": "module",
   "keywords": [
     "pi-package",

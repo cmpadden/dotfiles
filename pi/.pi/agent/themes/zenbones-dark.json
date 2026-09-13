@@ -38,6 +38,7 @@
     "text": "foreground",
     "thinkingText": "muted",
     "selectedBg": "selection",
+    "scrollbarTrack": "black",
     "scrollbarThumb": "selection",
     "userMessageBg": "selection",
     "userMessageText": "foreground",

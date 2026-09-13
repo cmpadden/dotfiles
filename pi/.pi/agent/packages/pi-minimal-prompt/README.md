@@ -4,10 +4,9 @@ A minimal prompt and status bar for the [Pi coding agent](https://pi.dev).
 
 ## Features
 
-- Whimsy FIGlet startup banner while retaining Pi's loaded-resource list
-- Subtly filled, borderless prompt with a bold lambda prefix
+- Subtly filled, borderless prompt without a symbol prefix
+- A single-space prefix for historical user messages
 - Full-width status bar showing the working directory, context use, session cost, model, and thinking level
-- Context-aware status colors inherited from the active Pi theme
 - Responsive layout with aligned autocomplete and viewport indicators
 - Collapsed tool output by default
 
@@ -25,4 +24,4 @@ Once published to npm:
 pi install npm:pi-minimal-prompt
 ```
 
-The package works with any Pi theme and does not bundle one.
+The package is designed for the Dracula+ theme and does not bundle it.

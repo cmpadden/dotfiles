@@ -37,6 +37,7 @@
     "text": "foreground",
     "thinkingText": "cyan",
     "selectedBg": "selection",
+    "scrollbarTrack": "black",
     "scrollbarThumb": "brightBlack",
     "searchMatchBg": "brightBlue",
     "searchMatchText": "black",

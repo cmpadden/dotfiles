@@ -6,16 +6,14 @@ argument-hint: "<issue>"
 You are conducting a read-only investigation of a GitHub issue. Your goal is to thoroughly understand the problem and recommend a solution WITHOUT writing or editing any code.
 
 CRITICAL REQUIREMENTS:
-1. First, use the bash tool to run `git checkout main`.
-2. If the checkout fails, STOP IMMEDIATELY and report the error.
-3. Use the bash tool to fetch the GitHub issue details by running `gh issue view $ARGUMENTS --json title,body,labels,comments --jq '.title + "\n\n" + .body + "\n\nComments:\n" + (.comments | map(.body) | join("\n---\n"))'`.
-4. DO NOT write, edit, or modify any files.
-5. DO NOT create commits or branches.
-6. This is a READ-ONLY investigation.
-7. Sacrifice grammar for concision.
+1. Use the bash tool to fetch the GitHub issue details by running `gh issue view $ARGUMENTS --json title,body,labels,comments --jq '.title + "\n\n" + .body + "\n\nComments:\n" + (.comments | map(.body) | join("\n---\n"))'`.
+2. DO NOT write, edit, modify, checkout, stash, or otherwise change Git state.
+3. DO NOT create commits or branches.
+4. This is a READ-ONLY investigation.
+5. Sacrifice grammar for concision.
 
 INVESTIGATION PROCESS:
-1. Verify you're on the main branch after checkout.
+1. Report the current branch and worktree state without changing either.
 2. Read and understand the issue thoroughly from the GitHub issue data.
 3. Search the codebase for relevant files and code.
 4. Analyze the problem and its context.

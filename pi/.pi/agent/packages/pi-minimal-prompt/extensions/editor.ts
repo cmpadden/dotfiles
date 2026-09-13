@@ -12,9 +12,7 @@ import {
   visibleWidth,
 } from "@earendil-works/pi-tui";
 
-const PROMPT = " λ";
 // Dracula+ colors shared with the Bash prompt and Ghostty theme.
-const PROMPT_PREFIX = `\x1b[1;38;2;248;248;242m${PROMPT}\x1b[22;39m`;
 const STATUS_BACKGROUND = "\x1b[48;2;40;42;54m";
 const STATUS_WHITE = "\x1b[38;2;248;248;242m";
 const STATUS_RED = "\x1b[38;2;255;110;110m";
@@ -100,8 +98,7 @@ class StatusEditor extends CustomEditor {
   }
 
   override render(width: number): string[] {
-    const prefixWidth = width >= 4 ? 2 : 0;
-    const base = super.render(Math.max(1, width - prefixWidth));
+    const base = super.render(Math.max(1, width));
     const bottom = bottomBorderIndex(base);
     const theme = this.ctx.ui.theme;
     const model = this.ctx.model?.id ?? "no model";
@@ -140,13 +137,8 @@ class StatusEditor extends CustomEditor {
     ].filter(Boolean).join(delimiter);
     const status = alignStatus(` ${leftLabel}`, `${rightLabel} `, width);
 
-    const promptLines = base.slice(1, bottom).map((line, index) => {
-      const prefix = prefixWidth === 0
-        ? ""
-        : index === 0
-          ? PROMPT_PREFIX
-          : "  ";
-      const promptLine = truncateToWidth(prefix + line, width, "");
+    const promptLines = base.slice(1, bottom).map((line) => {
+      const promptLine = truncateToWidth(line, width, "");
       const filledPromptLine = promptLine.replace(
         /\x1b\[0m/g,
         `\x1b[0m${theme.getBgAnsi("userMessageBg")}`,
@@ -157,7 +149,7 @@ class StatusEditor extends CustomEditor {
       );
     });
     const autocompleteLines = base.slice(bottom + 1).map((line) =>
-      truncateToWidth(" ".repeat(prefixWidth) + line, width, ""),
+      truncateToWidth(line, width, ""),
     );
 
     const promptSpacer = theme.bg("userMessageBg", " ".repeat(width));
@@ -174,7 +166,7 @@ class StatusEditor extends CustomEditor {
 
 export default function (pi: ExtensionAPI) {
   pi.registerMarkdownTransformer((markdown, { messageType }) =>
-    messageType === "user" ? ` **λ** ${markdown}` : markdown
+    messageType === "user" ? ` ${markdown}` : markdown,
   );
 
   pi.on("session_start", (_event, ctx) => {
