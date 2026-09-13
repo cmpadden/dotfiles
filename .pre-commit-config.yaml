@@ -32,3 +32,14 @@ repos:
         entry: shfmt -d -i 4
         language: system
         types: [shell]
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+        exclude: ^(_archive/|bash/\.bash(_profile|rc)$|direnv/\.config/direnv/direnvrc$)
+      - id: shellcheck-bash-config
+        name: shellcheck Bash configuration
+        entry: shellcheck --shell=bash --exclude=SC1090 --exclude=SC1091
+        language: system
+        files: ^(bash/\.bash(_profile|rc)$|direnv/\.config/direnv/direnvrc)$

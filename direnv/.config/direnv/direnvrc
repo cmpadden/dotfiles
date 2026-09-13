@@ -24,5 +24,5 @@ layout_uv() {
     fi
 
     PATH_add "$VIRTUAL_ENV/bin"
-    . $VIRTUAL_ENV/bin/activate
+    . "$VIRTUAL_ENV"/bin/activate
 }
