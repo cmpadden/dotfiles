@@ -34,11 +34,6 @@ function M.setup()
             end
         end,
     })
-
-    -- Neovim 0.12 is still tripping over markdown injection parsing in this config.
-    -- Keep markdown Treesitter highlighting, but disable nested language injections.
-    vim.treesitter.query.set("markdown", "injections", "")
-    vim.treesitter.query.set("markdown_inline", "injections", "")
 end
 
 return M
