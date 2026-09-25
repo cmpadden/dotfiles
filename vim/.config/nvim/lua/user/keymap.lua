@@ -53,14 +53,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         map("gD", vim.lsp.buf.declaration, "Go to declaration")
         map("gd", vim.lsp.buf.definition, "Go to definition")
-        map("K", vim.lsp.buf.hover, "Hover")
+        map("K", function()
+            vim.lsp.buf.hover({
+                border = "single",
+                max_width = 80,
+                max_height = 30,
+            })
+        end, "Hover")
         map("gr", vim.lsp.buf.references, "References")
 
         if client:supports_method("textDocument/implementation") then
             map("gi", vim.lsp.buf.implementation, "Go to implementation")
         end
         if client:supports_method("textDocument/signatureHelp") then
-            map("<C-k>", vim.lsp.buf.signature_help, "Signature help")
+            map("<C-k>", function()
+                vim.lsp.buf.signature_help({
+                    border = "single",
+                    title = " Signature ",
+                    title_pos = "center",
+                    max_width = 80,
+                    max_height = 20,
+                })
+            end, "Signature help")
         end
         if client:supports_method("textDocument/typeDefinition") then
             map("<leader>D", vim.lsp.buf.type_definition, "Go to type definition")
