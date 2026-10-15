@@ -20,11 +20,8 @@ vim.keymap.set("n", "<leader>y", '"+y')
 -- copy active buffer filename to system clipboard
 vim.keymap.set("n", "<leader>yf", [[:let @+ = expand('%:t')<CR>]], { silent = true })
 
--- paste from system clipboard
-vim.keymap.set("n", "<leader>p", '"+p')
-vim.keymap.set("n", "<leader>P", '"+P')
-vim.keymap.set("v", "<leader>p", '"+p')
-vim.keymap.set("v", "<leader>P", '"+P')
+-- paste clipboard images as temporary file paths, or paste ordinary clipboard text
+require("nvim-image-paste").setup()
 
 -- source current Lua file
 vim.keymap.set("n", "<leader>ss", ":luafile %<CR>")

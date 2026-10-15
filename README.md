@@ -64,6 +64,19 @@ These are the applications and utilities that I choose to use at the moment, ref
 | [Sway](https://swaywm.org/)                | An i3-compatible Wayland compositor.                                                                                                                                              | Window Manager  |
 | [Hammerspoon](https://www.hammerspoon.org) | This is a tool for powerful automation of OS X.                                                                                                                                   | Utility         |
 
+### Neovim image paste
+
+The local `nvim-image-paste` module pastes clipboard images as temporary file paths:
+
+- **Insert mode:** `Ctrl-V`
+- **Command:** `:ImagePaste`
+- No leader bindings are installed; ordinary `p`/`P` are unchanged.
+
+Copy the image itself (for example, **Copy Image** in a browser), not its address.
+Plain text still pastes normally. Supports macOS and Linux.
+
+See the [module README](vim/.config/nvim/lua/nvim-image-paste/README.md) for details.
+
 ---
 
 <details>
