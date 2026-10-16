@@ -47,10 +47,10 @@ check_and_source "$HOME/.bash/bindings"
 check_and_source "$HOME/.bash/prompt"
 source_if_exists "$HOME/.bash/private"
 
-# Auto-attach to a tmux session
+# Auto-attach to a tmux session outside yam, which owns its own panes.
 if command -v tmux &>/dev/null; then
-    # Do not run when already inside of a `tmux` session
-    if [ -z "$TMUX" ]; then # Attach to an existing session, or create a new session
+    # Do not run when already inside tmux or a yam session.
+    if [ -z "$TMUX" ] && [ -z "$YAM_SESSION" ]; then
         tmux attach || tmux new-session
     fi
 fi
