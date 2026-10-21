@@ -12,13 +12,6 @@ import {
   visibleWidth,
 } from "@earendil-works/pi-tui";
 
-// Dracula+ colors shared with the Bash prompt and Ghostty theme.
-const STATUS_BACKGROUND = "\x1b[48;2;40;42;54m";
-const STATUS_WHITE = "\x1b[38;2;248;248;242m";
-const STATUS_RED = "\x1b[38;2;255;110;110m";
-const STATUS_CYAN = "\x1b[38;2;139;233;253m";
-const STATUS_GIT = "\x1b[38;5;6m";
-const STATUS_MUTED = "\x1b[38;2;98;114;164m";
 const HOME_DIRECTORY = homedir();
 
 function displayPath(path: string): string {
@@ -48,17 +41,6 @@ function bottomBorderIndex(lines: string[]): number {
 
 function scrollLabel(line: string): string | undefined {
   return stripAnsi(line).match(/([↑↓]\s+\d+\s+more)/)?.[1];
-}
-
-function statusForeground(color: string, text: string): string {
-  return `${color}${text}\x1b[39m`;
-}
-
-function statusBackground(text: string): string {
-  return `${STATUS_BACKGROUND}${text.replace(
-    /\x1b\[0m/g,
-    `\x1b[0m${STATUS_BACKGROUND}`,
-  )}\x1b[49m`;
 }
 
 function alignStatus(left: string, right: string, width: number): string {
@@ -106,29 +88,29 @@ class StatusEditor extends CustomEditor {
     const usage = this.ctx.getContextUsage();
     const context = usage ? `${Math.round(usage.percent)}%` : "";
     const contextForeground = (usage?.percent ?? 0) >= 90
-      ? STATUS_RED
-      : STATUS_WHITE;
+      ? "error"
+      : "text";
 
     const cost = this.ctx.sessionManager.getBranch().reduce((total, entry) => {
       if (entry.type !== "message" || entry.message.role !== "assistant") return total;
       return total + entry.message.usage.cost.total;
     }, 0);
     const delimiter = " ";
-    const modelLabel = statusForeground(
-      STATUS_WHITE,
+    const modelLabel = theme.fg(
+      "text",
       thinking ? `${model} (${thinking})` : model,
     );
-    const usageLabel = context ? statusForeground(contextForeground, context) : "";
-    const costLabel = statusForeground(contextForeground, `$${cost.toFixed(2)}`);
+    const usageLabel = context ? theme.fg(contextForeground, context) : "";
+    const costLabel = theme.fg(contextForeground, `$${cost.toFixed(2)}`);
     const viewportLabel = [
       scrollLabel(base[0] ?? ""),
       scrollLabel(base[bottom] ?? ""),
     ].filter(Boolean).join(delimiter);
     const gitBranch = this.getGitBranch();
     const leftLabel = [
-      gitBranch ? statusForeground(STATUS_GIT, gitBranch) : "",
-      this.ctx.cwd ? statusForeground(STATUS_WHITE, displayPath(this.ctx.cwd)) : "",
-      viewportLabel ? statusForeground(STATUS_MUTED, viewportLabel) : "",
+      gitBranch ? theme.fg("accent", gitBranch) : "",
+      this.ctx.cwd ? theme.fg("text", displayPath(this.ctx.cwd)) : "",
+      viewportLabel ? theme.fg("dim", viewportLabel) : "",
     ].filter(Boolean).join(delimiter);
     const rightLabel = [
       modelLabel,
@@ -155,7 +137,8 @@ class StatusEditor extends CustomEditor {
     const promptSpacer = theme.bg("userMessageBg", " ".repeat(width));
 
     return [
-      statusBackground(status),
+      // Keep the status bar on the terminal's current background.
+      `\x1b[49m${status}`,
       promptSpacer,
       ...promptLines,
       ...autocompleteLines,
