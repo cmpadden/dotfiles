@@ -43,6 +43,15 @@ vim.pack.add({
     { src = github .. "tpope/vim-surround" },
 }, { confirm = false })
 
+-- Load the development checkout directly so edits are immediately available.
+-- Only install the GitHub package when the local module is absent.
+local image_paste = vim.fn.expand("~/src/nvim-image-paste")
+if vim.fn.filereadable(image_paste .. "/lua/nvim-image-paste/init.lua") == 1 then
+    vim.opt.runtimepath:prepend(image_paste)
+else
+    vim.pack.add({ { src = github .. "cmpadden/nvim-image-paste" } }, { confirm = false })
+end
+
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, { desc = "Update all vim.pack plugins" })

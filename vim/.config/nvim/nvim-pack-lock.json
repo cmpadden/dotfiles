@@ -33,6 +33,10 @@
       "rev": "38af0ab56c6eb8757ee6006dd13ab79c2bc11a49",
       "src": "https://codeberg.org/andyg/leap.nvim"
     },
+    "nvim-image-paste": {
+      "rev": "a7c7e4de201048dfee330e5c32e8669184096fbc",
+      "src": "https://github.com/cmpadden/nvim-image-paste"
+    },
     "nvim-treesitter": {
       "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
