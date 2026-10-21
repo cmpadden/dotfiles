@@ -29,6 +29,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 
 vim.pack.add({
     { src = github .. "Mofiqul/dracula.nvim" },
+    { src = github .. "catppuccin/nvim", name = "catppuccin" },
     { src = "https://codeberg.org/andyg/leap.nvim" },
     { src = github .. "ibhagwan/fzf-lua" },
     { src = github .. "jpalardy/vim-slime" },
