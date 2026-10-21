@@ -24,4 +24,6 @@ Once published to npm:
 pi install npm:pi-minimal-prompt
 ```
 
-The package is designed for the Dracula+ theme and does not bundle it.
+The prompt and status bar follow Pi's active theme. Set `"theme": "system"` in
+`~/.pi/agent/settings.json` to follow the terminal palette, including live
+light/dark appearance changes. No theme is bundled.

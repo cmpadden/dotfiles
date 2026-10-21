@@ -13,7 +13,8 @@
 
 # theme = Zenbones Dark
 # theme = Carbonfox
-theme = Dracula+
+# Follow the system appearance, preserving Dracula+ in dark mode.
+theme = light:Catppuccin Latte,dark:Dracula+
 
 # Keep typography explicit so the terminal looks the same on every machine.
 # On macOS: `brew install --cask font-iosevka`
