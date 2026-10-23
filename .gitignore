@@ -27,9 +27,14 @@ python/.ipython/profile_default/startup/*
 # Tmux plugins are installed locally by TPM.
 tmux/.config/tmux/plugins
 
+# Pi's managed installer writes its launcher and releases here.
+pi/.pi/agent/bin/
+pi/.pi/agent/install/
 pi/.pi/agent/auth.json
 pi/.pi/agent/models-store.json
 pi/.pi/agent/pi-crash.log
+pi/.pi/agent/run-history.jsonl
+pi/.pi/agent/skills/private-*
 pi/.pi/agent/sessions/
 pi/.pi/agent/trust.json
 pi/.pi/agent/npm/node_modules/
