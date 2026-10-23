@@ -11,45 +11,22 @@
 #     ghostty +list-fonts
 #
 
-# theme = Zenbones Dark
-# theme = Carbonfox
-# Follow the system appearance, preserving Dracula+ in dark mode.
 theme = light:Catppuccin Latte,dark:Dracula+
 
-# Keep typography explicit so the terminal looks the same on every machine.
-# On macOS: `brew install --cask font-iosevka`
+# macOS: `brew install --cask font-iosevka`
 font-family = "Iosevka Extended"
 font-size = 12
+window-padding-x = 12
+window-padding-y = 12
 
-# Keep the native window title visually quiet; tmux/shell prompts provide context.
-title = " "
-
-# Use a small amount of padding for readability without giving up much space.
-window-padding-x = 6
-window-padding-y = 6
-
-# Do not restore Ghostty windows/tabs/splits; tmux is responsible for session restore.
+confirm-close-surface = false
+link-url = true
+mouse-hide-while-typing = true
+resize-overlay = never
+shell-integration = none
 window-save-state = never
 
-# Avoid Ghostty resize UI since tmux and the shell already make size changes obvious.
-resize-overlay = never
-
-# Keep the cursor area uncluttered while typing.
-mouse-hide-while-typing = true
-
-# Open detected URLs with Command-click.
-link-url = true
-
-# Do not prompt when closing a surface; tmux protects long-running sessions.
-confirm-close-surface = false
-
-# Disable Ghostty shell integration because its prompt/title/window features overlap with tmux.
-shell-integration = none
-
-# Remove default Ghostty bindings for tabs, splits, prompt jumping, etc.; tmux owns those.
 keybind = clear
-
-# Add back only app-level bindings that are still useful outside tmux.
 keybind = super+c=copy_to_clipboard
 keybind = super+v=paste_from_clipboard
 keybind = super++=increase_font_size:1
@@ -60,11 +37,6 @@ keybind = super+shift+comma=reload_config
 keybind = super+q=quit
 keybind = super+enter=toggle_fullscreen
 
-# Keep the native macOS titlebar visible.
-macos-titlebar-style = transparent
-
-# Keep the native macOS window shadow.
-macos-window-shadow = true
-
-# Keep the preferred macOS app icon variant.
 macos-icon = xray
+macos-titlebar-style = hidden
+macos-window-shadow = false
