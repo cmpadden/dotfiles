@@ -16,6 +16,7 @@ require("modules.plugins")
 -- require("modules.alerts")
 require("modules.caffeine")
 
+local glass_toast = require("modules.glass_toast")
 local helpers = require("modules.helpers")
 local wm = require("modules.wm")
 
@@ -84,4 +85,6 @@ end)
 -- The CLI itself is installed separately, so do not recheck/reinstall it on reload.
 require("hs.ipc")
 
-helpers:show("Hammerspoon has been loaded.", nil, nil, nil)
+glass_toast:show("reload", "Hammerspoon Reloaded", function()
+    helpers:show("Hammerspoon Reloaded")
+end)
