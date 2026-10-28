@@ -30,8 +30,10 @@ SpoonInstall does not download, update, or overwrite Launcher.
 Requires Apple Command Line Tools with a macOS 26+ SDK. Stow the `hammerspoon`
 package, run `make -C ~/.hammerspoon native`, and reload Hammerspoon.
 Use Cmd+P, type a query, then Up/Down and Return to select. Double-click also
-selects; Escape or clicking another app cancels. Standard Cmd+A/C/V/X/Z editing
-shortcuts are supported. The panel hides and requests previous-app focus before
+selects; Escape or clicking another app cancels. The query persists after closing;
+reopening selects all existing text so new typing replaces it, matching Seal's
+`hs.chooser` behavior. Calculations use the same policy as other queries.
+Standard Cmd+A/C/V/X/Z editing shortcuts are supported. The panel hides and requests previous-app focus before
 returning the selected result to Lua. Removing the binary disables the
 launcher and reports build instructions; there is **no hs.chooser fallback**.
 

@@ -293,8 +293,9 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
       NSApp.activate(ignoringOtherApps: true)
       panel.makeKeyAndOrderFront(nil)
       panel.makeFirstResponder(search)
+      // Match hs.chooser: retain the query, but let new typing replace it.
       search.currentEditor()?.selectedRange = NSRange(
-        location: search.stringValue.utf16.count, length: 0)
+        location: 0, length: search.stringValue.utf16.count)
       event("shown")
     }
   }
