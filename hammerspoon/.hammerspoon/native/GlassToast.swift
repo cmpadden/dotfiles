@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       height: size.height
     )
     let panel = ToastPanel(
-      contentRect: rect.insetBy(dx: -glassShadowInset, dy: -glassShadowInset),
+      contentRect: rect.insetBy(dx: -GlassGeometry.shadowInset, dy: -GlassGeometry.shadowInset),
       styleMask: [.borderless, .nonactivatingPanel],
       backing: .buffered,
       defer: false
@@ -77,7 +77,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     panel.isReleasedWhenClosed = false
 
     let content = NSView(frame: NSRect(origin: .zero, size: size))
-    panel.contentView = glassBackground(for: content, cornerRadius: 22)
+    panel.contentView = glassBackground(for: content, cornerRadius: GlassGeometry.toastRadius)
 
     let icon = NSImageView()
     icon.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?

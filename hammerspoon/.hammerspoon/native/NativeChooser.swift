@@ -32,15 +32,54 @@ private final class ChooserPanel: NSPanel {
 }
 
 private final class ChoiceRow: NSTableRowView {
-  override func drawBackground(in dirtyRect: NSRect) {
-    // Leave unselected rows transparent instead of drawing a table material.
+  private let highlight = NSView()
+
+  override init(frame frameRect: NSRect) {
+    super.init(frame: frameRect)
+    configureHighlight()
   }
 
-  override func drawSelection(in dirtyRect: NSRect) {
-    guard selectionHighlightStyle != .none else { return }
-    NSColor.labelColor.withAlphaComponent(0.08).setFill()
-    NSBezierPath(roundedRect: bounds.insetBy(dx: 4, dy: 3), xRadius: 10, yRadius: 10).fill()
+  required init?(coder: NSCoder) {
+    super.init(coder: coder)
+    configureHighlight()
   }
+
+  private func configureHighlight() {
+    highlight.wantsLayer = true
+    highlight.layer?.cornerRadius = GlassGeometry.selectionRadius
+    highlight.layer?.cornerCurve = .continuous
+    highlight.translatesAutoresizingMaskIntoConstraints = false
+    addSubview(highlight, positioned: .below, relativeTo: nil)
+    NSLayoutConstraint.activate([
+      highlight.leadingAnchor.constraint(equalTo: leadingAnchor, constant: GlassGeometry.rowInsetX),
+      highlight.trailingAnchor.constraint(
+        equalTo: trailingAnchor, constant: -GlassGeometry.rowInsetX),
+      highlight.topAnchor.constraint(equalTo: topAnchor, constant: GlassGeometry.rowInsetY),
+      highlight.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -GlassGeometry.rowInsetY),
+    ])
+    updateHighlight()
+  }
+
+  override var isSelected: Bool { didSet { updateHighlight() } }
+  override var selectionHighlightStyle: NSTableView.SelectionHighlightStyle {
+    didSet { updateHighlight() }
+  }
+
+  override func viewDidChangeEffectiveAppearance() {
+    super.viewDidChangeEffectiveAppearance()
+    updateHighlight()
+  }
+
+  private func updateHighlight() {
+    highlight.isHidden = !isSelected || selectionHighlightStyle == .none
+    effectiveAppearance.performAsCurrentDrawingAppearance {
+      highlight.layer?.backgroundColor = NSColor.labelColor.withAlphaComponent(0.08).cgColor
+    }
+  }
+
+  // Draw only the continuous-corner highlight subview, never an opaque row fill.
+  override func drawBackground(in dirtyRect: NSRect) {}
+  override func drawSelection(in dirtyRect: NSRect) {}
 }
 
 // stdout is reserved for newline-delimited JSON; diagnostics belong on stderr.
@@ -102,7 +141,7 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
     panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary, .ignoresCycle]
 
     let content = NSView()
-    panel.contentView = glassBackground(for: content, cornerRadius: 24)
+    panel.contentView = glassBackground(for: content, cornerRadius: GlassGeometry.launcherRadius)
 
     let searchIcon = NSImageView()
     searchIcon.image = NSImage(
@@ -153,15 +192,22 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
       searchIcon.heightAnchor.constraint(equalToConstant: 22),
       search.leadingAnchor.constraint(equalTo: searchIcon.trailingAnchor, constant: 12),
       search.trailingAnchor.constraint(equalTo: content.trailingAnchor, constant: -22),
-      search.topAnchor.constraint(equalTo: content.topAnchor, constant: 18),
-      search.heightAnchor.constraint(equalToConstant: 34),
-      separator.topAnchor.constraint(equalTo: search.bottomAnchor, constant: 16),
+      search.topAnchor.constraint(
+        equalTo: content.topAnchor, constant: GlassGeometry.searchTopInset),
+      search.heightAnchor.constraint(equalToConstant: GlassGeometry.searchHeight),
+      separator.topAnchor.constraint(
+        equalTo: search.bottomAnchor, constant: GlassGeometry.separatorTopInset),
+      separator.heightAnchor.constraint(equalToConstant: GlassGeometry.separatorHeight),
       separator.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 12),
       separator.trailingAnchor.constraint(equalTo: content.trailingAnchor, constant: -12),
-      scroll.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 8),
-      scroll.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 10),
-      scroll.trailingAnchor.constraint(equalTo: content.trailingAnchor, constant: -10),
-      scroll.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -12),
+      scroll.topAnchor.constraint(
+        equalTo: separator.bottomAnchor, constant: GlassGeometry.resultsTopInset),
+      scroll.leadingAnchor.constraint(
+        equalTo: content.leadingAnchor, constant: GlassGeometry.resultsSideInset),
+      scroll.trailingAnchor.constraint(
+        equalTo: content.trailingAnchor, constant: -GlassGeometry.resultsSideInset),
+      scroll.bottomAnchor.constraint(
+        equalTo: content.bottomAnchor, constant: -GlassGeometry.resultsBottomInset),
       empty.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
       empty.centerYAnchor.constraint(equalTo: scroll.centerYAnchor),
     ])
@@ -230,7 +276,9 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
     let width = min(
       frame.width - 32, state.maxWidth ?? 640, max(360, frame.width * state.width / 100))
     let height = min(
-      frame.height - 64, 90 + CGFloat(max(1, min(state.rows, choices.count))) * table.rowHeight)
+      frame.height - 64,
+      GlassGeometry.launcherChromeHeight + CGFloat(max(1, min(state.rows, choices.count)))
+        * table.rowHeight)
     // Keep the top edge stable as results change, with room below the search field.
     let top =
       state.position.map { (NSScreen.screens.first?.frame.maxY ?? 0) - $0.y }
@@ -238,7 +286,8 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
     let x = state.position?.x ?? (frame.midX - width / 2)
     let surfaceFrame = NSRect(x: x, y: top - height, width: width, height: height)
     panel.setFrame(
-      surfaceFrame.insetBy(dx: -glassShadowInset, dy: -glassShadowInset), display: true)
+      surfaceFrame.insetBy(dx: -GlassGeometry.shadowInset, dy: -GlassGeometry.shadowInset),
+      display: true)
     if opening {
       if !panel.isVisible { previousApp = NSWorkspace.shared.frontmostApplication }
       NSApp.activate(ignoringOtherApps: true)
