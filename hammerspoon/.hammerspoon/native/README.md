@@ -1,6 +1,9 @@
 # Native glass toast prototype
 
 A centered, click-through, non-activating AppKit panel for caffeine and reload feedback.
+`make native` also builds the interactive Launcher chooser; see
+[`Launcher.spoon`](../vendored/Launcher.spoon/README.md) for that UI and its API.
+Both helpers use `GlassBackground.swift` for the same native material.
 Uses `NSGlassEffectView` on macOS 26+ and `NSVisualEffectView` (`hudWindow`)
 on macOS 13–25. No notification permission, Dock icon, or Notification Center
 history. Accessibility settings such as Reduce Transparency can change the effect.

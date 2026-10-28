@@ -72,6 +72,15 @@ wm.config.layouts = {
 
 wm:init()
 
+-- Preserve window-state persistence while closing the native chooser on reload.
+local save_window_state = hs.shutdownCallback
+hs.shutdownCallback = function()
+    require("modules.chooser").shutdown()
+    if save_window_state then
+        save_window_state()
+    end
+end
+
 hs.hotkey.bind({ "cmd", "shift" }, "b", function()
     local applescript_toggle_menubar = [[
     tell application "System Events"
