@@ -76,23 +76,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     panel.isReleasedWhenClosed = false
 
     let content = NSView(frame: NSRect(origin: .zero, size: size))
-    if #available(macOS 26.0, *) {
-      let glass = NSGlassEffectView(frame: content.bounds)
-      glass.style = .regular
-      glass.cornerRadius = 22
-      glass.contentView = content
-      panel.contentView = glass
-    } else {
-      let blur = NSVisualEffectView(frame: content.bounds)
-      blur.material = .hudWindow
-      blur.blendingMode = .behindWindow
-      blur.state = .active
-      blur.wantsLayer = true
-      blur.layer?.cornerRadius = 22
-      blur.layer?.masksToBounds = true
-      blur.addSubview(content)
-      panel.contentView = blur
-    }
+    panel.contentView = glassBackground(for: content, cornerRadius: 22)
 
     let icon = NSImageView()
     icon.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
@@ -143,8 +127,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   }
 }
 
-let app = NSApplication.shared
-app.setActivationPolicy(.accessory)
-let delegate = AppDelegate()
-app.delegate = delegate
-app.run()
+@main
+private enum GlassToastMain {
+  static func main() {
+    let app = NSApplication.shared
+    app.setActivationPolicy(.accessory)
+    let delegate = AppDelegate()
+    app.delegate = delegate
+    withExtendedLifetime(delegate) { app.run() }
+  }
+}

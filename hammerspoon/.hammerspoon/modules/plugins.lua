@@ -29,20 +29,17 @@ local app_search_paths = {
     "/usr/local/Cellar",
 }
 
-spoon.SpoonInstall:andUse("Seal", {
-    fn = function(s)
-        s:loadPlugins({ "apps", "calc", "screencapture", "useractions" })
-        s.plugins.useractions.actions = {
-            ["Translate w/ Google Translate"] = {
-                icon = "favicon",
-                keyword = "tr",
-                url = "https://translate.google.com/?sl=en&tl=fr&text=${query}&op=translate",
-            },
-        }
-        s.plugins.apps.appSearchPaths = app_search_paths
-        s.plugins.apps:restart()
-        return s:refreshAllCommands()
-    end,
-    hotkeys = { show = { { "cmd" }, "p" } },
-    start = true,
-})
+-- Locally maintained Spoons are declarative source, not SpoonInstall downloads.
+package.path = hs.configdir .. "/vendored/?.spoon/init.lua;" .. package.path
+local launcher = hs.loadSpoon("Launcher")
+launcher:loadPlugins({ "apps", "calc", "screencapture", "useractions" })
+launcher.plugins.useractions.actions = {
+    ["Translate w/ Google Translate"] = {
+        icon = "favicon",
+        keyword = "tr",
+        url = "https://translate.google.com/?sl=en&tl=fr&text=${query}&op=translate",
+    },
+}
+launcher.plugins.apps.appSearchPaths = app_search_paths
+launcher.plugins.apps:restart()
+launcher:refreshAllCommands():bindHotkeys({ show = { { "cmd" }, "p" } }):start()
