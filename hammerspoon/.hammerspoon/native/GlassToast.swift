@@ -52,7 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       fail("no screen available")
     }
 
-    let size = NSSize(width: 360, height: 76)
+    let size = NSSize(width: 360, height: 64)
     let frame = screen.visibleFrame
     let rect = NSRect(
       x: frame.midX - size.width / 2,
@@ -61,14 +61,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       height: size.height
     )
     let panel = ToastPanel(
-      contentRect: rect,
+      contentRect: rect.insetBy(dx: -glassShadowInset, dy: -glassShadowInset),
       styleMask: [.borderless, .nonactivatingPanel],
       backing: .buffered,
       defer: false
     )
     panel.isOpaque = false
     panel.backgroundColor = .clear
-    panel.hasShadow = true
+    // Use only the material's own shadow, with padding from glassBackground.
+    panel.hasShadow = false
     panel.level = .statusBar
     panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
     panel.ignoresMouseEvents = true

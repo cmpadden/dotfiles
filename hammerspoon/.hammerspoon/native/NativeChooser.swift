@@ -56,7 +56,6 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
 {
   private let panel = ChooserPanel(
     contentRect: .zero, styleMask: [.borderless], backing: .buffered, defer: false)
-  private let shadowInset: CGFloat = 24
   private let search = NSSearchField()
   private let table = NSTableView()
   private let scroll = NSScrollView()
@@ -103,21 +102,7 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
     panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary, .ignoresCycle]
 
     let content = NSView()
-    let glass = glassBackground(for: content, cornerRadius: 24)
-    // Glass draws its own soft shading outside its bounds. Keep that shading
-    // inside a transparent window margin instead of cropping it to a rectangle.
-    let backing = NSView()
-    backing.wantsLayer = true
-    backing.layer?.backgroundColor = NSColor.clear.cgColor
-    glass.translatesAutoresizingMaskIntoConstraints = false
-    backing.addSubview(glass)
-    NSLayoutConstraint.activate([
-      glass.leadingAnchor.constraint(equalTo: backing.leadingAnchor, constant: shadowInset),
-      glass.trailingAnchor.constraint(equalTo: backing.trailingAnchor, constant: -shadowInset),
-      glass.topAnchor.constraint(equalTo: backing.topAnchor, constant: shadowInset),
-      glass.bottomAnchor.constraint(equalTo: backing.bottomAnchor, constant: -shadowInset),
-    ])
-    panel.contentView = backing
+    panel.contentView = glassBackground(for: content, cornerRadius: 24)
 
     let searchIcon = NSImageView()
     searchIcon.image = NSImage(
@@ -252,7 +237,8 @@ private final class Chooser: NSObject, NSApplicationDelegate, NSWindowDelegate,
       ?? (frame.maxY - frame.height * 0.22)
     let x = state.position?.x ?? (frame.midX - width / 2)
     let surfaceFrame = NSRect(x: x, y: top - height, width: width, height: height)
-    panel.setFrame(surfaceFrame.insetBy(dx: -shadowInset, dy: -shadowInset), display: true)
+    panel.setFrame(
+      surfaceFrame.insetBy(dx: -glassShadowInset, dy: -glassShadowInset), display: true)
     if opening {
       if !panel.isVisible { previousApp = NSWorkspace.shared.frontmostApplication }
       NSApp.activate(ignoringOtherApps: true)
