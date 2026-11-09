@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 
-# Load bash-completion before fzf so fzf can preserve and wrap command-specific
-# completions (including `ls **<Tab>`).
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /etc/bash_completion
-    elif [ -r /usr/share/bash-completion/bash_completion ]; then
-        # shellcheck source=/dev/null
-        source /usr/share/bash-completion/bash_completion
-    elif [ -r /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-        # shellcheck source=/dev/null
-        source /opt/homebrew/etc/profile.d/bash_completion.sh
-    fi
-fi
+shopt -oq posix && return
+
+# Load completions once, on the first argument-completion Tab. Bash retries
+# completion after return 124, so the first Tab works normally too.
+__dotfiles_load_completion() {
+    complete -r -D
+    # shellcheck source=/dev/null
+    source "$BREW_PREFIX/etc/profile.d/bash_completion.sh"
+    # Load fzf afterward so it can preserve command-specific completions.
+    # shellcheck source=/dev/null
+    source "$BREW_PREFIX/opt/fzf/shell/completion.bash"
+    unset -f __dotfiles_load_completion
+    return 124
+}
+
+complete -D -F __dotfiles_load_completion -o bashdefault -o default

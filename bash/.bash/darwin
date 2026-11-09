@@ -5,10 +5,19 @@
 # filter `.DS_Store` from bash completion
 export FIGNORE=$FIGNORE:.DS_Store
 
-export PATH="/opt/homebrew/bin:$PATH"
-
-if command -v brew >/dev/null 2>&1; then
+# Resolve standard Homebrew installations without spawning `brew` per shell.
+if [[ -n ${HOMEBREW_PREFIX:-} ]]; then
+    BREW_PREFIX="$HOMEBREW_PREFIX"
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+    BREW_PREFIX=/opt/homebrew
+elif [[ -x /usr/local/bin/brew ]]; then
+    BREW_PREFIX=/usr/local
+elif command -v brew >/dev/null 2>&1; then
     BREW_PREFIX="$(brew --prefix)"
+fi
+
+if [[ -n ${BREW_PREFIX:-} ]]; then
+    export PATH="$BREW_PREFIX/bin:$PATH"
 
     # gcloud bash completion
     if [[ -d "$BREW_PREFIX/Caskroom/google-cloud-sdk" ]]; then

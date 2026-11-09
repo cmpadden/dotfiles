@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # fzf layout
 # export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--tmux bottom,100%,40% --layout=reverse'
@@ -25,9 +27,8 @@ _fzf_compgen_path() {
     command find -L "$1" -name ./*.pyc -prune -o -name .git -prune -o -name .hg -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) -a -not -path "$1" -print 2>/dev/null | command sed 's@^\./@@'
 }
 
-# Load fzf's completion eagerly: its `**<Tab>` expansion must be installed
-# before Readline handles Tab, unlike its explicit key bindings.
+# Key bindings are available immediately; completion loads on the first Tab.
 if command -v fzf >/dev/null 2>&1; then
     # shellcheck source=/dev/null
-    eval "$(fzf --bash)"
+    source "$BREW_PREFIX/opt/fzf/shell/key-bindings.bash"
 fi
