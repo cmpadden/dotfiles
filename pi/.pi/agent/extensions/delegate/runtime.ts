@@ -21,11 +21,15 @@ export interface DelegateOptions {
   tools?: string[];
   cwd: string;
   trusted: boolean;
+  queuedAt?: number;
 }
 
 export interface DelegateDetails {
   model: string;
-  status: "running" | "completed" | "failed" | "aborted";
+  status: "queued" | "running" | "completed" | "failed" | "aborted";
+  cwd: string;
+  queuedMs: number;
+  elapsedMs: number;
   output: string;
   stderr: string;
   activity: string[];
@@ -68,6 +72,18 @@ export function childArguments(options: DelegateOptions): string[] {
   return args;
 }
 
+export function initialDetails(options: DelegateOptions): DelegateDetails {
+  return {
+    model: `${options.provider}/${options.model}`,
+    status: "queued", cwd: options.cwd, queuedMs: 0, elapsedMs: 0,
+    output: "", stderr: "", activity: [], turns: 0,
+    usage: {
+      input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
+      cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
+    },
+  };
+}
+
 export async function runDelegate(
   options: DelegateOptions,
   signal?: AbortSignal,
@@ -75,14 +91,10 @@ export async function runDelegate(
   invocation: Invocation = piInvocation(),
   killDelayMs = 5000,
 ): Promise<DelegateDetails> {
-  const details: DelegateDetails = {
-    model: `${options.provider}/${options.model}`,
-    status: "running", output: "", stderr: "", activity: [], turns: 0,
-    usage: {
-      input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
-      cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
-    },
-  };
+  const startedAt = Date.now();
+  const details = initialDetails(options);
+  details.status = "running";
+  details.queuedMs = Math.max(0, startedAt - (options.queuedAt ?? startedAt));
   if (signal?.aborted) return { ...details, status: "aborted", error: "Delegation cancelled before launch." };
 
   return new Promise((resolve) => {
@@ -107,6 +119,7 @@ export async function runDelegate(
     let assistantError: string | undefined;
 
     const emit = () => {
+      details.elapsedMs = Date.now() - startedAt;
       // Snapshots must not mutate already emitted tool results/session entries.
       try {
         onUpdate?.({ ...details, activity: [...details.activity], usage: { ...details.usage, cost: { ...details.usage.cost } } });
@@ -235,6 +248,8 @@ export async function runDelegate(
       signal?.removeEventListener("abort", abort);
       if (killTimer) clearTimeout(killTimer);
       if (updateTimer) clearTimeout(updateTimer);
+      clearInterval(heartbeat);
+      details.elapsedMs = Date.now() - startedAt;
       if (buffer.trim()) processLine(buffer);
       details.exitCode = code;
       details.exitSignal = exitSignal;
@@ -251,6 +266,7 @@ export async function runDelegate(
       resolve(details);
     });
 
+    const heartbeat = setInterval(emit, 1000);
     signal?.addEventListener("abort", abort, { once: true });
     if (signal?.aborted) abort();
     emit();

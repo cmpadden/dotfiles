@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { childArguments, runDelegate, type DelegateOptions } from "./runtime.ts";
+import { DelegateQueue } from "./queue.ts";
 
 const options: DelegateOptions = {
   task: "Inspect this task", provider: "test-provider", model: "vendor/model",
@@ -31,6 +32,28 @@ async function waitFor(check: () => Promise<boolean>) {
   }
   throw new Error("Timed out waiting for child readiness");
 }
+
+test("queue preserves FIFO, skips a cancelled head waiter, and releases slots only once", async () => {
+  const queue = new DelegateQueue(1);
+  const signal = new AbortController().signal;
+  const first = await queue.acquire(signal);
+  const cancelled = new AbortController();
+  const head = queue.acquire(cancelled.signal);
+  const order: number[] = [];
+  const second = queue.acquire(signal).then((release) => { order.push(2); return release; });
+  const third = queue.acquire(signal).then((release) => { order.push(3); return release; });
+  cancelled.abort();
+  assert.equal(await head, undefined);
+  first!();
+  const releaseSecond = await second;
+  assert.deepEqual(order, [2]);
+  first!(); // A duplicate release must not start the third waiter.
+  await Promise.resolve();
+  assert.deepEqual(order, [2]);
+  releaseSecond!();
+  (await third)!();
+  assert.deepEqual(order, [2, 3]);
+});
 
 test("child arguments pin provider/model, disable extensions, and preserve trust/tool scope", () => {
   const args = childArguments({ ...options, thinking: "high", tools: ["read", "grep"] });
