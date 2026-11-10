@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { setTimeout as delay } from "node:timers/promises";
 import { test } from "node:test";
 import { promisify } from "node:util";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
@@ -168,10 +170,40 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   const config = await readFile(new URL("../../../../../tmux/.config/tmux/tmux.conf", import.meta.url), "utf8");
   // Exercise the repository's actual formats, without loading plugins or bindings.
   const formats = config.split("\n").filter((line) => /^set -g (?:@pi_status_|window-status-(?:current-)?format )/.test(line));
-  assert.equal(formats.length, 5);
+  assert.equal(formats.length, 3);
+  const helper = fileURLToPath(new URL("../../../../../tmux/.config/tmux/scripts/pi-status.sh", import.meta.url));
   const configFile = join(directory, "formats.conf");
-  await writeFile(configFile, formats.join("\n") + "\n");
+  const testConfig = formats.join("\n").replace("~/.config/tmux/scripts/pi-status.sh", `'${helper.replaceAll("'", "'\\''")}'`);
+  await writeFile(configFile, testConfig + "\n");
   await tmux("source-file", configFile);
+
+  // Keep a client alive: tmux's #() job cache belongs to the rendering client.
+  const client = spawn("tmux", ["-S", socket, "-C", "attach-session", "-t", "check"], {
+    stdio: ["pipe", "pipe", "pipe"],
+  });
+  t.after(() => { client.stdin.end(); client.kill(); });
+  let output = "";
+  client.stdout.on("data", (chunk) => { output += chunk.toString(); });
+  const render = async (target: string, format: string) => {
+    const marker = `render-${Math.random()}:`;
+    client.stdin.write(`display-message -p -t ${target} '${marker}${format.replaceAll("'", "'\\''")}'\n`);
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const line = output.split("\n").find((line) => line.startsWith(marker));
+      if (line !== undefined) return line.slice(marker.length).trim();
+      await delay(10);
+    }
+    throw new Error(`Control client did not render: ${output}`);
+  };
+  const eventually = async (target: string, format: string, expected: RegExp) => {
+    let row = "";
+    for (let attempt = 0; attempt < 50; attempt++) {
+      row = await render(target, format);
+      if (expected.test(row)) return row;
+      await delay(100);
+    }
+    assert.match(row, expected);
+    return row;
+  };
   const failures: unknown[] = [];
   const run: RunTmux = async (args) => {
     try {
@@ -187,7 +219,11 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
     statuses.push(status);
     return status;
   };
-  const badge = (target: string) => tmux("display-message", "-p", "-t", target, "#{E:@pi_status_badge}");
+  const badge = async (target: string) => {
+    const window = await tmux("display-message", "-p", "-t", target, "#{window_id}");
+    const { stdout } = await exec("sh", [helper, socket, window], { timeout: 3_000 });
+    return stdout.trim();
+  };
   const first = create(pane1, "first");
   const second = create(pane2, "second");
   await first.start("idle");
@@ -205,13 +241,13 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   assert.equal(await badge(pane1), "[pi:done]");
   for (const option of ["window-status-format", "window-status-current-format"]) {
     const format = await tmux("show-options", "-gv", option);
-    const rendered = await tmux("display-message", "-p", "-t", pane1, format);
-    assert.match(rendered, /0 editor\s+\[pi:done\]/, "Pi status follows the window name inline");
+    await eventually(pane1, format, /0 editor\s+\[pi:done\]/);
   }
   const windowList = "#{W:#{E:window-status-format},#{E:window-status-current-format}}";
   assert.equal(await tmux("display-message", "-p", "-t", pane1, "#{window_name}"), "editor");
   await tmux("set-option", "-p", "-t", pane1, "@pi_status_until", "1");
   assert.equal(await badge(pane1), "", "expired leases disappear without a running extension");
+  await eventually(pane1, "#{E:window-status-format}", /^0 editor$/);
   await first.update("working");
   const otherPane = await tmux("new-window", "-d", "-P", "-F", "#{pane_id}", "-n", "other", "/bin/sh");
   assert.equal(await badge(otherPane), "", "unrelated windows have no badge");
@@ -225,11 +261,40 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   assert.equal(await badge(otherPane), "[pi:waiting]", "old runtimes cannot alter a successor");
   const third = create(pane2, "third");
   await third.start("done");
-  const row = await tmux("display-message", "-p", "-t", pane2, windowList);
+  const row = await eventually(pane2, windowList, /0 editor \[pi:done\].*1 other \[pi:waiting\]/);
   assert.match(row, /0 editor \[pi:done\]/);
   assert.match(row, /1 other \[pi:waiting\]/, "background windows have inline badges too");
+
+  // A blocked refresh must retain the previous result, never the window label.
+  const gate = join(directory, "block-refresh");
+  const started = join(directory, "refresh-started");
+  const slowHelper = join(directory, "slow-helper.sh");
+  const quote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
+  await writeFile(slowHelper,
+    `if [ -f ${quote(gate)} ]; then\n` +
+    `  touch ${quote(started)}\n` +
+    `  while [ -f ${quote(gate)} ]; do sleep 0.05; done\n` +
+    `fi\nexec sh ${quote(helper)} "$@"\n`);
+  t.after(() => rm(gate, { force: true }));
+  await tmux("set-option", "-g", "@pi_status_badge", `#(sh ${quote(slowHelper)} #{q:socket_path} #{window_id})`);
+  await eventually(pane2, windowList, /0 editor \[pi:done\].*1 other \[pi:waiting\]/);
+  await writeFile(gate, "");
+  await replacement.update("working");
+  for (let attempt = 0; attempt < 50; attempt++) {
+    await render(pane2, windowList);
+    if (await readFile(started, "utf8").then(() => true, () => false)) break;
+    await delay(100);
+  }
+  await readFile(started, "utf8");
+  const cached = await render(pane2, "#{T:status-format[0]}");
+  assert.match(cached, /0 editor \[pi:done\]/);
+  assert.match(cached, /1 other \[pi:waiting\]/, "last badge survives an in-flight refresh");
+  await rm(gate);
+  await eventually(pane2, windowList, /1 other \[pi:working\]/);
+
   await replacement.stop();
   assert.equal(await badge(otherPane), "");
+  await eventually(pane2, windowList, /0 editor \[pi:done\]\s+1 other\s*$/);
   assert.equal(await tmux("show-options", "-p", "-t", pane1), "", "shutdown removes all pane-local state");
 
   assert.deepEqual(failures, [], "no tmux commands failed during the integration test");
