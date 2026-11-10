@@ -1,9 +1,7 @@
-// Session-local FIFO limit. Waiting calls remain awaited and can be cancelled
-// without ever starting a subprocess. This does not coordinate other sessions.
+// Session-local FIFO concurrency limit; acquire resolves undefined if cancelled while waiting.
 export class DelegateQueue {
   private running = 0;
   private waiting: Array<() => void> = [];
-
   private readonly limit: number;
 
   constructor(limit = 3) {
