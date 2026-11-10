@@ -9,6 +9,39 @@ import { DelegateQueue } from "./queue.ts";
 
 const builtinTools = ["read", "bash", "edit", "write", "grep", "find", "ls"] as const;
 
+const DELEGATE_DESCRIPTION = `
+Run a self-contained task in a fresh Pi child using an exact provider/model ID.
+Waits for completion and streams progress; no polling or background jobs.
+Up to three children run concurrently per session; additional calls queue and remain awaited.
+cwd selects an existing directory (default: parent cwd);
+no worktrees are created or removed automatically.
+The child shares credentials, NOT the conversation; include all necessary context.
+Child extensions and MCP are disabled. This is not a sandbox.
+Default tools: read,bash,edit,write. For read-only planning use read,grep,find,ls.
+Output is capped at 50 KiB/2,000 lines; longer output is saved to a temporary file.
+`.trim().replace(/\n/g, " ");
+
+const DELEGATE_PROMPT_GUIDELINES = `
+Give delegate a self-contained task, explicit edit permissions, and expected output;
+children cannot see this conversation.
+
+Before using delegate, decide whether the task needs isolation.
+For independent write tasks, use wt to prepare separate worktrees first,
+then pass each path as cwd.
+Never reuse a worktree being used by another agent or the user.
+
+For read-only delegate investigations, prefer tools read,grep,find,ls without a new worktree.
+If isolation is uncertain, investigate read-only first. Bash and builds/tests may write files.
+
+Do not delegate trivial work or run delegate concurrently with parent or sibling
+writes/branch changes in the same checkout. cwd is not a sandbox;
+different subdirectories are not separate worktrees. Verify child findings before acting.
+
+When preparing delegate worktrees with wt, choose an explicit base;
+uncommitted changes are not copied. Do not silently approve hooks,
+assume background setup is finished, or automatically remove worktrees containing useful work.
+`.trim().split("\n\n").map((guideline) => guideline.replace(/\n/g, " "));
+
 export default function (pi: ExtensionAPI) {
   // Defense in depth if this extension is explicitly loaded by a child.
   if (process.env.PI_DELEGATE_CHILD === "1") return;
@@ -26,24 +59,9 @@ export default function (pi: ExtensionAPI) {
     name: "delegate",
     label: "Delegate",
     executionMode: "parallel",
-    description: [
-      "Run a self-contained task in a fresh Pi child using an exact provider/model ID.",
-      "Waits for completion and streams progress; no polling or background jobs.",
-      "Up to three children run concurrently per session; additional calls queue and remain awaited.",
-      "cwd selects an existing directory (default: parent cwd); no worktrees are created or removed automatically.",
-      "The child shares credentials, NOT the conversation; include all necessary context.",
-      "Child extensions and MCP are disabled. This is not a sandbox.",
-      "Default tools: read,bash,edit,write. For read-only planning use read,grep,find,ls.",
-      "Output is capped at 50 KiB/2,000 lines; longer output is saved to a temporary file.",
-    ].join(" "),
+    description: DELEGATE_DESCRIPTION,
     promptSnippet: "Delegate a bounded task to a chosen model and await its result",
-    promptGuidelines: [
-      "Give delegate a self-contained task, explicit edit permissions, and expected output; children cannot see this conversation.",
-      "Before using delegate, decide whether the task needs isolation. For independent write tasks, use wt to prepare separate worktrees first, then pass each path as cwd. Never reuse a worktree being used by another agent or the user.",
-      "For read-only delegate investigations, prefer tools read,grep,find,ls without a new worktree. If isolation is uncertain, investigate read-only first. Bash and builds/tests may write files.",
-      "Do not delegate trivial work or run delegate concurrently with parent or sibling writes/branch changes in the same checkout. cwd is not a sandbox; different subdirectories are not separate worktrees. Verify child findings before acting.",
-      "When preparing delegate worktrees with wt, choose an explicit base; uncommitted changes are not copied. Do not silently approve hooks, assume background setup is finished, or automatically remove worktrees containing useful work.",
-    ],
+    promptGuidelines: DELEGATE_PROMPT_GUIDELINES,
     parameters: Type.Object({
       task: Type.String({ minLength: 1, description: "Self-contained task, context, constraints, and expected output" }),
       model: Type.String({ minLength: 3, description: "Exact provider/model ID; model IDs may contain slashes" }),
