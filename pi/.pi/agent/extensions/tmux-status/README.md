@@ -8,10 +8,10 @@ Inject pi status into tmux statuslines.
 
 ## States
 
-- `idle`: Pi is open but has not completed a run in this session, or was aborted.
-- `working`: a run (including tools, retries, queued continuations, or compaction) is in progress.
-- `waiting`: a blocking extension UI prompt needs input.
-- `done`: the full run settled; displayed as `requires-attention` with black text on a yellow background until the next run starts.
+- `idle`: Pi is open but has not completed a run in this session, or was aborted; displayed on a light yellow background.
+- `working`: a run (including tools, retries, queued continuations, or compaction) is in progress; displayed on a muted green background.
+- `waiting`: a blocking extension UI prompt needs input; displayed on the same muted red background as `stopped`.
+- `done`: the full run settled; displayed as `stopped` with default text on a muted red background until the next run starts.
 
 Each window combines its panes with priority **waiting > done > working > idle**.
 Completed responses take precedence over ongoing work so they are not hidden by

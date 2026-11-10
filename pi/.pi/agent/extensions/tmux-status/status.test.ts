@@ -231,18 +231,18 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   assert.equal(await badge(pane1), "[pi:idle]", await tmux("display-message", "-p", "-t", pane1, "#{@pi_status} / #{@pi_status_until} / #{T:@pi_status_time}"));
   await first.update("working");
   await second.start("done");
-  assert.equal(await badge(pane1, true), "[pi:#[push-default]#[fg=black,bg=#f9e2af,noreverse]requires-attention#[default]#[pop-default]]", "attention text is highlighted without leaking styles");
-  assert.equal(await badge(pane1), "[pi:requires-attention]", "completed responses outrank ongoing work");
-  assert.equal(await badge(pane2), "[pi:requires-attention]", "inactive panes contribute too");
+  assert.equal(await badge(pane1, true), "[pi:#[push-default]#[fg=default,bg=#e9dddb,noreverse]stopped#[default]#[pop-default]]", "stopped text is highlighted without leaking styles");
+  assert.equal(await badge(pane1), "[pi:stopped]", "completed responses outrank ongoing work");
+  assert.equal(await badge(pane2), "[pi:stopped]", "inactive panes contribute too");
   await second.update("waiting");
   assert.equal(await badge(pane1), "[pi:waiting]");
   await second.stop();
   assert.equal(await badge(pane1), "[pi:working]", "one pane exiting cannot clear another");
   await first.update("done");
-  assert.equal(await badge(pane1), "[pi:requires-attention]");
+  assert.equal(await badge(pane1), "[pi:stopped]");
   for (const option of ["window-status-format", "window-status-current-format"]) {
     const format = await tmux("show-options", "-gv", option);
-    await eventually(pane1, format, /0 editor\s+\[pi:requires-attention\]/);
+    await eventually(pane1, format, /0 editor\s+\[pi:stopped\]/);
   }
   const windowList = "#{W:#{E:window-status-format}#{window-status-separator},#{E:window-status-current-format}#{window-status-separator}}";
   assert.equal(await tmux("display-message", "-p", "-t", pane1, "#{window_name}"), "editor");
@@ -262,8 +262,8 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   assert.equal(await badge(otherPane), "[pi:waiting]", "old runtimes cannot alter a successor");
   const third = create(pane2, "third");
   await third.start("done");
-  const row = await eventually(pane2, windowList, /0 editor \[pi:requires-attention\].*1 other \[pi:waiting\]/);
-  assert.match(row, /0 editor \[pi:requires-attention\]/);
+  const row = await eventually(pane2, windowList, /0 editor \[pi:stopped\].*1 other \[pi:waiting\]/);
+  assert.match(row, /0 editor \[pi:stopped\]/);
   assert.match(row, /1 other \[pi:waiting\]/, "background windows have inline badges too");
 
   // A blocked refresh must retain the previous result, never the window label.
@@ -278,7 +278,7 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
     `fi\nexec sh ${quote(helper)} "$@"\n`);
   t.after(() => rm(gate, { force: true }));
   await tmux("set-option", "-g", "@pi_status_badge", `#(sh ${quote(slowHelper)} #{q:socket_path} #{window_id})`);
-  await eventually(pane2, windowList, /0 editor \[pi:requires-attention\].*1 other \[pi:waiting\]/);
+  await eventually(pane2, windowList, /0 editor \[pi:stopped\].*1 other \[pi:waiting\]/);
   await writeFile(gate, "");
   await replacement.update("working");
   for (let attempt = 0; attempt < 50; attempt++) {
@@ -288,14 +288,14 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   }
   await readFile(started, "utf8");
   const cached = await render(pane2, "#{T:status-format[0]}");
-  assert.match(cached, /0 editor \[pi:requires-attention\]/);
+  assert.match(cached, /0 editor \[pi:stopped\]/);
   assert.match(cached, /1 other \[pi:waiting\]/, "last badge survives an in-flight refresh");
   await rm(gate);
   await eventually(pane2, windowList, /1 other \[pi:working\]/);
 
   await replacement.stop();
   assert.equal(await badge(otherPane), "");
-  await eventually(pane2, windowList, /0 editor \[pi:requires-attention\]\s+1 other\s*$/);
+  await eventually(pane2, windowList, /0 editor \[pi:stopped\]\s+1 other\s*$/);
   assert.equal(await tmux("show-options", "-p", "-t", pane1), "", "shutdown removes all pane-local state");
 
   assert.deepEqual(failures, [], "no tmux commands failed during the integration test");

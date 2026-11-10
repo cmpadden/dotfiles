@@ -19,8 +19,13 @@ printf '%s\n' "$panes" | awk -v now="$(date +%s)" '
     END {
         # A blank line explicitly clears a previously cached badge.
         if (state == "done")
-            print " [pi:#[push-default]#[fg=black,bg=#f9e2af,noreverse]requires-attention#[default]#[pop-default]]"
-        else if (best) printf " [pi:%s]\n", state
+            print " [pi:#[push-default]#[fg=default,bg=#e9dddb,noreverse]stopped#[default]#[pop-default]]"
+        else if (state == "working")
+            print " [pi:#[push-default]#[fg=default,bg=#dae5d5,noreverse]working#[default]#[pop-default]]"
+        else if (state == "waiting")
+            print " [pi:#[push-default]#[fg=default,bg=#e9dddb,noreverse]waiting#[default]#[pop-default]]"
+        else if (state == "idle")
+            print " [pi:#[push-default]#[fg=default,bg=#f9e2af,noreverse]idle#[default]#[pop-default]]"
         else print ""
     }
 '
