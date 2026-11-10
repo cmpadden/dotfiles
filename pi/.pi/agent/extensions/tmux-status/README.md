@@ -11,9 +11,11 @@ Inject pi status into tmux statuslines.
 - `idle`: Pi is open but has not completed a run in this session, or was aborted.
 - `working`: a run (including tools, retries, queued continuations, or compaction) is in progress.
 - `waiting`: a blocking extension UI prompt needs input.
-- `done`: the full run settled.
+- `done`: the full run settled; displayed as `requires-attention` with black text on a yellow background until the next run starts.
 
-Each window combines its panes with priority **waiting > working > done > idle**.
+Each window combines its panes with priority **waiting > done > working > idle**.
+Completed responses take precedence over ongoing work so they are not hidden by
+another running pane. Any completed response requires review, not just questions.
 
 ## Usage
 
@@ -23,8 +25,8 @@ Stow both the `pi` and `tmux` packages, then use:
 set -g status-interval 1
 set -g @pi_status_badge '#(sh ~/.config/tmux/scripts/pi-status.sh #{q:socket_path} #{window_id})'
 
-set -g window-status-format " #I #W#{E:@pi_status_badge} "
-set -g window-status-current-format " #{?window_zoomed_flag,*,} #I #W#{E:@pi_status_badge} "
+set -g window-status-format "#I #W#{E:@pi_status_badge}"
+set -g window-status-current-format "#{?window_zoomed_flag,*,}#[fg=#000000,bg=default,bold,noreverse]#I #W#[default]#{E:@pi_status_badge}"
 ```
 
 ## Cached rendering
