@@ -2,9 +2,10 @@ import { mkdtemp, realpath, stat, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { truncateHead, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { Text } from "@earendil-works/pi-tui";
+import { Container, Text, truncateToWidth } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 import { DelegateQueue } from "./queue.ts";
+import { openMonitor, type DelegateMonitor } from "./monitor.ts";
 import { initialDetails, runDelegate, type DelegateDetails, type DelegateOptions } from "./runtime.ts";
 
 const MAX_CONCURRENT_CHILDREN = 3;
@@ -38,6 +39,9 @@ const DELEGATE_PROMPT_GUIDELINES = `
 Give delegate a self-contained task, explicit edit permissions, and expected output;
 children cannot see this conversation.
 
+Give every delegate call a short label derived from its task (action + specific targets,
+e.g. "Rebase PRs #6182–6184"). Omit shared context, constraints, and boilerplate from the label.
+
 Before using delegate, decide whether the task needs isolation.
 For independent write tasks, use wt to prepare separate worktrees first,
 then pass each path as cwd.
@@ -46,8 +50,11 @@ Never reuse a worktree being used by another agent or the user.
 For read-only delegate investigations, prefer tools read,grep,find,ls without a new worktree.
 If isolation is uncertain, investigate read-only first. Bash and builds/tests may write files.
 
-Do not delegate trivial work or run delegate concurrently with parent or sibling
-writes/branch changes in the same checkout. cwd is not a sandbox;
+Avoid delegating trivial work unless the user explicitly requests delegation,
+including for testing.
+
+Do not run delegate concurrently with parent or sibling writes/branch changes
+in the same checkout. cwd is not a sandbox;
 different subdirectories are not separate worktrees. Verify child findings before acting.
 
 When preparing delegate worktrees with wt, choose an explicit base;
@@ -56,6 +63,11 @@ assume background setup is finished, or automatically remove worktrees containin
 `.split("\n\n").map(unwrap);
 
 const DELEGATE_PARAMETERS = Type.Object({
+  label: Type.Optional(Type.String({
+    minLength: 1,
+    maxLength: 80,
+    description: "Short display label derived from the task: action + specific targets, e.g. Rebase PRs #6182–6184. No boilerplate.",
+  })),
   task: Type.String({
     minLength: 1,
     description: "Self-contained task, context, constraints, and expected output",
@@ -155,6 +167,12 @@ export default function (pi: ExtensionAPI) {
         throw new Error(`Unknown model: ${params.model}. Use pi --list-models to find exact IDs.`);
       }
 
+      const settings = pi.getSettings() as Record<string, unknown>;
+      const config = settings["pi-delegate"];
+      const display = config !== null && typeof config === "object"
+        && !Array.isArray(config) && (config as { display?: unknown }).display === "tmux"
+        ? "tmux" : "hidden";
+
       const queuedAt = Date.now();
       const controller = new AbortController();
       const childSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
@@ -204,10 +222,21 @@ export default function (pi: ExtensionAPI) {
             error: "Delegation cancelled before launch.",
           };
         }
+        let monitor: DelegateMonitor | undefined;
         try {
-          return await runDelegate(options, childSignal, publish);
+          if (display === "tmux" && !childSignal.aborted) {
+            try {
+              monitor = await openMonitor(params.label || params.task, queued);
+            } catch {
+              if (ctx.hasUI) ctx.ui.notify("Delegate tmux monitor unavailable; continuing hidden.", "warning");
+            }
+          }
+          return await runDelegate(options, childSignal, (details) => {
+            monitor?.update(details);
+            publish(details);
+          });
         } finally {
-          release();
+          try { await monitor?.close(); } finally { release(); }
         }
       })();
 
@@ -220,15 +249,36 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme, context) {
-      const task = args.task?.replace(/\s+/g, " ").slice(0, 140) ?? "…";
-      return new Text([
-        theme.fg("toolTitle", theme.bold("delegate ")) + theme.fg("accent", args.model ?? "…"),
-        theme.fg("dim", task),
-        theme.fg("muted", `cwd: ${args.cwd ?? context.cwd}`),
-      ].join("\n"), 0, 0);
+      // The call slot is composed before the result slot. Read shared details at
+      // render time so each progress update appears in the same compact header.
+      return {
+        render(width: number) {
+          const details = context.state.details as DelegateDetails | undefined;
+          const model = context.expanded ? args.model : args.model?.split("/").pop();
+          let title = theme.fg("toolTitle", theme.bold("delegate ")) + theme.fg("accent", model ?? "…");
+          if (details) {
+            const ms = details.status === "queued" ? details.queuedMs : details.elapsedMs;
+            title += theme.fg(STATUS_COLORS[details.status] ?? "error", ` · ${details.status} ${seconds(ms)}`);
+            title += theme.fg("dim", ` · $${details.usage.cost.total.toFixed(2)}`);
+          } else if (context.isError) {
+            title += theme.fg("error", " · failed");
+          }
+          const task = args.task ?? "…";
+          const label = args.label?.replace(/\s+/g, " ").trim() || task.replace(/\s+/g, " ").trim();
+          const lines = context.expanded
+            ? [title, ...(args.label ? [theme.fg("dim", label)] : []), theme.fg("dim", task)]
+            : [title, theme.fg("dim", label)];
+          return context.expanded
+            ? new Text(lines.join("\n"), 0, 0).render(width)
+            : lines.map((line) => truncateToWidth(line, width));
+        },
+        invalidate() {},
+      };
     },
 
-    renderResult(result, { expanded }, theme) {
+    renderResult(result, { expanded }, theme, context) {
+      context.state.details = result.details;
+      if (!expanded) return new Container();
       const details = result.details as DelegateDetails | undefined;
       const content = result.content
         .filter((part) => part.type === "text")
@@ -239,14 +289,13 @@ export default function (pi: ExtensionAPI) {
       const { status, usage } = details;
       const timing = `${seconds(details.elapsedMs)} elapsed · ${seconds(details.queuedMs)} queued`;
       const cost = `$${usage.cost.total.toFixed(4)}`;
-      const activity = (expanded ? details.activity : details.activity.slice(-3)).join("\n");
-      const preview = expanded ? content : content.split("\n").slice(-6).join("\n").slice(-1500);
+      const activity = details.activity.join("\n");
       return new Text([
         theme.fg(STATUS_COLORS[status] ?? "error", `${status} · ${timing}`),
         details.cwd && theme.fg("muted", `cwd: ${details.cwd}`),
         theme.fg("dim", `${details.turns} turns · ↑${usage.input} ↓${usage.output} · ${cost}`),
         activity && theme.fg("muted", activity),
-        preview,
+        content,
       ].filter(Boolean).join("\n"), 0, 0);
     },
   });

@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { stripVTControlCharacters } from "node:util";
 
 const agentDir = fileURLToPath(new URL("../../", import.meta.url));
 const version = (await readFile(join(agentDir, "install/current-version"), "utf8")).trim();
@@ -13,12 +14,13 @@ const loaderPath = join(agentDir, "install/releases", version, "node_modules/@ea
 const { loadExtensions } = await import(pathToFileURL(loaderPath).href);
 const extensionPath = fileURLToPath(new URL("index.ts", import.meta.url));
 
-async function fixture(fn) {
+async function fixture(fn, config) {
   const directory = await mkdtemp(join(tmpdir(), "delegate-extension-test-"));
   const oldScript = process.argv[1];
   try {
     const loaded = await loadExtensions([extensionPath], directory);
     assert.deepEqual(loaded.errors, []);
+    loaded.runtime.getSettings = () => config === undefined ? {} : { "pi-delegate": config };
     const extension = loaded.extensions[0];
     const tool = extension.tools.get("delegate").definition;
     const script = join(directory, "fake-pi.mjs");
@@ -56,7 +58,8 @@ async function fixture(fn) {
 test("tool loads with a small schema and forwards model/thinking/tools to an awaited child", async () => {
   await fixture(async ({ tool, ctx }) => {
     assert.equal(tool.executionMode, "parallel");
-    assert.deepEqual(Object.keys(tool.parameters.properties).sort(), ["cwd", "model", "task", "thinking", "tools"]);
+    assert.ok(tool.promptGuidelines.includes("Avoid delegating trivial work unless the user explicitly requests delegation, including for testing."));
+    assert.deepEqual(Object.keys(tool.parameters.properties).sort(), ["cwd", "label", "model", "task", "thinking", "tools"]);
     const result = await tool.execute("test", {
       task: "Plan this", model: "test/vendor/model", thinking: "high", tools: ["read", "grep"],
     }, undefined, undefined, ctx);
@@ -69,6 +72,37 @@ test("tool loads with a small schema and forwards model/thinking/tools to an awa
     assert.equal(child.args[child.args.indexOf("--thinking") + 1], "high");
     assert.equal(child.args[child.args.indexOf("--tools") + 1], "read,grep");
   });
+});
+
+test("only pi-delegate.display enables monitors; legacy environment is ignored and unavailable tmux falls back", async () => {
+  const oldDisplay = process.env.PI_DELEGATE_DISPLAY;
+  try {
+    for (const legacy of ["tmux", "hidden"]) {
+      process.env.PI_DELEGATE_DISPLAY = legacy;
+      for (const config of [undefined, null, "tmux", [], {}, { display: "hidden" }, { display: "invalid" }, { display: true }, { display: "tmux" }]) {
+        await fixture(async ({ tool, ctx, extension }) => {
+          assert.equal(extension.commands.has("delegate-display"), false);
+          const notices = [];
+          ctx.hasUI = true;
+          ctx.ui = { notify: (text) => notices.push(text) };
+          const oldPane = process.env.TMUX_PANE;
+          process.env.TMUX_PANE = "";
+          try {
+            const result = await tool.execute("test", { task: "Inspect", model: "test/vendor/model" }, undefined, undefined, ctx);
+            assert.equal(result.isError, false);
+            assert.equal(result.details.status, "completed");
+            assert.equal(notices.some((text) => text.includes("continuing hidden")), config?.display === "tmux");
+          } finally {
+            if (oldPane === undefined) delete process.env.TMUX_PANE;
+            else process.env.TMUX_PANE = oldPane;
+          }
+        }, config);
+      }
+    }
+  } finally {
+    if (oldDisplay === undefined) delete process.env.PI_DELEGATE_DISPLAY;
+    else process.env.PI_DELEGATE_DISPLAY = oldDisplay;
+  }
 });
 
 test("omitted thinking inherits from the parent; tools use the documented default", async () => {
@@ -272,16 +306,63 @@ test("pre-aborted tool calls never start children", async () => {
   });
 });
 
-test("renderers preserve queued state and show canonical cwd and timing", async () => {
+test("collapsed delegate rows stay two lines and expansion reveals details", async () => {
   await fixture(async ({ tool, ctx }) => {
     const theme = { fg: (_color, text) => text, bold: (text) => text };
-    const result = await tool.execute("test", { task: "Inspect", model: "test/vendor/model" }, undefined, undefined, ctx);
-    const details = { ...result.details, status: "queued", queuedMs: 2100, elapsedMs: 0 };
-    const rendered = tool.renderResult({ ...result, details }, { expanded: false, isPartial: true }, theme).render(200).join("\n");
-    assert.match(rendered, /queued · 0s elapsed · 2s queued/);
-    assert.ok(rendered.includes(result.details.cwd));
-    const header = tool.renderCall({ model: "test/vendor/model", task: "Inspect" }, theme, { cwd: ctx.cwd }).render(200).join("\n");
-    assert.ok(header.includes(ctx.cwd));
+    const args = { model: "test/vendor/model", label: "Check CI\nfor PRs #6182–6184",
+      task: "User explicitly requests checking CI. Handle ONLY PRs #6182–6184. Do not modify files.",
+    };
+    const result = await tool.execute("test", args, undefined, undefined, ctx);
+    assert.equal(JSON.parse(result.details.output).task, `Task: ${args.task}`);
+    assert.ok(tool.promptGuidelines.some((guideline) => guideline.includes("short label derived from its task")));
+    const state = {};
+    const context = { args, state, cwd: ctx.cwd, expanded: false };
+    assert.deepEqual(tool.renderCall(args, theme, context).render(200), [
+      "delegate model", "Check CI for PRs #6182–6184",
+    ]);
+    for (const status of ["queued", "running", "completed", "failed", "aborted"]) {
+      const details = { ...result.details, status, queuedMs: 2100, elapsedMs: 41000,
+        usage: { ...result.details.usage, cost: { total: 0.1234 } },
+        activity: ["→ bash a very long command\nwith multiple lines", "✓ bash"],
+      };
+      // Match Pi's composition order: call first, result second, then render.
+      const header = tool.renderCall(args, theme, context);
+      const body = tool.renderResult({ ...result, details }, { expanded: false }, theme, context);
+      assert.deepEqual(body.render(200), []);
+      assert.deepEqual(header.render(200), [
+        `delegate model · ${status} ${status === "queued" ? "2s" : "41s"} · $0.12`,
+        "Check CI for PRs #6182–6184",
+      ]);
+      const narrow = header.render(20);
+      assert.equal(narrow.length, 2);
+      assert.ok(narrow.every((line) => stripVTControlCharacters(line).length <= 20));
+
+      const expandedContext = { ...context, expanded: true };
+      const expandedHeader = tool.renderCall(args, theme, expandedContext);
+      const expanded = tool.renderResult({ ...result, details }, { expanded: true }, theme, expandedContext).render(10000).join("\n");
+      const expandedTitle = expandedHeader.render(200).map((line) => line.trimEnd()).join("\n");
+      assert.match(expandedTitle, /delegate test\/vendor\/model/);
+      assert.ok(expandedTitle.includes(args.task));
+      assert.ok(expandedTitle.includes("Check CI for PRs #6182–6184"));
+      assert.match(expanded, /41s elapsed · 2s queued/);
+      assert.ok(expanded.includes(result.details.cwd));
+      assert.ok(expanded.includes("turns · ↑10 ↓2 · $0.1234"));
+      assert.ok(details.activity.join("\n").split("\n").every((line) => expanded.includes(line)));
+      assert.ok(expanded.includes(result.content[0].text));
+    }
+  });
+});
+
+test("errors without delegate details stay compact but can be expanded", async () => {
+  await fixture(async ({ tool, ctx }) => {
+    const theme = { fg: (_color, text) => text, bold: (text) => text };
+    const args = { model: "test/vendor/model", task: "Inspect" };
+    const context = { args, state: {}, cwd: ctx.cwd, isError: true, expanded: false };
+    const result = { content: [{ type: "text", text: "Unknown model" }] };
+    const header = tool.renderCall(args, theme, context);
+    assert.deepEqual(tool.renderResult(result, { expanded: false }, theme, context).render(200), []);
+    assert.deepEqual(header.render(200), ["delegate model · failed", "Inspect"]);
+    assert.deepEqual(tool.renderResult(result, { expanded: true }, theme, context).render(200).map((line) => line.trimEnd()), ["Unknown model"]);
   });
 });
 
