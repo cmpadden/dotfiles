@@ -17,6 +17,7 @@
   "quietStartup": true,
   "tuiMode": "regular",
   "pi-delegate": {
-    "display": "tmux"
+    "display": "tmux",
+    "model": "vercel-ai-gateway/openai/gpt-6.1-sol"
   }
 }

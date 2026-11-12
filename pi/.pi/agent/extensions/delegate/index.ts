@@ -24,7 +24,9 @@ const STATUS_COLORS = {
 const unwrap = (text: string) => text.trim().replace(/\n/g, " ");
 
 const DELEGATE_DESCRIPTION = unwrap(`
-Run a self-contained task in a fresh Pi child using an exact provider/model ID.
+Run a self-contained task in a fresh Pi child.
+Omit model to use pi-delegate.model from settings, otherwise the parent's current model.
+An explicit model overrides both defaults and must be an exact provider/model ID.
 Waits for completion and streams progress; no polling or background jobs.
 Up to three children run concurrently per session; additional calls queue and remain awaited.
 cwd selects an existing directory (default: parent cwd);
@@ -38,6 +40,9 @@ Output is capped at 50 KiB/2,000 lines; longer output is saved to a temporary fi
 const DELEGATE_PROMPT_GUIDELINES = `
 Give delegate a self-contained task, explicit edit permissions, and expected output;
 children cannot see this conversation.
+
+Omit delegate's model unless a specific override is needed; the configured default
+or parent model includes the correct provider. Explicit overrides must include the full provider/model ID.
 
 Give every delegate call a short label derived from its task (action + specific targets,
 e.g. "Rebase PRs #6182–6184"). Omit shared context, constraints, and boilerplate from the label.
@@ -72,10 +77,10 @@ const DELEGATE_PARAMETERS = Type.Object({
     minLength: 1,
     description: "Self-contained task, context, constraints, and expected output",
   }),
-  model: Type.String({
+  model: Type.Optional(Type.String({
     minLength: 3,
-    description: "Exact provider/model ID; model IDs may contain slashes",
-  }),
+    description: "Exact provider/model override; omit for pi-delegate.model from settings, otherwise the parent model. Model IDs may contain slashes.",
+  })),
   cwd: Type.Optional(Type.String({
     minLength: 1,
     description: unwrap(`
@@ -162,16 +167,21 @@ export default function (pi: ExtensionAPI) {
       if (params.cwd !== undefined && !params.cwd.trim()) {
         throw new Error("Delegate cwd must not be blank.");
       }
-      const { provider, model } = parseModelId(params.model);
-      if (!ctx.modelRegistry.find(provider, model)) {
-        throw new Error(`Unknown model: ${params.model}. Use pi --list-models to find exact IDs.`);
-      }
-
       const settings = pi.getSettings() as Record<string, unknown>;
-      const config = settings["pi-delegate"];
-      const display = config !== null && typeof config === "object"
-        && !Array.isArray(config) && (config as { display?: unknown }).display === "tmux"
-        ? "tmux" : "hidden";
+      const value = settings["pi-delegate"];
+      const config = value !== null && typeof value === "object" && !Array.isArray(value)
+        ? value as Record<string, unknown> : {};
+      const modelId = params.model !== undefined ? params.model
+        : config.model !== undefined ? config.model
+        : ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : undefined;
+      if (typeof modelId !== "string" || !modelId.trim()) {
+        throw new Error("Delegate needs an exact provider/model ID: pass model, set pi-delegate.model in settings, or select a parent model.");
+      }
+      const { provider, model } = parseModelId(modelId);
+      if (!ctx.modelRegistry.find(provider, model)) {
+        throw new Error(`Unknown model: ${modelId}. Use pi --list-models to find exact IDs.`);
+      }
+      const display = config.display === "tmux" ? "tmux" : "hidden";
 
       const queuedAt = Date.now();
       const controller = new AbortController();
@@ -254,8 +264,9 @@ export default function (pi: ExtensionAPI) {
       return {
         render(width: number) {
           const details = context.state.details as DelegateDetails | undefined;
-          const model = context.expanded ? args.model : args.model?.split("/").pop();
-          let title = theme.fg("toolTitle", theme.bold("delegate ")) + theme.fg("accent", model ?? "…");
+          const modelId = details?.model ?? args.model;
+          const model = context.expanded ? modelId : modelId?.split("/").pop();
+          let title = theme.fg("toolTitle", theme.bold("delegate ")) + theme.fg("accent", model ?? "default");
           if (details) {
             const ms = details.status === "queued" ? details.queuedMs : details.elapsedMs;
             title += theme.fg(STATUS_COLORS[details.status] ?? "error", ` · ${details.status} ${seconds(ms)}`);
