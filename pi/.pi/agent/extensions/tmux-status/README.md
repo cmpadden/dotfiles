@@ -3,19 +3,21 @@
 Inject pi status into tmux statuslines.
 
 ```text
-     0 editor [pi:working]   1 backend   2 review [pi:waiting]
+     0 editor [π:running π:stopped] 1 backend 2 review [π:idle]
 ```
 
 ## States
 
-- `idle`: Pi is open but has not completed a run in this session, or was aborted; displayed on a light yellow background.
-- `working`: a run (including tools, retries, queued continuations, or compaction) is in progress; displayed on a muted green background.
-- `waiting`: a blocking extension UI prompt needs input; displayed on the same muted red background as `stopped`.
-- `done`: the full run settled; displayed as `stopped` with default text on a muted red background until the next run starts.
+- `idle` → `π:idle`: Pi is open but has not completed a run in this session, or was aborted; displayed on a light yellow background.
+- `working` → `π:running`: a run (including tools, retries, queued continuations, or compaction) is in progress; displayed on a muted green background.
+- `waiting` → `π:waiting`: a blocking extension UI prompt needs input; displayed on a muted red background.
+- `done` → `π:stopped`: the full run settled; displayed on a muted red background until the next run starts. Any completed response requires review, not just questions.
 
-Each window combines its panes with priority **waiting > done > working > idle**.
-Completed responses take precedence over ongoing work so they are not hidden by
-another running pane. Any completed response requires review, not just questions.
+Each window shows one indicator per live Pi pane, in pane order, inside shared
+brackets. The entire `π:state` is colored; brackets and separators stay neutral.
+State words use their natural width without padding; state changes preserve pane
+order. Starting or exiting sessions adds or removes indicators; windows without
+Pi have no badge.
 
 ## Usage
 
@@ -33,8 +35,8 @@ set -g window-status-current-format "#{?window_zoomed_flag,*,}#[fg=#000000,bg=de
 
 Pi publishes pane-local state with a 20-second lease, renewed every five seconds.
 The tmux helper scans each window's panes in a background `#()` job, filters expired
-leases, and emits one badge. tmux caches that result per client/window and keeps
-showing it while the next job runs. Updates normally appear within about a second;
+leases, and emits a bracketed list of per-pane indicators. tmux caches that result
+per client/window and keeps showing it while the next job runs. Updates normally appear within about a second;
 exits, pane moves, and expired leases are picked up without a running Pi process.
 
 Status redraws only read the cached result: no nested pane loops or lease

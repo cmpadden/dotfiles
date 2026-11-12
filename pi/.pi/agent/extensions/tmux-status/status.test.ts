@@ -145,7 +145,7 @@ test("failed tmux commands do not reject lifecycle events", async () => {
   }
 });
 
-test("tmux renders per-window aggregates, leases, pane moves, and ownership", async (t) => {
+test("tmux renders per-pane badges, leases, pane moves, and ownership", async (t) => {
   try {
     await exec("tmux", ["-V"]);
   } catch {
@@ -228,21 +228,28 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   const second = create(pane2, "second");
   await first.start("idle");
   assert.deepEqual(failures, []);
-  assert.equal(await badge(pane1), "[pi:idle]", await tmux("display-message", "-p", "-t", pane1, "#{@pi_status} / #{@pi_status_until} / #{T:@pi_status_time}"));
+  assert.equal(await badge(pane1), "[π:idle]", await tmux("display-message", "-p", "-t", pane1, "#{@pi_status} / #{@pi_status_until} / #{T:@pi_status_time}"));
   await first.update("working");
   await second.start("done");
-  assert.equal(await badge(pane1, true), "[pi:#[push-default]#[fg=default,bg=#e9dddb,noreverse]stopped#[default]#[pop-default]]", "stopped text is highlighted without leaking styles");
-  assert.equal(await badge(pane1), "[pi:stopped]", "completed responses outrank ongoing work");
-  assert.equal(await badge(pane2), "[pi:stopped]", "inactive panes contribute too");
+  assert.equal(await badge(pane1, true), "[#[push-default]#[fg=default,bg=#dae5d5,noreverse]π:running#[default]#[pop-default] #[push-default]#[fg=default,bg=#e9dddb,noreverse]π:stopped#[default]#[pop-default]]", "each full badge is highlighted without leaking styles");
+  assert.equal(await badge(pane1), "[π:running π:stopped]", "running and completed sessions both appear in pane order");
+  assert.equal(await badge(pane2), "[π:running π:stopped]", "inactive panes contribute too");
   await second.update("waiting");
-  assert.equal(await badge(pane1), "[pi:waiting]");
-  await second.stop();
-  assert.equal(await badge(pane1), "[pi:working]", "one pane exiting cannot clear another");
+  assert.equal(await badge(pane1), "[π:running π:waiting]", "waiting and done have distinct labels of the same width");
   await first.update("done");
-  assert.equal(await badge(pane1), "[pi:stopped]");
+  await second.update("working");
+  assert.equal(await badge(pane1), "[π:stopped π:running]", "state changes do not reorder badges");
+  await first.update("idle");
+  await second.update("idle");
+  assert.equal(await badge(pane1), "[π:idle π:idle]", "idle sessions use their natural width with one separator");
+  await first.update("working");
+  await second.stop();
+  assert.equal(await badge(pane1), "[π:running]", "one pane exiting cannot clear another");
+  await first.update("done");
+  assert.equal(await badge(pane1), "[π:stopped]");
   for (const option of ["window-status-format", "window-status-current-format"]) {
     const format = await tmux("show-options", "-gv", option);
-    await eventually(pane1, format, /0 editor\s+\[pi:stopped\]/);
+    await eventually(pane1, format, /0 editor\s+\[π:stopped\]/);
   }
   const windowList = "#{W:#{E:window-status-format}#{window-status-separator},#{E:window-status-current-format}#{window-status-separator}}";
   assert.equal(await tmux("display-message", "-p", "-t", pane1, "#{window_name}"), "editor");
@@ -253,18 +260,18 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   const otherPane = await tmux("new-window", "-d", "-P", "-F", "#{pane_id}", "-n", "other", "/bin/sh");
   assert.equal(await badge(otherPane), "", "unrelated windows have no badge");
   await tmux("join-pane", "-d", "-s", pane1, "-t", otherPane);
-  assert.equal(await badge(pane2), "", "moving a pane leaves no stale aggregate");
-  assert.equal(await badge(otherPane), "[pi:working]");
+  assert.equal(await badge(pane2), "", "moving a pane leaves no stale badge");
+  assert.equal(await badge(otherPane), "[π:running]");
   const replacement = create(pane1, "replacement");
   await replacement.start("waiting");
   await first.update("done");
   await first.stop();
-  assert.equal(await badge(otherPane), "[pi:waiting]", "old runtimes cannot alter a successor");
+  assert.equal(await badge(otherPane), "[π:waiting]", "old runtimes cannot alter a successor");
   const third = create(pane2, "third");
   await third.start("done");
-  const row = await eventually(pane2, windowList, /0 editor \[pi:stopped\].*1 other \[pi:waiting\]/);
-  assert.match(row, /0 editor \[pi:stopped\]/);
-  assert.match(row, /1 other \[pi:waiting\]/, "background windows have inline badges too");
+  const row = await eventually(pane2, windowList, /0 editor \[π:stopped\].*1 other \[π:waiting\]/);
+  assert.match(row, /0 editor \[π:stopped\]/);
+  assert.match(row, /1 other \[π:waiting\]/, "background windows have inline badges too");
 
   // A blocked refresh must retain the previous result, never the window label.
   const gate = join(directory, "block-refresh");
@@ -278,7 +285,7 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
     `fi\nexec sh ${quote(helper)} "$@"\n`);
   t.after(() => rm(gate, { force: true }));
   await tmux("set-option", "-g", "@pi_status_badge", `#(sh ${quote(slowHelper)} #{q:socket_path} #{window_id})`);
-  await eventually(pane2, windowList, /0 editor \[pi:stopped\].*1 other \[pi:waiting\]/);
+  await eventually(pane2, windowList, /0 editor \[π:stopped\].*1 other \[π:waiting\]/);
   await writeFile(gate, "");
   await replacement.update("working");
   for (let attempt = 0; attempt < 50; attempt++) {
@@ -288,14 +295,14 @@ test("tmux renders per-window aggregates, leases, pane moves, and ownership", as
   }
   await readFile(started, "utf8");
   const cached = await render(pane2, "#{T:status-format[0]}");
-  assert.match(cached, /0 editor \[pi:stopped\]/);
-  assert.match(cached, /1 other \[pi:waiting\]/, "last badge survives an in-flight refresh");
+  assert.match(cached, /0 editor \[π:stopped\]/);
+  assert.match(cached, /1 other \[π:waiting\]/, "last badge survives an in-flight refresh");
   await rm(gate);
-  await eventually(pane2, windowList, /1 other \[pi:working\]/);
+  await eventually(pane2, windowList, /1 other \[π:running\]/);
 
   await replacement.stop();
   assert.equal(await badge(otherPane), "");
-  await eventually(pane2, windowList, /0 editor \[pi:stopped\]\s+1 other\s*$/);
+  await eventually(pane2, windowList, /0 editor \[π:stopped\]\s+1 other\s*$/);
   assert.equal(await tmux("show-options", "-p", "-t", pane1), "", "shutdown removes all pane-local state");
 
   assert.deepEqual(failures, [], "no tmux commands failed during the integration test");
