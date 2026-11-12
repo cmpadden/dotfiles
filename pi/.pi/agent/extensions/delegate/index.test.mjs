@@ -27,6 +27,7 @@ async function fixture(fn, config) {
     process.argv[1] = script;
     const ctx = {
       cwd: directory, thinkingLevel: "medium", isProjectTrusted: () => false,
+      model: { provider: "test", id: "vendor/model" },
       modelRegistry: { find: (provider, id) => provider === "test" && id === "vendor/model" ? { provider, id } : undefined },
     };
     await writeFile(script, `
@@ -60,6 +61,7 @@ test("tool loads with a small schema and forwards model/thinking/tools to an awa
     assert.equal(tool.executionMode, "parallel");
     assert.ok(tool.promptGuidelines.includes("Avoid delegating trivial work unless the user explicitly requests delegation, including for testing."));
     assert.deepEqual(Object.keys(tool.parameters.properties).sort(), ["cwd", "label", "model", "task", "thinking", "tools"]);
+    assert.equal(tool.parameters.required.includes("model"), false);
     const result = await tool.execute("test", {
       task: "Plan this", model: "test/vendor/model", thinking: "high", tools: ["read", "grep"],
     }, undefined, undefined, ctx);
@@ -102,6 +104,54 @@ test("only pi-delegate.display enables monitors; legacy environment is ignored a
   } finally {
     if (oldDisplay === undefined) delete process.env.PI_DELEGATE_DISPLAY;
     else process.env.PI_DELEGATE_DISPLAY = oldDisplay;
+  }
+});
+
+test("omitted model uses the configured provider/model, including slashes, and renders the resolved model", async () => {
+  await fixture(async ({ tool, ctx }) => {
+    ctx.modelRegistry.find = (provider, id) => provider === "vercel-ai-gateway" && id === "openai/gpt-6.1-sol";
+    const args = { task: "Inspect" };
+    const result = await tool.execute("test", args, undefined, undefined, ctx);
+    assert.equal(result.isError, false);
+    assert.equal(result.details.model, "vercel-ai-gateway/openai/gpt-6.1-sol");
+    const child = JSON.parse(result.details.output);
+    assert.equal(child.args[child.args.indexOf("--provider") + 1], "vercel-ai-gateway");
+    assert.equal(child.args[child.args.indexOf("--model") + 1], "openai/gpt-6.1-sol");
+    const theme = { fg: (_color, text) => text, bold: (text) => text };
+    const context = { args, state: { details: result.details }, expanded: false };
+    assert.match(tool.renderCall(args, theme, context).render(200)[0], /delegate gpt-6\.1-sol/);
+    context.expanded = true;
+    assert.match(tool.renderCall(args, theme, context).render(200)[0], /delegate vercel-ai-gateway\/openai\/gpt-6\.1-sol/);
+  }, { model: "vercel-ai-gateway/openai/gpt-6.1-sol" });
+});
+
+test("explicit model overrides the configured default without silent fallback", async () => {
+  await fixture(async ({ tool, ctx }) => {
+    const result = await tool.execute("test", { task: "Inspect", model: "test/vendor/model" }, undefined, undefined, ctx);
+    assert.equal(result.details.model, "test/vendor/model");
+    await assert.rejects(tool.execute("test", { task: "Inspect", model: "unknown/model" }, undefined, undefined, ctx), /Unknown model: unknown\/model/);
+  }, { model: "unknown/default" });
+});
+
+test("without a configured model delegates inherit the parent's full provider/model", async () => {
+  for (const config of [undefined, {}, { display: "hidden" }]) {
+    await fixture(async ({ tool, ctx }) => {
+      const result = await tool.execute("test", { task: "Inspect" }, undefined, undefined, ctx);
+      assert.equal(result.isError, false);
+      assert.equal(result.details.model, "test/vendor/model");
+      ctx.model = undefined;
+      await assert.rejects(tool.execute("test", { task: "Inspect" }, undefined, undefined, ctx), /Delegate needs an exact provider\/model ID/);
+    }, config);
+  }
+});
+
+test("invalid configured models fail before queueing rather than silently using the parent", async () => {
+  for (const model of [null, false, 123, {}, [], "", "   ", "model", "/model", "test/", "unknown/model"]) {
+    await fixture(async ({ tool, ctx }) => {
+      let updates = 0;
+      await assert.rejects(tool.execute("test", { task: "Inspect" }, undefined, () => { updates++; }, ctx));
+      assert.equal(updates, 0);
+    }, { model });
   }
 });
 
