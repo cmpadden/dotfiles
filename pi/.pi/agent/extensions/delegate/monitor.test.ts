@@ -5,7 +5,7 @@ import { readFile, stat, mkdtemp, rm, symlink, writeFile } from "node:fs/promise
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
-import { promisify } from "node:util";
+import { promisify, stripVTControlCharacters } from "node:util";
 import { fileURLToPath } from "node:url";
 import { openMonitor } from "./monitor.ts";
 import { initialDetails } from "./runtime.ts";
@@ -26,9 +26,10 @@ test("monitor targets the parent without focus, bounds private snapshots, and cl
   try {
     assert.equal((await stat(path)).mode & 0o777, 0o600);
     assert.equal((await stat(dirname(path))).mode & 0o777, 0o700);
-    monitor.update({ ...details(), status: "running", output: "x".repeat(100000) });
+    monitor.update({ ...details(), status: "running", output: "x".repeat(100000), latestEvent: "→ read file" });
     const state = JSON.parse(await readFile(path, "utf8"));
     assert.equal(state.output.length, 16384);
+    assert.equal(state.latestEvent, "→ read file");
     assert.equal(state.label, "Inspect 'quotes'; $(false)");
   } finally { await monitor.close(); }
   await monitor.close();
@@ -65,9 +66,33 @@ test("closed panes and missing snapshot directories do not break child progress 
 test("viewer formats status/activity/output and strips terminal control sequences", () => {
   assert.equal(safeText("a\x1b[31mb\x1b[0m\x07\r\x1b]52;c;secret\x07"), "ab");
   const text = renderMonitor({ ...details(), label: "Inspect", cost: 0.12, activity: ["→ read file"], output: "Found it" });
-  assert.match(text, /Delegate · queued · 0s · \$0.1200/);
-  assert.match(text, /→ read file/);
-  assert.match(text, /Found it/);
+  assert.deepEqual(stripVTControlCharacters(text).split("\n"), [
+    "Delegate:  Inspect", "Model:     test/model", "Duration:  0s", "Cost:      $0.1200", "", "Found it",
+  ]);
+  for (const label of ["Delegate", "Model", "Duration", "Cost"]) {
+    assert.ok(text.includes(`\x1b[1m${label}\x1b[22m:`));
+  }
+});
+
+test("viewer shows only the latest event, prioritizes errors, and clips without breaking bold labels", () => {
+  const state = { ...details(), label: "Inspect\nfiles\x1b[31m", cost: 0.0012, elapsedMs: 15000,
+    activity: ["→ bash old", "✓ bash"], output: "Old assistant text",
+    latestEvent: "→ bash new command\nlast command line\n",
+  };
+  const text = renderMonitor(state);
+  assert.equal(stripVTControlCharacters(text).split("\n").at(-1), "last command line");
+  assert.ok(text.includes("Delegate\x1b[22m:  Inspect files"));
+  assert.ok(!text.includes("Old assistant text"));
+  assert.ok(!text.includes("\x1b[31m"));
+  assert.equal(stripVTControlCharacters(renderMonitor({ ...state, error: "Failure" })).split("\n").at(-1), "Failure");
+  assert.equal(stripVTControlCharacters(renderMonitor({ ...details(), cost: 0 })).split("\n").at(-1), "Pending activity...");
+  assert.equal(stripVTControlCharacters(renderMonitor({ ...details(), cost: 0, activity: ["→ read file"] })).split("\n").at(-1), "→ read file");
+  for (const width of [3, 12, 40]) {
+    const narrow = renderMonitor(state, width);
+    assert.ok(stripVTControlCharacters(narrow).split("\n").every((line) => Array.from(line).length <= width));
+    assert.equal((narrow.match(/\x1b\[1m/g) || []).length, 4);
+    assert.equal((narrow.match(/\x1b\[22m/g) || []).length, 4);
+  }
 });
 
 test("viewer launched through a Stow-style symlink renders and exits when its snapshot disappears", { timeout: 5000 }, async () => {

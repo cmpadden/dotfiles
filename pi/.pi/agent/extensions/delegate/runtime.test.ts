@@ -71,13 +71,17 @@ test("child arguments pin provider/model, disable extensions, and preserve trust
 test("awaits process exit, streams text/tools, and counts final usage once", async () => {
   let finished = false;
   const updates: string[] = [];
+  const latestEvents: (string | undefined)[] = [];
   const script = [
     emit({ type: "message_start", message: { role: "assistant" } }),
     emit({ type: "message_update", assistantMessageEvent: { type: "text_delta", delta: "Working" } }),
     emit({ type: "tool_execution_start", toolName: "read", args: { path: "README.md" } }),
     `setTimeout(() => { ${emit(message())} }, 250);`,
   ].join("\n");
-  const run = runDelegate(options, undefined, (d) => updates.push(d.output), invocation(script)).then((d) => { finished = true; return d; });
+  const run = runDelegate(options, undefined, (d) => {
+    updates.push(d.output);
+    latestEvents.push(d.latestEvent);
+  }, invocation(script)).then((d) => { finished = true; return d; });
   await delay(170);
   assert.equal(finished, false);
   const result = await run;
@@ -85,6 +89,8 @@ test("awaits process exit, streams text/tools, and counts final usage once", asy
   assert.equal(result.output, "Done");
   assert.ok(updates.includes("Working"));
   assert.ok(result.activity.includes("→ read README.md"));
+  assert.ok(latestEvents.includes("→ read README.md"));
+  assert.equal(result.latestEvent, "Done");
   assert.deepEqual(result.usage, usage);
   assert.equal(result.turns, 1);
 });

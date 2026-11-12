@@ -81,7 +81,7 @@ export async function openMonitor(
         label: label.slice(0, 500), model: state.model, cwd: state.cwd,
         status: state.status, elapsedMs: state.elapsedMs, cost: state.usage.cost.total,
         activity: state.activity.slice(-20), output: state.output.slice(-16384),
-        error: state.error?.slice(-2000),
+        latestEvent: state.latestEvent?.slice(-500), error: state.error?.slice(-2000),
       }), { mode: 0o600 });
       renameSync(`${path}.tmp`, path);
     } catch {

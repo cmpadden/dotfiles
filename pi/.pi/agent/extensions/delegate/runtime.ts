@@ -46,6 +46,7 @@ export interface DelegateDetails {
   output: string;
   stderr: string;
   activity: string[];
+  latestEvent?: string;
   turns: number;
   usage: Usage;
   error?: string;
@@ -123,7 +124,8 @@ function parseEvent(line: string): JsonAgentSessionEvent {
 }
 
 function recordActivity(details: DelegateDetails, text: string) {
-  details.activity.push(text.slice(0, MAX_ACTIVITY_CHARS));
+  details.latestEvent = text.slice(0, MAX_ACTIVITY_CHARS);
+  details.activity.push(details.latestEvent);
   details.activity = details.activity.slice(-MAX_ACTIVITY_ENTRIES);
 }
 
@@ -137,6 +139,7 @@ function applyEvent(event: JsonAgentSessionEvent, details: DelegateDetails, outc
       const delta = event.assistantMessageEvent;
       if (delta.type !== "text_delta") return false;
       details.output = (details.output + delta.delta).slice(-MAX_STREAMED_OUTPUT_CHARS);
+      details.latestEvent = details.output.slice(-MAX_ACTIVITY_CHARS);
       return true;
     }
     case "message_end": {
@@ -150,6 +153,7 @@ function applyEvent(event: JsonAgentSessionEvent, details: DelegateDetails, outc
         .filter((part) => part.type === "text")
         .map((part) => part.text)
         .join("\n");
+      if (details.output.trim()) details.latestEvent = details.output.slice(-MAX_ACTIVITY_CHARS);
       for (const key of USAGE_KEYS) details.usage[key] += message.usage?.[key] ?? 0;
       for (const key of COST_KEYS) details.usage.cost[key] += message.usage?.cost?.[key] ?? 0;
       return true;
