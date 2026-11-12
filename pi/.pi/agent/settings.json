@@ -15,5 +15,8 @@
   "outputPad": 0,
   "autocompleteMaxVisible": 3,
   "quietStartup": true,
-  "tuiMode": "regular"
+  "tuiMode": "regular",
+  "pi-delegate": {
+    "display": "tmux"
+  }
 }

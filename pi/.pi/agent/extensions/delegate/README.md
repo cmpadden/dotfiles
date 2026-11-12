@@ -14,6 +14,7 @@ The tool accepts:
 
 ```ts
 delegate({
+  label: "Plan caching improvements",
   task: "Inspect the caching implementation. Return a plan, relevant files, risks, and validation steps. Do not modify files.",
   model: "provider/model-id",
   thinking: "high",
@@ -21,13 +22,35 @@ delegate({
 })
 ```
 
-Replace `provider/model-id` with an exact ID from `pi --list-models`. Model IDs may themselves contain slashes. `model` and `task` are required; `thinking` inherits the parent's level when omitted (Pi clamps it to the child's model capabilities).
+Replace `provider/model-id` with an exact ID from `pi --list-models`. Model IDs may themselves contain slashes. `label` is a short display summary derived by the calling agent (action + specific targets, up to 80 characters), such as `Rebase PRs #6182–6184`. Keep shared context and constraints in `task`, not the label. No extra model request is needed. Calls without a label fall back to a task preview, including older session entries.
 
-`cwd` selects an **existing directory**, defaulting to the parent's working directory. Relative paths resolve against the parent cwd; absolute paths, `~/` paths, and a leading `@` are supported. Symlinks are resolved and non-directories rejected before starting a child. The canonical path is shown in progress and final results.
+`model` and `task` are required; `thinking` inherits the parent's level when omitted (Pi clamps it to the child's model capabilities).
+
+`cwd` selects an **existing directory**, defaulting to the parent's working directory. Relative paths resolve against the parent cwd; absolute paths, `~/` paths, and a leading `@` are supported. Symlinks are resolved and non-directories rejected before starting a child. The canonical path is shown in expanded progress and final results (Ctrl+O).
 
 `tools` defaults to `read,bash,edit,write`. The optional allowlist accepts `read`, `bash`, `edit`, `write`, `grep`, `find`, and `ls`. Use `read,grep,find,ls` for planning/review without write or shell tools. Bash can modify files even without `edit` or `write`.
 
 For implementation, call delegate again with the implementation model and include the approved plan in the task. There is no implicit handoff or automatic planning/review policy. Keep routing preferences in `AGENTS.md` if desired; this extension does not change them.
+
+## Optional tmux monitor panes
+
+Configure display in Pi's `~/.pi/agent/settings.json` using the extension-owned `pi-delegate` namespace:
+
+```json
+{
+  "pi-delegate": {
+    "display": "tmux"
+  }
+}
+```
+
+Hidden subprocesses remain the default: omit `pi-delegate.display` or set it to `"hidden"` to disable panes. Invalid values also use hidden execution. The extension reads Pi's effective settings through `pi.getSettings()`, including project overrides. Run `/reload` after editing settings; no restart is needed. `PI_DELEGATE_DISPLAY` is no longer used. These extension-owned settings do not automatically appear in Pi's interactive `/settings` menu. There is no display slash command.
+
+The first running delegate opens a monitor **to the right of the parent's `$TMUX_PANE`**, without changing focus. Additional delegates stack vertically within that right-hand column by splitting the tallest surviving monitor; they do not split the Pi pane again. The right-hand monitors are rebalanced to equal heights (within one terminal row) after each launch and automatic close, without resizing Pi or unrelated panes. Concurrent launches and pane cleanup are serialized per parent. Queued delegates do not open panes. The viewer shows the label, model, cwd, status, elapsed time, cost, recent tool activity, and latest text. It is a **read-only monitor**, not another interactive Pi TUI: the actual child remains parent-owned, and results, usage, queueing, and cancellation work exactly as before. Cancel in the parent; closing a monitor manually does not cancel the child.
+
+Panes close automatically when the child finishes, fails, or is cancelled, including during reload/shutdown. Final reports remain in the parent Pi transcript. Missing tmux, an invalid parent pane, or insufficient room for a split falls back to hidden execution (with a UI warning). This does not rearrange unrelated panes or change the window layout globally; with several delegates, monitors may get short. When the last monitor closes, Pi regains the column's width. Manually closed monitors are reconciled before the next split.
+
+Monitor snapshots are bounded, stored in a private temporary directory, and removed after the run. The standalone viewer exits if its parent dies or the snapshot disappears. A forcibly killed parent can leave a temporary directory (and a dead pane if tmux's `remain-on-exit` is enabled); this is not durable background execution. The viewer requires Node.js (or Bun); standalone Pi builds use `node` from PATH.
 
 ## Choosing isolation with Worktrunk
 
@@ -60,7 +83,7 @@ New worktrees contain the selected committed base, **not the parent's uncommitte
 
 - Each call starts a fresh Pi process in its selected working directory. Repository/global context files and normal skill discovery remain available; the parent's conversation is **not** copied.
 - The tool stays pending until the child exits. Up to **three children run concurrently per parent session**; further calls wait in a cancellable FIFO queue. This limit does not cover other Pi sessions. Pi must also be in parallel tool mode: a sequential tool anywhere in the same assistant batch makes that entire batch sequential.
-- Progress is streamed by code, not model-driven polling. Each row shows queued/running/final status, canonical cwd, time spent queued, and child execution time. One-second heartbeats update timing even when the child is quiet. Queueing does not launch a child or consume model tokens.
+- Progress is streamed by code, not model-driven polling. Collapsed rows show just the short model name, queued/running/final status, elapsed time (queue time while queued), rounded cost, and a one-line label. Ctrl+O reveals the full model ID and task, canonical cwd, queue/execution timing, detailed usage, activity, and output. One-second heartbeats update timing even when the child is quiet. Queueing does not launch a child or consume model tokens.
 - Parent and sibling tools can now execute alongside delegates. The parent must avoid writes, staging, branch changes, and conflicting external actions in a workspace used by a child. The extension does not enforce workspace ownership or coordinate other processes.
 - The child uses the running Pi executable/version, normal configured providers, and inherited environment. Extensions, MCP, and prompt templates are disabled. Providers/authentication available **only** through parent extensions or transient parent API-key overrides are not transferred.
 - The parent's current project-trust decision is passed explicitly **only when the canonical selected cwd equals the parent's canonical cwd**. Any different directory, including another worktree or subdirectory, starts with `--no-approve`; a trusted parent does not silently approve another project's dynamic configuration. Global context remains available, but project-local trust-gated resources in a new worktree are not enabled by delegation.
@@ -69,14 +92,14 @@ New worktrees contain the selected committed base, **not the parent's uncommitte
 - Children share the selected checkout and inherited credentials. Isolation exists only when the parent supplies independent worktrees; there is no automatic isolation or parent permission-hook enforcement inside the child. Do not use this where disabling parent security extensions would violate your expectations.
 - Only a normally stopped final text response counts as success. Provider errors, token limits, nonzero exits, invalid JSONL, and missing final responses are errors; available partial text, usage, and bounded stderr are preserved.
 - Output is limited to 50 KiB/2,000 lines. Longer results are saved in a private temporary directory, with the path included in the result. These files are not automatically deleted; remove them when no longer needed. Child sessions are otherwise ephemeral (`--no-session`).
-- Recent tool activity and text stream into the tool row; expand it for more output. Child model usage is returned to Pi's session accounting.
+- Recent tool activity and text stream into the expanded tool row; they are hidden when collapsed. Child model usage is returned to Pi's session accounting.
 
 ## Tests
 
 From the `pi/` Stow package directory, with Node.js 24+ and the managed Pi installation present:
 
 ```sh
-node --test .pi/agent/extensions/delegate/runtime.test.ts .pi/agent/extensions/delegate/index.test.mjs
+node --test .pi/agent/extensions/delegate/runtime.test.ts .pi/agent/extensions/delegate/index.test.mjs .pi/agent/extensions/delegate/monitor.test.ts
 ```
 
-Tests cover overlapping child processes and the three-child cap, queue cancellation/shutdown, cwd resolution and trust boundaries, queued/timing rendering, awaited completion, streaming, model/tool arguments, UTF-8/JSONL framing, usage, errors, truncation, recursion guards, and cancellation/shutdown. They use local fake child processes, not paid model requests. `index.test.mjs` uses the installed Pi extension loader; `runtime.test.ts` tests the process lifecycle independently.
+Tests cover overlapping child processes and the three-child cap, queue cancellation/shutdown, cwd resolution and trust boundaries, queued/timing rendering, awaited completion, streaming, model/tool arguments, UTF-8/JSONL framing, usage, errors, truncation, recursion guards, and cancellation/shutdown. Monitor tests also cover private/bounded snapshots, display fallback, terminal-control sanitization, and a real isolated tmux server (skipped if tmux is unavailable). They use local fake child processes, not paid model requests. `index.test.mjs` uses the installed Pi extension loader; `runtime.test.ts` tests the process lifecycle independently.
