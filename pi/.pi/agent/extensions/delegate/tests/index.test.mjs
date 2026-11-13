@@ -1,27 +1,32 @@
-// Loads the real extension with the installed Pi loader, but uses a fake child
-// CLI. No model requests, credentials, or paid API calls are needed.
+// Loads the package through the pinned development Pi host, using a fake child
+// CLI. No managed Pi installation, model requests, credentials, or paid API calls.
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, realpath, rm, stat, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { stripVTControlCharacters } from "node:util";
 
-const agentDir = fileURLToPath(new URL("../../", import.meta.url));
-const version = (await readFile(join(agentDir, "install/current-version"), "utf8")).trim();
-const loaderPath = join(agentDir, "install/releases", version, "node_modules/@earendil-works/pi-coding-agent/dist/core/extensions/loader.js");
-const { loadExtensions } = await import(pathToFileURL(loaderPath).href);
-const extensionPath = fileURLToPath(new URL("index.ts", import.meta.url));
+// Only tests reach into Pi's internal loader; the extension uses public APIs.
+const loaderUrl = new URL("./core/extensions/loader.js", import.meta.resolve("@earendil-works/pi-coding-agent"));
+const { discoverAndLoadExtensions, loadExtensions } = await import(loaderUrl.href);
+const packagePath = fileURLToPath(new URL("../", import.meta.url));
+const extensionPath = fileURLToPath(new URL("../src/index.ts", import.meta.url));
 
 async function fixture(fn, config) {
   const directory = await mkdtemp(join(tmpdir(), "delegate-extension-test-"));
   const oldScript = process.argv[1];
+  let extension;
   try {
-    const loaded = await loadExtensions([extensionPath], directory);
+    const agentDir = join(directory, "agent");
+    await mkdir(join(agentDir, "extensions"), { recursive: true });
+    await symlink(packagePath, join(agentDir, "extensions", "delegate"), "dir");
+    const loaded = await discoverAndLoadExtensions([], directory, agentDir);
     assert.deepEqual(loaded.errors, []);
+    assert.equal(loaded.extensions.length, 1, "the subfolder manifest loads exactly one extension");
     loaded.runtime.getSettings = () => config === undefined ? {} : { "pi-delegate": config };
-    const extension = loaded.extensions[0];
+    extension = loaded.extensions[0];
     const tool = extension.tools.get("delegate").definition;
     const script = join(directory, "fake-pi.mjs");
     process.argv[1] = script;
@@ -51,12 +56,13 @@ async function fixture(fn, config) {
     `);
     await fn({ tool, ctx, extension, directory });
   } finally {
+    for (const handler of extension?.handlers.get("session_shutdown") ?? []) await handler({ reason: "quit" }, { cwd: directory });
     process.argv[1] = oldScript;
     await rm(directory, { recursive: true, force: true });
   }
 }
 
-test("tool loads with a small schema and forwards model/thinking/tools to an awaited child", async () => {
+test("package manifest loads one tool with a small schema and forwards model/thinking/tools to an awaited child", async () => {
   await fixture(async ({ tool, ctx }) => {
     assert.equal(tool.executionMode, "parallel");
     assert.ok(tool.promptGuidelines.includes("Avoid delegating trivial work unless the user explicitly requests delegation, including for testing."));

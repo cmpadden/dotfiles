@@ -3,8 +3,8 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { childArguments, runDelegate, type DelegateOptions } from "./runtime.ts";
-import { DelegateQueue } from "./queue.ts";
+import { childArguments, runDelegate, type DelegateOptions } from "../src/runtime.ts";
+import { DelegateQueue } from "../src/queue.ts";
 
 const options: DelegateOptions = {
   task: "Inspect this task", provider: "test-provider", model: "vendor/model",

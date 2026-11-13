@@ -7,9 +7,9 @@ import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { promisify, stripVTControlCharacters } from "node:util";
 import { fileURLToPath } from "node:url";
-import { openMonitor } from "./monitor.ts";
-import { initialDetails } from "./runtime.ts";
-import { renderMonitor, safeText } from "./monitor-view.mjs";
+import { openMonitor } from "../src/monitor.ts";
+import { initialDetails } from "../src/runtime.ts";
+import { renderMonitor, safeText } from "../src/monitor-view.mjs";
 
 const details = () => initialDetails({ task: "Inspect", provider: "test", model: "model", cwd: tmpdir(), trusted: false });
 const exec = promisify(execFile);
@@ -99,7 +99,7 @@ test("viewer launched through a Stow-style symlink renders and exits when its sn
   const directory = await mkdtemp(join(tmpdir(), "delegate-viewer-test-"));
   const viewer = join(directory, "viewer.mjs");
   const path = join(directory, "state.json");
-  await symlink(fileURLToPath(new URL("monitor-view.mjs", import.meta.url)), viewer);
+  await symlink(fileURLToPath(new URL("../src/monitor-view.mjs", import.meta.url)), viewer);
   await writeFile(path, JSON.stringify({ ...details(), label: "SYMLINK_MONITOR", cost: 0 }));
   const proc = spawn(process.execPath, [viewer, path, String(process.pid)], { stdio: ["ignore", "pipe", "pipe"] });
   const exited = once(proc, "close");
