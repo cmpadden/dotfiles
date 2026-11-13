@@ -5,10 +5,8 @@ A deliberately small Pi extension for operating native apps through
 We own the Pi adapter, not the native accessibility implementation. This is not
 a desktop chat client or a fork of the published Pi extension.
 
-The package is **private and unpublished**. Its name is
-`@colton.padden/pi-agent-desktop`, under the
+Package: `@colton.padden/pi-agent-desktop`, under the
 [`colton.padden` npm user scope](https://www.npmjs.com/~colton.padden).
-No npm package name has been reserved.
 
 ## Setup
 
@@ -179,22 +177,39 @@ For an opt-in macOS smoke test after installation: `/reload`, ask Pi to check
 request a screenshot. Test mutation only in a disposable document; verify the
 result and check that the default headless call did not steal focus.
 
-## Before publishing
+## Publishing
 
-Nothing publishes automatically. `private: true` intentionally blocks npm
-publication even though `publishConfig.access` is already set to `public`.
+Publication is manual; no release or publish automation is set up.
+`publishConfig.access` is set to `public`, and `npm publish` runs the checks through
+`prepack`. No compilation step is required.
 
-1. Confirm npm is authenticated as `colton.padden` and the package name is available.
-2. Validate the external CLI on real desktop workflows and document compatibility.
-3. Choose the release version, update `CHANGELOG.md`, and remove the unpublished
-   wording from the README/changelog.
-4. Explicitly remove `private: true` and update the private-package test to reflect
-   the release decision. Re-run `npm run check`.
-5. Run `npm pack --dry-run` and audit the file list/content for secrets and runtime
-   state. Only `src/`, `CHANGELOG.md`, and npm's automatically included README,
-   license, and manifest belong in the tarball. Tests, tooling, installed packages,
-   and the development lockfile are not shipped.
-6. Publish manually only when intended; no release or publish automation is set up.
+Before a release:
+
+1. Confirm `npm whoami` reports `colton.padden` and the version is available.
+2. Validate the external CLI on real desktop workflows and document compatibility;
+   the current validation limits are described above.
+3. Choose an unused version and update `CHANGELOG.md`. npm versions cannot be
+   overwritten with different contents.
+4. Run the following commands from this directory, reviewing the dry-run output
+   before the final publish command:
+
+   ```sh
+   npm ci --ignore-scripts
+   npm run check
+   npm publish --dry-run
+   npm publish --access public
+   ```
+
+Audit the package contents for secrets and runtime state before publishing. Only
+`src/`, `CHANGELOG.md`, and npm's automatically included README, license, and
+manifest belong in the tarball. Tests, tooling, installed packages, and the
+development lockfile are not shipped.
+
+After publication, install the matching version with Pi, for example:
+
+```sh
+pi install npm:@colton.padden/pi-agent-desktop@0.1.0
+```
 
 Published code is TypeScript loaded directly by Pi. The package does not bundle
 Pi, TypeBox, or native desktop binaries, and does not run installer/prepare hooks.

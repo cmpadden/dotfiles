@@ -2,7 +2,7 @@
 
 ## [0.1.0]
 
-Initial local prototype; not published to npm.
+Initial release of the desktop accessibility extension.
 
 - Add a typed `desktop` tool backed by the external agent-desktop CLI.
 - Support app/window discovery, snapshots, ref actions, text input, and screenshots.

@@ -9,9 +9,9 @@ const exec = promisify(execFile);
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
 const manifest = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 
-test("manifest is private, scoped, and declares host APIs only as peers/development dependencies", () => {
+test("manifest is publicly publishable, scoped, and declares host APIs only as peers/development dependencies", () => {
   assert.match(manifest.name, /^@[^/]+\/pi-agent-desktop$/);
-  assert.equal(manifest.private, true, "release requires an explicit opt-in");
+  assert.notEqual(manifest.private, true, "public releases must not be marked private");
   assert.equal(manifest.publishConfig.access, "public");
   assert.deepEqual(manifest.pi.extensions, ["./src/index.ts"]);
   assert.deepEqual(manifest.dependencies ?? {}, {});

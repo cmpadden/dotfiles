@@ -1,7 +1,6 @@
 {
   "name": "@colton.padden/pi-agent-desktop",
   "version": "0.1.0",
-  "private": true,
   "description": "A small Pi extension for native desktop accessibility and computer use through agent-desktop",
   "type": "module",
   "license": "MIT",
