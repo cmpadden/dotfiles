@@ -40,4 +40,4 @@ vim.opt.foldlevelstart = 99
 vim.opt.cmdheight = 0
 -- set winbar=%f
 
-vim.opt.number = true
+vim.opt.number = false

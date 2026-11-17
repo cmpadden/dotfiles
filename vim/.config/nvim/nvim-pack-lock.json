@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "alpha-nvim": {
+      "rev": "4ba26e41990c11620c96c0e1cff20eab65efde4a",
+      "src": "https://github.com/goolord/alpha-nvim"
+    },
     "blink-emoji.nvim": {
       "rev": "dff709139ad5389fb55ebab026e75278a12b325a",
       "src": "https://github.com/moyiz/blink-emoji.nvim"
@@ -8,6 +12,10 @@
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
+    },
+    "carbon-now.nvim": {
+      "rev": "2440d007633a5d436ebc9d2b5ef74e4fddd83f15",
+      "src": "https://github.com/ellisonleao/carbon-now.nvim"
     },
     "catppuccin": {
       "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
@@ -26,23 +34,35 @@
       "src": "https://github.com/Mofiqul/dracula.nvim"
     },
     "fzf-lua": {
-      "rev": "05e44d38de0a79c11fba5f7bf8138791b1dbdd1e",
+      "rev": "82ddfe6efc56480c052fd213e0cbb2f024dfd754",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "f2421c550618d257048afa650413d9e542ddbe67",
+      "rev": "c0862d382a35b7b45757d8d151a6a634c09bf3ce",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
+    "goyo.vim": {
+      "rev": "9c72fdf2d202914318581f9f0dd09fd102f8504d",
+      "src": "https://github.com/junegunn/goyo.vim"
+    },
     "leap.nvim": {
-      "rev": "38af0ab56c6eb8757ee6006dd13ab79c2bc11a49",
+      "rev": "277e04fad21e3af05a55cc414757b09a704f2a92",
       "src": "https://codeberg.org/andyg/leap.nvim"
+    },
+    "lightspeed.nvim": {
+      "rev": "fcc72d8a4d5f4ebba62d8a3a0660f88f1b5c3b05",
+      "src": "https://github.com/ggandor/lightspeed.nvim"
+    },
+    "markview.nvim": {
+      "rev": "a6dbc5a4a4828b474c81fbcec11546cbd9000e3b",
+      "src": "https://github.com/OXY2DEV/markview.nvim"
     },
     "nvim-image-paste": {
       "rev": "a7c7e4de201048dfee330e5c32e8669184096fbc",
       "src": "https://github.com/cmpadden/nvim-image-paste"
     },
     "nvim-treesitter": {
-      "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
+      "rev": "b706d642dd20d0922e7e92365dc73617f0fdb4ea",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "vim-easy-align": {
@@ -54,7 +74,7 @@
       "src": "https://github.com/tpope/vim-fugitive"
     },
     "vim-slime": {
-      "rev": "305b4d81ff4630af5137fdeffb54aa0fef14761b",
+      "rev": "375999b91aa9bd227350140d4aedc6d2ff8554ac",
       "src": "https://github.com/jpalardy/vim-slime"
     },
     "vim-surround": {

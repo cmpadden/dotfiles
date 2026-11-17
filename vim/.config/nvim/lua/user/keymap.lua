@@ -50,6 +50,25 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         map("gD", vim.lsp.buf.declaration, "Go to declaration")
         map("gd", vim.lsp.buf.definition, "Go to definition")
+        if client.name == "vtsls" then
+            map("gs", function()
+                local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+                client:request("workspace/executeCommand", {
+                    command = "typescript.goToSourceDefinition",
+                    arguments = { params.textDocument.uri, params.position },
+                }, function(err, result)
+                    if err then
+                        vim.notify(err.message, vim.log.levels.ERROR)
+                    elseif result and #result > 0 then
+                        vim.lsp.util.show_document(
+                            result[1],
+                            client.offset_encoding,
+                            { focus = true }
+                        )
+                    end
+                end)
+            end, "Go to source definition")
+        end
         map("K", function()
             vim.lsp.buf.hover({
                 border = "single",
