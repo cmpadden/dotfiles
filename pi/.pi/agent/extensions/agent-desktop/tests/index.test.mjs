@@ -17,14 +17,14 @@ async function fixture(fn) {
   const binary = join(directory, "fake-desktop");
   const previous = process.env.PI_AGENT_DESKTOP_BIN;
   let extension;
-  const ctx = { cwd: directory };
+  const ctx = { cwd: directory, sessionManager: { getSessionId: () => "integration-session" } };
   try {
     await writeFile(binary, `#!${process.execPath}
       let stdin = ''; for await (const chunk of process.stdin) stdin += chunk;
       const args = process.argv.slice(2);
       const command = args.find(arg => !arg.startsWith('--'));
       console.log(JSON.stringify({version:'2.6',ok:true,command,data:{
-        args,stdin,cwd:process.cwd(),root:process.env.AGENT_DESKTOP_HOME,
+        args,stdin,cwd:process.cwd(),root:process.env.AGENT_DESKTOP_HOME,rendered:true,
         parentSession:process.env.AGENT_DESKTOP_SESSION,
         parentAgent:process.env.AGENT_DESKTOP_AGENT_ID,
       }}));
@@ -62,7 +62,7 @@ test("Pi discovers the subfolder manifest, registers one sequential typed tool, 
     assert.equal(tool.parameters.properties.args, undefined);
     const result = await tool.execute("test", { command: "status" }, undefined, undefined, ctx);
     const { data } = envelope(result);
-    assert.deepEqual(data.args, ["--session=pi", "status"]);
+    assert.deepEqual(data.args, ["--session=pi-integration-session", "status"]);
     assert.equal(data.parentSession, undefined);
     assert.equal(data.parentAgent, undefined);
     assert.ok(data.root.startsWith(tmpdir()));
@@ -75,7 +75,7 @@ test("forwards text only over stdin and opts into headed delivery explicitly", a
     const result = await tool.execute("test", { command: "type", ref: "@s:e1", text, headed: true }, undefined, undefined, ctx);
     const { data } = envelope(result);
     assert.equal(data.stdin, text);
-    assert.deepEqual(data.args, ["--session=pi", "--headed", "type", "--stdin", "--", "@s:e1"]);
+    assert.deepEqual(data.args, ["--session=pi-integration-session", "--headed", "type", "--stdin", "--", "@s:e1"]);
     assert.equal(data.args.includes(text), false);
     const invalid = await tool.execute("test", { command: "status", headed: true }, undefined, undefined, ctx);
     assert.equal(invalid.isError, true);

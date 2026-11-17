@@ -36,7 +36,7 @@ type Envelope = {
 };
 export type DesktopResult = {
   content: ({ type: "text"; text: string } | { type: "image"; data: string; mimeType: string })[];
-  details: { command: string; fullOutputPath?: string; truncated?: boolean };
+  details: { command: string; fullOutputPath?: string; truncated?: boolean; cursorWarning?: string };
   isError?: boolean;
 };
 export type ProcessOptions = {
@@ -112,7 +112,8 @@ function required(value: unknown, field: string, allowEmpty = false): asserts va
   }
 }
 
-export function buildInvocation(input: DesktopInput): { args: string[]; stdin?: string } {
+export function buildInvocation(input: DesktopInput, session: string): { args: string[]; stdin?: string } {
+  if (!/^pi-[A-Za-z0-9_-]+$/.test(session)) throw new Error("Expected a pi-<session-id> namespace");
   if (!COMMANDS.includes(input.command)) throw new Error("Unsupported desktop command");
   const allowed = new Set(["command", "timeoutMs", ...FIELDS[input.command]]);
   for (const [key, value] of Object.entries(input)) {
@@ -154,7 +155,7 @@ export function buildInvocation(input: DesktopInput): { args: string[]; stdin?: 
     if (Buffer.byteLength(input.text) > limit) throw new Error(`text exceeds ${limit} bytes`);
   }
 
-  const args = ["--session=pi", ...(input.headed ? ["--headed"] : []), input.command];
+  const args = [`--session=${session}`, ...(input.headed ? ["--headed"] : []), input.command];
   // '=' prevents a value such as '--headed' from being interpreted as a flag.
   if (input.app) args.push(`--app=${input.app}`);
   if (input.windowId) args.push(`--window-id=${input.windowId}`);
@@ -188,11 +189,15 @@ export class DesktopRuntime {
   private shutdown = new AbortController();
   private directory?: string;
   private closePromise?: Promise<void>;
+  private cursorOptions?: ProcessOptions;
+  private cursorWarning?: string;
+  private session: string;
 
   private binary: string;
   private run: RunProcess;
 
-  constructor(binary = process.env.PI_AGENT_DESKTOP_BIN || "agent-desktop", run: RunProcess = runProcess) {
+  constructor(sessionId: string, binary = process.env.PI_AGENT_DESKTOP_BIN || "agent-desktop", run: RunProcess = runProcess) {
+    this.session = `pi-${sessionId}`;
     this.binary = binary;
     this.run = run;
   }
@@ -202,19 +207,36 @@ export class DesktopRuntime {
     const task = this.tail.then(async () => {
       try {
         combined.throwIfAborted();
-        const invocation = buildInvocation(input);
+        const invocation = buildInvocation(input, this.session);
         this.directory ??= await mkdtemp(join(tmpdir(), "pi-agent-desktop-"));
         combined.throwIfAborted();
         const env: NodeJS.ProcessEnv = { ...process.env, AGENT_DESKTOP_HOME: join(this.directory, "state") };
         // Do not join a caller's snapshot namespace / subagent identity.
         delete env.AGENT_DESKTOP_SESSION;
         delete env.AGENT_DESKTOP_AGENT_ID;
+        if (!this.cursorOptions) {
+          // Presentation only: never opt into headed delivery to draw the overlay.
+          // Retain cleanup options even when enable times out after starting a renderer.
+          this.cursorOptions = { cwd, env, signal: new AbortController().signal, timeout: 5000, maxBuffer: 64 * 1024 };
+          try {
+            const cursor = await this.run(this.binary, [
+              `--session=${this.session}`, "cursor-overlay", "enable", `--label=${this.session}`,
+            ], { ...this.cursorOptions, signal: combined });
+            const envelope = JSON.parse(cursor.stdout) as Envelope;
+            if (cursor.code !== 0 || cursor.stopped || !envelope?.ok || envelope.command !== "cursor-overlay" || envelope.data?.rendered !== true) {
+              this.cursorWarning = "Cursor overlay unavailable; desktop delivery policy is unchanged. Reload to retry cursor setup.";
+            }
+          } catch {
+            this.cursorWarning = "Cursor overlay unavailable; desktop delivery policy is unchanged. Reload to retry cursor setup.";
+          }
+        }
+        combined.throwIfAborted();
         const result = await this.run(this.binary, invocation.args, {
           cwd, env, signal: combined, timeout: input.timeoutMs ?? 15_000,
           maxBuffer: input.command === "screenshot" ? 12 * 1024 * 1024 : 2 * 1024 * 1024,
           stdin: invocation.stdin,
         });
-        if (result.missing) throw new Error("agent-desktop not found. Install agent-desktop@1.3.0 or set PI_AGENT_DESKTOP_BIN to an executable path; then retry status.");
+        if (result.missing) throw new Error("agent-desktop not found. Install agent-desktop@1.3.1 or set PI_AGENT_DESKTOP_BIN to an executable path; then retry status.");
         if (result.stopped || combined.aborted) {
           throw new Error("Desktop command cancelled, timed out, or exceeded its output limit. Delivery may be uncertain: observe the UI before repeating any action.");
         }
@@ -245,6 +267,10 @@ export class DesktopRuntime {
         }
         if (result.code !== 0 && envelope.ok) text += `\n[CLI exited with code ${result.code}; treat this result as a failure.]`;
         content.unshift({ type: "text", text });
+        if (this.cursorWarning) {
+          details.cursorWarning = this.cursorWarning;
+          content.push({ type: "text", text: `[${this.cursorWarning}]` });
+        }
         return { content, details, isError: !envelope.ok || result.code !== 0 };
       } catch (error) {
         // Never stringify subprocess exceptions: they can include command text.
@@ -262,7 +288,14 @@ export class DesktopRuntime {
     this.shutdown.abort();
     return this.closePromise ??= (async () => {
       await this.tail;
-      if (this.directory) await rm(this.directory, { recursive: true, force: true });
+      try {
+        if (this.cursorOptions) {
+          // Shutdown has aborted tool work; cleanup needs its own bounded signal.
+          await this.run(this.binary, [`--session=${this.session}`, "cursor-overlay", "disable"], this.cursorOptions);
+        }
+      } finally {
+        if (this.directory) await rm(this.directory, { recursive: true, force: true });
+      }
     })();
   }
 }

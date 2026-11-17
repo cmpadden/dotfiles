@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 import { test, type TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import {
-  buildInvocation, DesktopRuntime, runProcess,
+  buildInvocation as scopedInvocation, DesktopRuntime, runProcess,
   type DesktopInput, type ProcessOptions, type ProcessResult, type RunProcess,
 } from "../src/runtime.ts";
 
@@ -14,32 +14,40 @@ function reply(command: string, data: Record<string, unknown> = {}): ProcessResu
 function text(result: Awaited<ReturnType<DesktopRuntime["execute"]>>) {
   return result.content.filter((c) => c.type === "text").map((c) => c.text).join("\n");
 }
+function buildInvocation(input: DesktopInput) {
+  return scopedInvocation(input, "pi-test-session");
+}
 function fixture(t: TestContext, run: RunProcess) {
-  const runtime = new DesktopRuntime("fake-agent-desktop", run);
+  const runtime = new DesktopRuntime("test-session", "fake-agent-desktop", async (binary, args, options) => {
+    if (args[1] === "cursor-overlay") return reply("cursor-overlay", { rendered: true });
+    return run(binary, args, options);
+  });
   t.after(() => runtime.close());
   return runtime;
 }
 
 test("builds scoped commands and safe positional arguments", () => {
-  assert.deepEqual(buildInvocation({ command: "status" }).args, ["--session=pi", "status"]);
+  assert.throws(() => scopedInvocation({ command: "status" }, "pi"), /namespace/);
+  assert.throws(() => scopedInvocation({ command: "status" }, "pi-../escape"), /namespace/);
+  assert.deepEqual(buildInvocation({ command: "status" }).args, ["--session=pi-test-session", "status"]);
   assert.deepEqual(buildInvocation({ command: "snapshot", app: "--headed" }).args, [
-    "--session=pi", "snapshot", "--app=--headed", "--compact", "--max-depth=6", "--interactive-only",
+    "--session=pi-test-session", "snapshot", "--app=--headed", "--compact", "--max-depth=6", "--interactive-only",
   ]);
   assert.deepEqual(buildInvocation({ command: "snapshot", root: "@s123:e4", interactiveOnly: false, maxDepth: 3, skeleton: true }).args, [
-    "--session=pi", "snapshot", "--compact", "--max-depth=3", "--skeleton", "--root=@s123:e4",
+    "--session=pi-test-session", "snapshot", "--compact", "--max-depth=3", "--skeleton", "--root=@s123:e4",
   ]);
   const input = { command: "type", ref: "@s123:e4", text: "--headed\n$(touch /tmp/nope)", headed: true } as const;
   const invocation = buildInvocation(input);
-  assert.deepEqual(invocation.args, ["--session=pi", "--headed", "type", "--stdin", "--", "@s123:e4"]);
+  assert.deepEqual(invocation.args, ["--session=pi-test-session", "--headed", "type", "--stdin", "--", "@s123:e4"]);
   assert.equal(invocation.stdin, input.text);
   assert.deepEqual(buildInvocation({ command: "press", keys: "--headed", windowId: "12" }).args, [
-    "--session=pi", "press", "--window-id=12", "--", "--headed",
+    "--session=pi-test-session", "press", "--window-id=12", "--", "--headed",
   ]);
   assert.deepEqual(buildInvocation({ command: "scroll", ref: "@s:e1" }).args, [
-    "--session=pi", "scroll", "--direction=down", "--amount=3", "--", "@s:e1",
+    "--session=pi-test-session", "scroll", "--direction=down", "--amount=3", "--", "@s:e1",
   ]);
   assert.deepEqual(buildInvocation({ command: "get", ref: "@s:e1", property: "value" }).args, [
-    "--session=pi", "get", "--property=value", "--", "@s:e1",
+    "--session=pi-test-session", "get", "--property=value", "--", "@s:e1",
   ]);
   assert.equal(buildInvocation({ command: "set-value", ref: "@s:e1", text: "" }).stdin, "");
 });
@@ -67,7 +75,7 @@ test("creates private isolated state lazily, preserves envelope, and cleans up",
   const calls: ProcessOptions[] = [];
   const runtime = fixture(t, async (binary, args, options) => {
     assert.equal(binary, "fake-agent-desktop");
-    assert.deepEqual(args, ["--session=pi", "status"]);
+    assert.deepEqual(args, ["--session=pi-test-session", "status"]);
     calls.push(options);
     return reply("status", { permissions: { accessibility: false } });
   });
@@ -201,6 +209,83 @@ test("shutdown aborts active work, skips queued work, and removes state after ex
   assert.equal((await second).isError, true);
   assert.equal(calls, 1);
   await assert.rejects(access(dirname(root)));
+});
+
+test("enables cursors once per Pi namespace and disables before removing state", async (t) => {
+  const calls: { args: string[]; options: ProcessOptions }[] = [];
+  const runtime = new DesktopRuntime("cursor-test", "fake", async (_binary, args, options) => {
+    calls.push({ args, options });
+    await access(dirname(options.env.AGENT_DESKTOP_HOME!));
+    return reply(args[1], { rendered: true });
+  });
+  t.after(() => runtime.close());
+  assert.equal(calls.length, 0);
+  await runtime.execute({ command: "status" }, process.cwd());
+  await runtime.execute({ command: "status" }, process.cwd());
+  await Promise.all([runtime.close(), runtime.close()]);
+  assert.deepEqual(calls.map(c => c.args), [
+    ["--session=pi-cursor-test", "cursor-overlay", "enable", "--label=pi-cursor-test"],
+    ["--session=pi-cursor-test", "status"],
+    ["--session=pi-cursor-test", "status"],
+    ["--session=pi-cursor-test", "cursor-overlay", "disable"],
+  ]);
+  assert.equal(calls[3].options.signal.aborted, false);
+  assert.ok(calls.every(c => c.options.env.AGENT_DESKTOP_HOME === calls[0].options.env.AGENT_DESKTOP_HOME));
+  await assert.rejects(access(dirname(calls[0].options.env.AGENT_DESKTOP_HOME!)));
+});
+
+test("cursor failures do not block observations or change action delivery", async (t) => {
+  for (const failure of [
+    { stdout: "", stderr: "unsupported", code: 1 },
+    reply("cursor-overlay", { rendered: false }),
+    { stdout: "", stderr: "", code: 1, stopped: true },
+  ]) {
+    const calls: string[][] = [];
+    const runtime = new DesktopRuntime("cursor-failure", "fake", async (_binary, args) => {
+      calls.push(args);
+      return args[1] === "cursor-overlay" ? failure : reply(args[1]);
+    });
+    t.after(() => runtime.close());
+    const result = await runtime.execute({ command: "status" }, process.cwd());
+    assert.equal(result.isError, false);
+    assert.match(result.details.cursorWarning!, /unavailable/);
+    const action = await runtime.execute({ command: "click", ref: "@s:e1" }, process.cwd());
+    assert.equal(action.isError, false);
+    assert.deepEqual(calls[2], ["--session=pi-cursor-failure", "click", "--", "@s:e1"]);
+    assert.equal(calls.filter(args => args.includes("enable")).length, 1);
+    await runtime.close();
+    assert.equal(calls.at(-1)![2], "disable");
+  }
+});
+
+test("shutdown during cursor setup still disables the renderer without delivering the command", async () => {
+  let started!: () => void;
+  const ready = new Promise<void>(resolve => { started = resolve; });
+  const calls: string[][] = [];
+  const runtime = new DesktopRuntime("cancel-setup", "fake", async (_binary, args, options) => {
+    calls.push(args);
+    if (args[2] === "enable") {
+      started();
+      await new Promise<void>(resolve => options.signal.addEventListener("abort", () => resolve(), { once: true }));
+      return { stdout: "", stderr: "", code: 1, stopped: true };
+    }
+    assert.equal(options.signal.aborted, false);
+    return reply("cursor-overlay");
+  });
+  const pending = runtime.execute({ command: "status" }, process.cwd());
+  await ready;
+  await runtime.close();
+  assert.equal((await pending).isError, true);
+  assert.deepEqual(calls.map(args => args[2]), ["enable", "disable"]);
+});
+
+test("invalid or pre-cancelled calls never start a cursor renderer", async () => {
+  let calls = 0;
+  const runtime = new DesktopRuntime("unused", "fake", async () => { calls++; return reply("status"); });
+  await runtime.execute({ command: "click" }, process.cwd());
+  await runtime.execute({ command: "status" }, process.cwd(), AbortSignal.abort());
+  await runtime.close();
+  assert.equal(calls, 0);
 });
 
 function processOptions(overrides: Partial<ProcessOptions> = {}): ProcessOptions {

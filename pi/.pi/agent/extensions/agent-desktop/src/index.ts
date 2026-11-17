@@ -8,8 +8,8 @@ function stringEnum<const T extends readonly string[]>(values: T) {
 }
 
 export default function (pi: ExtensionAPI) {
-  const runtime = new DesktopRuntime();
-  pi.on("session_shutdown", () => runtime.close());
+  let runtime: DesktopRuntime | undefined;
+  pi.on("session_shutdown", () => runtime?.close());
 
   pi.registerTool({
     name: "desktop",
@@ -22,7 +22,8 @@ export default function (pi: ExtensionAPI) {
       "press (keys, app/windowId); scroll (ref, optional direction/amount); screenshot (app/windowId).",
       "No raw CLI args, shell, or JavaScript. Text output is capped at 50 KiB/2000 lines;",
       "overflow JSON is saved privately until reload/shutdown. Screenshots attach PNGs, max 8 MiB.",
-      "Requires an installed agent-desktop CLI (reference version 1.3.0).",
+      "Uses a pi-<session-id> namespace and enables a presentation-only cursor overlay on first use.",
+      "Requires an installed agent-desktop CLI (reference version 1.3.1).",
     ].join(" "),
     promptSnippet: "Observe and operate native desktop apps using accessibility refs; capture window screenshots",
     promptGuidelines: [
@@ -51,6 +52,7 @@ export default function (pi: ExtensionAPI) {
       timeoutMs: Type.Optional(Type.Integer({ minimum: 100, maximum: 60_000, description: "Whole CLI process deadline, default 15000 ms. Does not extend upstream's internal action/traversal deadlines." })),
     }, { additionalProperties: false }),
     async execute(_toolCallId, input, signal, _onUpdate, ctx) {
+      runtime ??= new DesktopRuntime(ctx.sessionManager.getSessionId());
       return runtime.execute(input, ctx.cwd, signal);
     },
   });

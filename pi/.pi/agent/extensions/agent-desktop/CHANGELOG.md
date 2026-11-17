@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Update the external agent-desktop CLI reference/install recommendation to 1.3.1 (unchanged 2.6 envelope).
+- Scope desktop commands to `pi-<Pi session ID>` instead of a fixed `pi` namespace.
+- Enable a labeled presentation-only cursor overlay lazily, without changing headless delivery.
+- Warn if cursor rendering is unavailable and disable the overlay on reload/shutdown.
+
 ## [0.1.0]
 
 Initial release of the desktop accessibility extension.

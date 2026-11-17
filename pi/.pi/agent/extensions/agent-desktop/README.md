@@ -13,14 +13,19 @@ Package: `@colton.padden/pi-agent-desktop`, under the
 Install the CLI separately; the extension never downloads or installs anything:
 
 ```sh
-npm install -g agent-desktop@1.3.0
+npm install -g agent-desktop@1.3.1
 agent-desktop status
 agent-desktop permissions --guide
 ```
 
-The adapter was written against the **1.3.0 CLI / 2.6 JSON envelope** source
-contract. Tests use fake executables; real desktop behavior is not yet validated.
-Other CLI versions are not blocked, but may change behavior or payloads. If npm's
+The reference version is **1.3.1 CLI / 2.6 JSON envelope**, updated from 1.3.0.
+[Upstream 1.3.1](https://github.com/vercel-labs/agent-desktop/compare/v1.3.0...v1.3.1)
+fixes macOS sandbox lifetime and updates Linux's rustix dependency for a security
+advisory; it does not change the adapter's commands or cursor-overlay API.
+Tests use fake executables. Slack screenshots/navigation were exercised with
+1.3.0; cursor rendering reported unavailable. Version 1.3.1 has not yet been
+live-validated. Other CLI versions are not blocked, but may change behavior or
+payloads. If npm's
 `min-release-age` policy excludes the pinned release, wait for it to become
 eligible rather than assuming an older CLI has the same contract.
 
@@ -58,7 +63,19 @@ the extension never requests permissions itself.
 ## Tool
 
 One tool named `desktop`, with explicit operations and no arbitrary argument or
-JavaScript escape hatch:
+JavaScript escape hatch. Its namespace is `pi-<Pi session ID>`, obtained from Pi's
+session manager rather than inherited shell state.
+
+On the first valid tool call, the extension enables a **presentation-only cursor
+overlay**, labeled with that namespace. It does not enable physical input or take
+focus: actions remain headless unless explicitly given `headed: true`. Cursor
+setup is best-effort (with a separate 5-second deadline); unsupported or unavailable
+renderers produce a warning without blocking desktop commands. Setup is attempted
+once per runtime; `/reload` retries it. Shutdown/reload attempts to disable the
+overlay before deleting private state. No multi-agent mode or concurrent desktop
+delegation is enabled.
+
+Available operations:
 
 | Command | Inputs |
 | --- | --- |
@@ -109,8 +126,10 @@ persistence; upstream's `disposition` and verification fields remain intact.
   external CLI calls, or a human interacting with the same desktop. Avoid
   concurrent desktop delegation. Do not batch dependent actions using refs that
   may become stale before they execute.
-- Each instance uses a private temporary `AGENT_DESKTOP_HOME` and explicit session
-  namespace. Inherited agent/session identities are removed. Snapshot refs do not
+- Each instance uses a private temporary `AGENT_DESKTOP_HOME` and explicit
+  `pi-<Pi session ID>` namespace. Inherited agent/session identities are removed.
+  Separate Pi sessions get separate cursor overlays and snapshot namespaces, not
+  separate OS pointers or desktops. Snapshot refs do not
   survive `/reload`, new/resumed sessions, or process restarts; always resnapshot.
 - Abort, deadline and output limits terminate the CLI. A cancellation cannot undo
   an already-delivered action. Upstream helpers may have their own lifecycles.
@@ -166,7 +185,8 @@ installed as runtime dependencies for consumers. Installed dependencies and
 local package archives are gitignored.
 
 Tests cover command construction, stdin/flag isolation, structured errors,
-screenshots, truncation/cleanup, serialization/cancellation, subprocess limits,
+screenshots, truncation/cleanup, serialization/cancellation, cursor setup/failure/
+shutdown, Pi session namespacing, subprocess limits,
 real Pi subfolder-manifest discovery, and the npm tarball allowlist. Integration
 tests resolve the loader from the pinned development dependency. No model
 requests, installed desktop CLI, permissions, or live GUI interaction required.
