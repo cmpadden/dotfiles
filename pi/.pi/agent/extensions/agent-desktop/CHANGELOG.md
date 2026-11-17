@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## [0.1.1] - 2026-11-17
 
+- Validate against Pi 1.5.2 and add opt-in real CLI 1.3.1 metadata/help contract checks without GUI actions.
 - Update the external agent-desktop CLI reference/install recommendation to 1.3.1 (unchanged 2.6 envelope).
 - Scope desktop commands to `pi-<Pi session ID>` instead of a fixed `pi` namespace.
 - Enable a labeled presentation-only cursor overlay lazily, without changing headless delivery.

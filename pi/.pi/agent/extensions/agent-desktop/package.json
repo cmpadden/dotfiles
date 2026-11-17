@@ -1,6 +1,6 @@
 {
   "name": "@colton.padden/pi-agent-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A small Pi extension for native desktop accessibility and computer use through agent-desktop",
   "type": "module",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "typebox": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@earendil-works/pi-coding-agent": "1.5.2",
     "@types/node": "^24.0.0",
     "typebox": "1.3.27",
     "typescript": "5.9.3"

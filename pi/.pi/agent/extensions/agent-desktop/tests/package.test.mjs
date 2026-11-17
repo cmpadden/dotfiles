@@ -19,7 +19,7 @@ test("manifest is publicly publishable, scoped, and declares host APIs only as p
     "@earendil-works/pi-coding-agent": "*",
     typebox: "*",
   });
-  assert.equal(manifest.devDependencies["@earendil-works/pi-coding-agent"], "1.5.0", "pin the loader used by integration tests");
+  assert.equal(manifest.devDependencies["@earendil-works/pi-coding-agent"], "1.5.2", "pin the loader used by integration tests");
   assert.equal(manifest.scripts.prepare, undefined, "consumer installation must not require development tools");
 });
 

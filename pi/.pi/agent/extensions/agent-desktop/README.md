@@ -22,10 +22,12 @@ The reference version is **1.3.1 CLI / 2.6 JSON envelope**, updated from 1.3.0.
 [Upstream 1.3.1](https://github.com/vercel-labs/agent-desktop/compare/v1.3.0...v1.3.1)
 fixes macOS sandbox lifetime and updates Linux's rustix dependency for a security
 advisory; it does not change the adapter's commands or cursor-overlay API.
-Tests use fake executables. Slack screenshots/navigation were exercised with
-1.3.0; cursor rendering reported unavailable. Version 1.3.1 has not yet been
-live-validated. Other CLI versions are not blocked, but may change behavior or
-payloads. If npm's
+The adapter typechecks and its loader integration tests pass against **Pi 1.5.2**.
+An opt-in contract test also checks the real macOS arm64 **1.3.1** binary's version
+and 2.6 envelope, plus command/overlay flags through `--help`, without operating
+apps. This is not end-to-end GUI validation: Slack screenshots/navigation were
+exercised with 1.3.0; cursor rendering reported unavailable. Other CLI versions
+are not blocked, but may change behavior or payloads. If npm's
 `min-release-age` policy excludes the pinned release, wait for it to become
 eligible rather than assuming an older CLI has the same contract.
 
@@ -189,7 +191,17 @@ screenshots, truncation/cleanup, serialization/cancellation, cursor setup/failur
 shutdown, Pi session namespacing, subprocess limits,
 real Pi subfolder-manifest discovery, and the npm tarball allowlist. Integration
 tests resolve the loader from the pinned development dependency. No model
-requests, installed desktop CLI, permissions, or live GUI interaction required.
+requests, installed desktop CLI, permissions, or live GUI interaction required
+for the default suite. The real-CLI contract test is skipped unless explicitly
+configured; it only runs metadata/help commands, not desktop actions:
+
+```sh
+PI_AGENT_DESKTOP_TEST_BIN=/absolute/path/to/agent-desktop npm run check
+```
+
+Install/download the reference CLI separately; this test never installs it or
+changes your global CLI. It asserts CLI 1.3.1 / envelope 2.6 so a future reference
+upgrade requires an explicit compatibility review.
 The fake executable fixture currently targets macOS/Linux.
 
 For an opt-in macOS smoke test after installation: `/reload`, ask Pi to check
@@ -228,7 +240,7 @@ development lockfile are not shipped.
 After publication, install the matching version with Pi, for example:
 
 ```sh
-pi install npm:@colton.padden/pi-agent-desktop@0.1.0
+pi install npm:@colton.padden/pi-agent-desktop@0.1.1
 ```
 
 Published code is TypeScript loaded directly by Pi. The package does not bundle
