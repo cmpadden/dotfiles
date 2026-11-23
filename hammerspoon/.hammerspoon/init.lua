@@ -18,6 +18,7 @@ require("modules.caffeine")
 
 local glass_toast = require("modules.glass_toast")
 local helpers = require("modules.helpers")
+local mouse_grid = require("modules.mouse_grid")
 local wm = require("modules.wm")
 
 -- Configure applications that should be ignored by window management
@@ -72,9 +73,12 @@ wm.config.layouts = {
 
 wm:init()
 
--- Preserve window-state persistence while closing the native chooser on reload.
+mouse_grid.bind(HYPER, "g")
+
+-- Clean up overlays without replacing window-state persistence on reload.
 local save_window_state = hs.shutdownCallback
 hs.shutdownCallback = function()
+    mouse_grid.shutdown()
     require("modules.chooser").shutdown()
     if save_window_state then
         save_window_state()

@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := test
-.PHONY: test format native preview-glass test-glass-geometry
+.PHONY: test format native preview-glass test-glass-geometry test-mouse-grid
 
 NATIVE_BINARIES := native/.build/glass-toast native/.build/native-chooser
 SWIFT_FLAGS ?= -O
@@ -24,7 +24,10 @@ preview-glass: native
 test-glass-geometry: native/.build/test-glass-geometry
 	native/.build/test-glass-geometry
 
-test: test-glass-geometry
+test-mouse-grid:
+	hs -c "assert(dofile(hs.configdir .. '/tests/test_mouse_grid.lua').run())"
+
+test: test-glass-geometry test-mouse-grid
 	hs -c "dofile(hs.configdir .. '/tests/test_chooser.lua').run()"
 	hs -c "dofile(hs.configdir .. '/tests/test_launcher.lua').run()"
 	hs -c "dofile(hs.configdir .. '/tests/test_glass_toast.lua').run()"
