@@ -18,10 +18,10 @@ make native
 make preview-glass
 ```
 
-To preview startup/reload feedback:
+To preview the centered layout:
 
 ```sh
-native/.build/glass-toast centered-card "Hammerspoon Reloaded" arrow.clockwise 4 \
+native/.build/glass-toast centered-card "Changes Saved" checkmark 4 \
   "Your configuration is ready." blue
 ```
 
@@ -36,16 +36,14 @@ This short-lived process is intentionally a prototype, not a persistent service.
 
 ## Hammerspoon integration
 
-Stow the `hammerspoon` package so `~/.hammerspoon/native` points here, build,
-then reload Hammerspoon. Startup/reload uses the native toast with an
-`arrow.clockwise` SF Symbol and blue tint. Caffeine (Cmd+Ctrl+0) uses its own
-matte canvas HUD and does not require the native helper. Reload feedback falls
-back to canvas if the binary is missing or fails to run.
+Caffeine (Cmd+Ctrl+0) and startup/reload feedback both use the matte canvas HUD
+in `modules/island_hud.lua`, with a shared `hud_position` setting in `init.lua`.
+Neither requires the native toast. The glass helper remains available for
+standalone previews or callers that want either glass layout.
 
 The generated executable lives in ignored `native/.build/`. Rebuild after source
 changes; builds replace the executable atomically, and a binary is not distributed
-or committed. To disable the prototype, remove `native/.build/glass-toast`;
-reload feedback will use the canvas again.
+or committed.
 
 ## Corner geometry
 
