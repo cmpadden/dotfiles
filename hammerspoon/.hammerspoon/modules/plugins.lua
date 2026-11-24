@@ -1,6 +1,12 @@
 hs.loadSpoon("SpoonInstall")
 
-spoon.SpoonInstall:andUse("ReloadConfiguration", { start = true })
+-- Stow links the config into $HOME. FSEvents does not follow those links into the checkout.
+local init_path = hs.fs.pathToAbsolute(hs.configdir .. "/init.lua")
+local source_dir = init_path and init_path:match("^(.+)/[^/]+$") or hs.configdir
+spoon.SpoonInstall:andUse("ReloadConfiguration", {
+    config = { watch_paths = { source_dir } },
+    start = true,
+})
 
 spoon.SpoonInstall:andUse("LookupSelection", { hotkeys = { lexicon = { HYPER, "d" } } })
 
