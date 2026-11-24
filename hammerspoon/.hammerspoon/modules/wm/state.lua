@@ -1,10 +1,7 @@
---- Persistent per-layout window geometry state.
+--- Persistent layout selection and per-layout window geometries.
 --
--- State shape: { [layout_index] = { [window_key] = geometry_index } }
---
--- JSON objects only support string keys, so numeric layout indices are
--- converted back to numbers on load; without that conversion every lookup
--- silently misses after a save/load round trip.
+-- The JSON object has an optional active_layout field alongside the legacy
+-- layout-index keys. Geometry keys are strings on disk and numbers in memory.
 
 local State = {}
 State.__index = State
@@ -55,7 +52,11 @@ function State:cleanup(active_window_keys)
 end
 
 function State:save()
-    if hs.json.write(self.data, self.path, true, true) then
+    local raw = { active_layout = self.active_layout }
+    for layout, windows in pairs(self.data) do
+        raw[tostring(layout)] = windows
+    end
+    if hs.json.write(raw, self.path, true, true) then
         return true
     end
     return false, string.format("wm: could not write state to %s", self.path)
@@ -69,7 +70,7 @@ function State:load()
 
     local data = {}
     for layout, windows in pairs(raw) do
-        if type(windows) == "table" then
+        if layout ~= "active_layout" and type(windows) == "table" then
             local entries = {}
             for window_key, index in pairs(windows) do
                 local numeric_index = tonumber(index)
@@ -81,6 +82,7 @@ function State:load()
         end
     end
     self.data = data
+    self.active_layout = tonumber(raw.active_layout)
     return true
 end
 

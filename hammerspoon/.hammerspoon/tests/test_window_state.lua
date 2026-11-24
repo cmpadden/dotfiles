@@ -39,18 +39,27 @@ function test.run()
     check("other app does not match", ignore["Firefox"] == nil)
     check("empty list matches nothing", util.build_set(nil)["zoom.us"] == nil)
 
-    -- State save/load round trip preserving numeric layout keys
-    local path = os.tmpname() .. ".json"
+    -- State save/load round trip with sparse layout keys and a selected layout
+    -- that has no cached windows yet.
+    local path = os.tmpname()
     local original = state.new(path)
+    original.active_layout = 3
     original:set_index(1, "Ghostty_7", 2)
-    original:set_index(2, "Firefox_123", 3)
+    original:set_index(5, "Firefox_123", 3)
     check("save succeeds", (original:save()))
 
     local restored = state.new(path)
     check("load succeeds", (restored:load()))
-    check("numeric layout keys survive round trip", restored:get_index(2, "Firefox_123") == 3)
-    check("sequential layout keys survive round trip", restored:get_index(1, "Ghostty_7") == 2)
-    check("unknown window defaults to first geometry", restored:get_index(2, "missing") == 1)
+    check("selected layout survives round trip", restored.active_layout == 3)
+    check("sparse layout keys survive round trip", restored:get_index(5, "Firefox_123") == 3)
+    check("first layout survives round trip", restored:get_index(1, "Ghostty_7") == 2)
+    check("unknown window defaults to first geometry", restored:get_index(3, "missing") == 1)
+
+    -- Old state files have geometry slots but no selected layout.
+    check("legacy file written", hs.json.write({ { Ghostty_7 = 3 } }, path, true, true))
+    check("legacy file loads", restored:load())
+    check("legacy selection is absent", restored.active_layout == nil)
+    check("legacy geometry slots are preserved", restored:get_index(1, "Ghostty_7") == 3)
     os.remove(path)
 
     -- Missing state file is guarded

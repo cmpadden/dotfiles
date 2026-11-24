@@ -29,7 +29,7 @@ local obj = {
         -- slow path; the AXEnhancedUserInterface fix in actions.lua already
         -- addresses the Firefox resize issue it was originally enabled for.
         set_frame_correctness = false,
-        -- Persist window state via hs.shutdownCallback and restore it on init.
+        -- Persist the selected layout and window slots on shutdown; restore on init.
         auto_persist_state = true,
         layouts = {},
         application_ignore_list = {},
@@ -93,6 +93,7 @@ end
 
 function obj:save_state(quiet)
     self.state:cleanup(active_window_keys())
+    self.state.active_layout = self.layout
     local ok, err = self.state:save()
     if quiet then
         return
@@ -106,6 +107,14 @@ end
 
 function obj:load_state(quiet)
     local ok, err = self.state:load()
+    local saved_layout = ok and self.state.active_layout
+    if saved_layout and self.layouts[saved_layout] then
+        if quiet then
+            self.layout = saved_layout
+        else
+            self:set_layout(saved_layout)
+        end
+    end
     if quiet then
         return
     end
