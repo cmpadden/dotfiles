@@ -3,8 +3,9 @@ local task
 local log = hs.logger.new("glass_toast", "warning")
 
 -- Build explicitly with `make native`; never compile on the hotkey path.
--- kind: "enabled", "disabled", or "reload".
-function obj:show(kind, title, fallback)
+-- options: layout ("compact-bottom" or "centered-card"), title, and SF Symbol name;
+-- optional duration, detail (centered card only), and tint ("label" or "blue").
+function obj:show(options, fallback)
     -- Cancel before checking the binary so a fallback also replaces the old toast.
     local previous = task
     task = nil
@@ -28,7 +29,14 @@ function obj:show(kind, title, fallback)
             log.w("Native toast failed: " .. tostring(stderr))
             fallback()
         end
-    end, { kind, title, "2" })
+    end, {
+        options.layout,
+        options.title,
+        options.symbol,
+        tostring(options.duration or 2),
+        options.detail or "",
+        options.tint or "label",
+    })
     task = next_task
     if not next_task or not next_task:start() then
         task = nil

@@ -14,10 +14,10 @@ hs.alert.defaultStyle.fadeOutDuration = 2
 
 require("modules.plugins")
 -- require("modules.alerts")
-require("modules.caffeine")
+local hud_position = "top" -- "top" or "bottom" for caffeine and reload feedback
+local island_hud = require("modules.island_hud")
+require("modules.caffeine").bind(HYPER, "0", { position = hud_position })
 
-local glass_toast = require("modules.glass_toast")
-local helpers = require("modules.helpers")
 local mouse_grid = require("modules.mouse_grid")
 local wm = require("modules.wm")
 
@@ -78,6 +78,7 @@ mouse_grid.bind(HYPER, "g")
 -- Clean up overlays without replacing window-state persistence on reload.
 local save_window_state = hs.shutdownCallback
 hs.shutdownCallback = function()
+    island_hud.dismiss()
     mouse_grid.shutdown()
     require("modules.chooser").shutdown()
     if save_window_state then
@@ -98,6 +99,4 @@ end)
 -- The CLI itself is installed separately, so do not recheck/reinstall it on reload.
 require("hs.ipc")
 
-glass_toast:show("reload", "Hammerspoon Reloaded", function()
-    helpers:show("Hammerspoon Reloaded")
-end)
+island_hud.show("Hammerspoon Reloaded", hud_position)

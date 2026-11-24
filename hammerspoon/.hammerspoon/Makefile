@@ -17,9 +17,9 @@ $(NATIVE_BINARIES) native/.build/test-glass-geometry: native/GlassBackground.swi
 	xcrun swiftc $(SWIFT_FLAGS) -target "$$(uname -m)-apple-macosx13.0" -framework AppKit $^ -o $@.tmp
 	mv -f $@.tmp $@
 
-# Visual preview only; does not change caffeine state.
+# Visual preview only.
 preview-glass: native
-	native/.build/glass-toast enabled "Caffeine Enabled" 4
+	native/.build/glass-toast compact-bottom "Muted" speaker.slash 4
 
 test-glass-geometry: native/.build/test-glass-geometry
 	native/.build/test-glass-geometry

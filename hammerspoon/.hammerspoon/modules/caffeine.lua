@@ -1,12 +1,17 @@
-local glass_toast = require("modules.glass_toast")
-local helpers = require("modules.helpers")
+local island_hud = require("modules.island_hud")
+local obj = {}
 
-hs.hotkey.bind(HYPER, "0", function()
-    hs.caffeinate.toggle("displayIdle")
-    local enabled = hs.caffeinate.get("displayIdle")
-    local title = enabled and "Caffeine Enabled" or "Caffeine Disabled"
-    local style = enabled and helpers.styles.success or helpers.styles.error
-    glass_toast:show(enabled and "enabled" or "disabled", title, function()
-        helpers:show(title, nil, style)
+function obj.bind(modifiers, key, options)
+    local position = (options or {}).position or "bottom"
+    assert(
+        position == "top" or position == "bottom",
+        'Caffeine HUD position must be "top" or "bottom"'
+    )
+    return hs.hotkey.bind(modifiers, key, function()
+        hs.caffeinate.toggle("displayIdle")
+        local enabled = hs.caffeinate.get("displayIdle")
+        island_hud.show(enabled and "Caffeine Enabled" or "Caffeine Disabled", position)
     end)
-end)
+end
+
+return obj
