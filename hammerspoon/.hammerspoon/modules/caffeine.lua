@@ -2,8 +2,10 @@ local obj = {}
 local width, height = 200, 40
 local hold = 1.2
 local open_duration, close_duration = 0.21, 0.16
+local top_gap = 20
+local matte = { white = 0.12 }
 local hud, timer
-local progress, reduce_motion
+local progress, reduce_motion, drip, label_height
 
 local function stop_timer()
     if timer then
@@ -26,6 +28,51 @@ local function system_reduces_motion()
     return value:match("^%s*1%s*$") ~= nil
 end
 
+local function smoothstep(t)
+    t = math.max(0, math.min(1, t))
+    return t ^ 2 * (3 - 2 * t)
+end
+
+-- Pull a curved neck between the screen edge and the capsule, then pinch it off.
+-- The tether is drawn behind the capsule so their overlap reads as one shape.
+local function render_tether(fraction, top, w, h)
+    local tail = 1 - smoothstep((fraction - 0.52) / 0.23)
+    local depth = (top + h / 2) * tail
+    if depth <= 0 or tail == 0 then
+        hud[1].action = "skip"
+        return
+    end
+
+    local pinch = 1 - smoothstep((fraction - 0.23) / 0.37)
+    local center = width / 2
+    local shoulder = (16 + 10 * pinch) * tail
+    local neck = (0.35 + 12 * pinch) * tail
+    local join = (0.35 + math.min(w * 0.3, 32) * pinch) * tail
+    local function point(x, y, cx1, cy1, cx2, cy2)
+        if cx1 then
+            return {
+                x = center + x,
+                y = y,
+                c1x = center + cx1,
+                c1y = cy1,
+                c2x = center + cx2,
+                c2y = cy2,
+            }
+        end
+        return { x = center + x, y = y }
+    end
+    hud[1].coordinates = {
+        point(-shoulder, 0),
+        point(shoulder, 0),
+        point(neck, depth * 0.48, neck, 0, neck, depth * 0.24),
+        point(join, depth, neck, depth * 0.78, join, depth * 0.88),
+        point(-join, depth),
+        point(-neck, depth * 0.48, -join, depth * 0.88, -neck, depth * 0.78),
+        point(-shoulder, 0, -neck, depth * 0.24, -neck, 0),
+    }
+    hud[1].action = "fill"
+end
+
 local function render(fraction)
     progress = fraction
     if reduce_motion then
@@ -33,15 +80,19 @@ local function render(fraction)
         return
     end
 
-    -- Width leads height so the island opens sideways before settling vertically.
-    -- The label fades in at a fixed font size once the silhouette can contain it.
+    -- Width leads height, and the label always keeps its original font size.
     local remaining = 1 - fraction
     local w = width - (width - 34) * remaining ^ 3
     local h = height - (height - 14) * remaining ^ 2
-    hud[1].frame = { x = (width - w) / 2, y = (height - h) / 2, w = w, h = h }
-    hud[1].roundedRectRadii = { xRadius = h / 2, yRadius = h / 2 }
-    local text_alpha = math.max(0, math.min(1, (fraction - 0.32) / 0.4))
-    hud[2].textColor = { white = 1, alpha = text_alpha ^ 2 * (3 - 2 * text_alpha) }
+    local top = (height - h) / 2
+    if drip then
+        top = top_gap - (top_gap + 14) * remaining ^ 2
+        render_tether(fraction, top, w, h)
+        hud[3].frame = { x = 0, y = top + (h - label_height) / 2, w = width, h = label_height }
+    end
+    hud[2].frame = { x = (width - w) / 2, y = top, w = w, h = h }
+    hud[2].roundedRectRadii = { xRadius = h / 2, yRadius = h / 2 }
+    hud[3].textColor = { white = 1, alpha = smoothstep((fraction - 0.32) / 0.4) }
     hud:alpha(math.min(1, fraction * 5))
 end
 
@@ -75,21 +126,31 @@ local function show_hud(title, position)
     local frame = screen:frame()
     local inset = math.min(96, frame.h * 0.12)
     local x = frame.x + (frame.w - width) / 2
-    local y = position == "top" and frame.y + 12 or frame.y + frame.h - inset - height
+    local at_top = position == "top"
+    local y = at_top and frame.y or frame.y + frame.h - inset - height
     local previous = hud and hud:frame()
     if previous and previous.x == x and previous.y == y then
-        hud[2].text = title
+        hud[3].text = title
     else
         dismiss_hud()
         reduce_motion = system_reduces_motion()
+        drip = at_top and not reduce_motion
+        local gap = at_top and top_gap or 0
         local font, size = ".AppleSystemUIFont", 14
-        local text = hs.drawing.getTextDrawingSize(title, { font = font, size = size })
-        hud = hs.canvas.new({ x = x, y = y, w = width, h = height })
+        label_height =
+            math.ceil(hs.drawing.getTextDrawingSize(title, { font = font, size = size }).h)
+        hud = hs.canvas.new({ x = x, y = y, w = width, h = height + gap })
         hud:appendElements({
+            type = "segments",
+            action = "skip",
+            closed = true,
+            fillColor = matte,
+        }, {
             type = "rectangle",
             action = "fill",
+            frame = { x = 0, y = gap, w = width, h = height },
             roundedRectRadii = { xRadius = height / 2, yRadius = height / 2 },
-            fillColor = { white = 0.12 },
+            fillColor = matte,
         }, {
             type = "text",
             text = title,
@@ -97,15 +158,17 @@ local function show_hud(title, position)
             textSize = size,
             textColor = { white = 1 },
             textAlignment = "center",
-            frame = { x = 0, y = (height - text.h) / 2, w = width, h = math.ceil(text.h) },
+            frame = { x = 0, y = gap + (height - label_height) / 2, w = width, h = label_height },
         })
         render(0)
         hud:level(hs.canvas.windowLevels.overlay):show()
     end
 
-    animate_to(1, reduce_motion and 0.15 or open_duration, function()
+    local opening = reduce_motion and 0.15 or (drip and 0.25 or open_duration)
+    local closing = reduce_motion and 0.18 or (drip and 0.19 or close_duration)
+    animate_to(1, opening, function()
         timer = hs.timer.doAfter(hold, function()
-            animate_to(0, reduce_motion and 0.18 or close_duration, dismiss_hud)
+            animate_to(0, closing, dismiss_hud)
         end)
     end)
 end
