@@ -16,35 +16,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   func applicationDidFinishLaunching(_ notification: Notification) {
     let args = Array(CommandLine.arguments.dropFirst())
-    guard args.count <= 3 else {
-      fail("usage: glass-toast [enabled|disabled|reload] [title] [seconds]")
+    guard (3...6).contains(args.count) else {
+      fail("usage: glass-toast <layout> <title> <symbol> [seconds] [detail] [tint]")
     }
-    let kind = args.first ?? "enabled"
-    let symbol: String
-    let defaultTitle: String
-    let message: String
+    let compact: Bool
+    switch args[0] {
+    case "compact-bottom": compact = true
+    case "centered-card": compact = false
+    default: fail("unknown layout: \(args[0])")
+    }
+    let title = args[1]
+    let symbol = args[2]
+    let duration = args.count > 3 ? Double(args[3]) ?? .nan : 2
+    let detailText = args.count > 4 ? args[4] : ""
+    guard !compact || detailText.isEmpty else {
+      fail("compact-bottom only supports one line of text")
+    }
     let tint: NSColor
-    switch kind {
-    case "reload":
-      symbol = "arrow.clockwise"
-      defaultTitle = "Hammerspoon Reloaded"
-      message = "Your configuration is ready."
-      tint = .systemBlue
-    case "disabled":
-      symbol = "moon.zzz.fill"
-      defaultTitle = "Caffeine Disabled"
-      message = "Normal display sleep restored."
-      tint = .secondaryLabelColor
-    case "enabled":
-      symbol = "cup.and.saucer.fill"
-      defaultTitle = "Caffeine Enabled"
-      message = "Your display will stay awake."
-      tint = .systemGreen
-    default:
-      fail("unknown kind: \(kind)")
+    let tintName = args.count > 5 ? args[5] : "label"
+    switch tintName {
+    case "label": tint = .labelColor
+    case "blue": tint = .systemBlue
+    default: fail("unknown icon tint: \(tintName)")
     }
-    let title = args.count > 1 ? args[1] : defaultTitle
-    let duration = args.count > 2 ? Double(args[2]) ?? .nan : 2
     guard duration.isFinite, (0.2...30).contains(duration) else {
       fail("duration must be between 0.2 and 30 seconds")
     }
@@ -52,11 +46,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       fail("no screen available")
     }
 
-    let size = NSSize(width: 360, height: 64)
+    let heading = NSTextField(labelWithString: title)
+    heading.font = .systemFont(ofSize: 14, weight: .semibold)
+    heading.textColor = .labelColor
+
+    let iconSize: CGFloat = compact ? 18 : 30
+    let iconGap: CGFloat = compact ? 8 : 14
+    let rowWidth = iconSize + iconGap + heading.intrinsicContentSize.width
+    let size =
+      compact
+      ? NSSize(width: max(200, ceil(rowWidth) + 32), height: 40)
+      : NSSize(width: 360, height: 64)
     let frame = screen.visibleFrame
     let rect = NSRect(
       x: frame.midX - size.width / 2,
-      y: frame.midY - size.height / 2,
+      y: compact ? frame.minY + min(96, frame.height * 0.12) : frame.midY - size.height / 2,
       width: size.width,
       height: size.height
     )
@@ -81,17 +85,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     let icon = NSImageView()
     icon.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
-      .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 24, weight: .medium))
+      .withSymbolConfiguration(
+        NSImage.SymbolConfiguration(pointSize: compact ? 16 : 24, weight: .medium))
     icon.contentTintColor = tint
     icon.translatesAutoresizingMaskIntoConstraints = false
 
-    let heading = NSTextField(labelWithString: title)
-    heading.font = .systemFont(ofSize: 14, weight: .semibold)
-    heading.textColor = .labelColor
-    let detail = NSTextField(labelWithString: message)
-    detail.font = .systemFont(ofSize: 12)
-    detail.textColor = .secondaryLabelColor
-    let labels = NSStackView(views: [heading, detail])
+    let labels = NSStackView(views: [heading])
+    if !detailText.isEmpty {
+      let detail = NSTextField(labelWithString: detailText)
+      detail.font = .systemFont(ofSize: 12)
+      detail.textColor = .secondaryLabelColor
+      labels.addArrangedSubview(detail)
+    }
     labels.orientation = .vertical
     labels.alignment = .leading
     labels.spacing = 4
@@ -99,13 +104,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     content.addSubview(icon)
     content.addSubview(labels)
     NSLayoutConstraint.activate([
-      icon.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 22),
+      icon.leadingAnchor.constraint(
+        equalTo: content.leadingAnchor, constant: compact ? (size.width - rowWidth) / 2 : 22),
       icon.centerYAnchor.constraint(equalTo: content.centerYAnchor),
-      icon.widthAnchor.constraint(equalToConstant: 30),
-      icon.heightAnchor.constraint(equalToConstant: 30),
-      labels.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 14),
+      icon.widthAnchor.constraint(equalToConstant: iconSize),
+      icon.heightAnchor.constraint(equalToConstant: iconSize),
+      labels.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: iconGap),
       labels.centerYAnchor.constraint(equalTo: content.centerYAnchor),
-      labels.trailingAnchor.constraint(lessThanOrEqualTo: content.trailingAnchor, constant: -22),
+      labels.trailingAnchor.constraint(
+        lessThanOrEqualTo: content.trailingAnchor, constant: compact ? -16 : -22),
     ])
 
     self.panel = panel

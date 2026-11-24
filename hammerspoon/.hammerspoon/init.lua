@@ -14,7 +14,7 @@ hs.alert.defaultStyle.fadeOutDuration = 2
 
 require("modules.plugins")
 -- require("modules.alerts")
-require("modules.caffeine")
+require("modules.caffeine").bind(HYPER, "0", { position = "top" }) -- "top" or "bottom"
 
 local glass_toast = require("modules.glass_toast")
 local helpers = require("modules.helpers")
@@ -98,6 +98,13 @@ end)
 -- The CLI itself is installed separately, so do not recheck/reinstall it on reload.
 require("hs.ipc")
 
-glass_toast:show("reload", "Hammerspoon Reloaded", function()
-    helpers:show("Hammerspoon Reloaded")
+local reload_title = "Hammerspoon Reloaded"
+glass_toast:show({
+    layout = "centered-card",
+    title = reload_title,
+    symbol = "arrow.clockwise",
+    detail = "Your configuration is ready.",
+    tint = "blue",
+}, function()
+    helpers:show(reload_title)
 end)

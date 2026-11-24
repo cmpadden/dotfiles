@@ -46,18 +46,36 @@ function test.run()
         fallbacks = fallbacks + 1
     end
 
+    local compact = {
+        layout = "compact-bottom",
+        title = "Muted",
+        symbol = "speaker.slash",
+        duration = 1.4,
+    }
+    local card = {
+        layout = "centered-card",
+        title = "Saved",
+        symbol = "checkmark",
+        detail = "Changes are ready.",
+        tint = "blue",
+    }
+
     exists = false
-    toast:show("reload", "Hammerspoon Reloaded", fallback)
+    toast:show(card, fallback)
     assert(fallbacks == 1 and #tasks == 0, "missing binary should fall back")
     exists = true
-    toast:show("enabled", "Enabled", fallback)
-    assert(tasks[1].running and tasks[1].args[1] == "enabled", "should start native helper")
+    toast:show(compact, fallback)
+    assert(tasks[1].running, "should start native helper")
+    assert(
+        table.concat(tasks[1].args, "|") == "compact-bottom|Muted|speaker.slash|1.4||label",
+        "should pass compact layout, copy, symbol, duration, and default tint"
+    )
     assert(
         tasks[1].path == "/test/native/.build/glass-toast",
         "should resolve config-relative binary"
     )
-    toast:show("disabled", "Disabled", fallback)
-    assert(tasks[1].terminated and tasks[2].args[1] == "disabled", "should replace previous toast")
+    toast:show(card, fallback)
+    assert(tasks[1].terminated and tasks[2].running, "should replace previous toast")
     assert(fallbacks == 1, "termination of replaced toast must not fall back")
     tasks[1].callback(1, "", "stale failure")
     assert(fallbacks == 1, "late callback from replaced toast must be ignored")
@@ -65,28 +83,33 @@ function test.run()
     tasks[2].callback(1, "", "failure")
     assert(fallbacks == 2, "helper failure should fall back")
     starts = false
-    toast:show("enabled", "Enabled", fallback)
+    toast:show(compact, fallback)
     assert(fallbacks == 3, "start failure should fall back")
     tasks[#tasks].callback(1, "", "late start failure")
     assert(fallbacks == 3, "start failure must not fall back twice")
     creates = false
-    toast:show("enabled", "Enabled", fallback)
+    toast:show(compact, fallback)
     assert(fallbacks == 4, "task creation failure should fall back")
     creates, starts = true, true
-    toast:show("reload", "Hammerspoon Reloaded", fallback)
-    assert(tasks[#tasks].args[1] == "reload", "should pass reload kind to helper")
-    assert(tasks[#tasks].args[2] == "Hammerspoon Reloaded", "should pass reload title to helper")
+    toast:show(card, fallback)
+    assert(
+        table.concat(tasks[#tasks].args, "|")
+            == "centered-card|Saved|checkmark|2|Changes are ready.|blue",
+        "should pass card layout, copy, symbol, default duration, detail, and tint"
+    )
     tasks[#tasks].callback(0, "", "")
     assert(fallbacks == 4, "normal exit must not fall back")
-    toast:show("enabled", "Enabled", fallback)
+    toast:show(compact, fallback)
     local previous = tasks[#tasks]
     exists = false
-    toast:show("reload", "Hammerspoon Reloaded", fallback)
+    toast:show(card, fallback)
     assert(previous.terminated, "missing binary fallback should cancel the previous toast")
     assert(fallbacks == 5, "missing binary should fall back exactly once after cancellation")
     previous.callback(1, "", "late failure")
     assert(fallbacks == 5, "cancelled helper must not fall back again")
-    print("PASS: glass toast fallback, replacement, stale callback, reload, and normal exit tests")
+    print(
+        "PASS: glass toast arguments, fallback, replacement, stale callback, and normal exit tests"
+    )
 end
 
 return test
