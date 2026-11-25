@@ -38,6 +38,9 @@ This short-lived process is intentionally a prototype, not a persistent service.
 
 Caffeine (Cmd+Ctrl+0) and startup/reload feedback both use the matte canvas HUD
 in `modules/island_hud.lua`, with a shared `hud_position` setting in `init.lua`.
+The top HUD pinches off from the edge on entry and flows back into it on exit.
+Repeated messages update the same capsule. With Reduce Motion, the HUD fades
+in place.
 Neither requires the native toast. The glass helper remains available for
 standalone previews or callers that want either glass layout.
 
@@ -82,6 +85,7 @@ build requirement; it does not depend on macOS 27's corner-resolution APIs.
 ```sh
 make test-glass-geometry
 hs -c 'dofile(hs.configdir .. "/tests/test_glass_toast.lua").run()'
+hs -c 'dofile(hs.configdir .. "/tests/test_island_hud.lua").run()'
 xcrun swift-format lint --strict native/*.swift tests/test_glass_geometry.swift
 ```
 
